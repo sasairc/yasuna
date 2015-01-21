@@ -18,7 +18,9 @@ yasuna
   
 * Debian/GNU Linux or Debian based system.(not amd64) 
   ```shellsession
-  $ wget -O - http://ssiserver.moe.hm/debian/yasuna_0.1-1.tar.gz | tar zxvf -	# バージョンに注意  
+  $ cat info.txt
+  注意 : バージョンは、適時置き換えて下さい。
+  $ wget -O - http://ssiserver.moe.hm/debian/yasuna_0.1-1.tar.gz | tar zxvf -
   $ cd yasuna 
   $ dpkg-buildpackage -uc -us 
   # dpkg -i ../yasuna_*.deb 
