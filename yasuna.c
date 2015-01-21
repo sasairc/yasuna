@@ -110,7 +110,7 @@ int read_file(int lines, char** buf, FILE* fp)
         int i = 0;
 
         rewind(fp);
-        while (fgets(buf[i], sizeof(char) * BUFLEN, fp) != NULL)        {
+        while (fgets(buf[i], sizeof(char) * BUFLEN, fp) != NULL) {
                 i++;
         }
         return 0;
