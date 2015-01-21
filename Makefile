@@ -1,8 +1,8 @@
 TARGET	:= yasuna
-PREFIX	:= /usr/local
-BINDIR	:= /usr/local/bin
-DICDIR	:= /usr/local/share/yasuna
 DICNME	:= yasuna-quotes
+PREFIX	:= /usr/local
+BINDIR	:= $(PREFIX)/bin
+DICDIR	:= $(PREFIX)/share/yasuna
 MAKE	:= make
 CC	:= cc
 RM	:= rm

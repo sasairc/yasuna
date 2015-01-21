@@ -19,10 +19,11 @@
 int main(int argc, char* argv[])
 {
         int i = 0;
-        int dflag = 0;
-        int res, index;
-        char* darg = NULL;
-        char** buf = NULL;
+        int dflag = 0;          /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
+        int res, index;         /* Use getopt_long() */
+        int lines, point;       /* Text lines and Lines pointer */
+        char* darg = NULL;      /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
+        char** buf = NULL;      /* Buffer */
         FILE* fp = NULL;
 
         struct option opts[] = {
@@ -32,6 +33,7 @@ int main(int argc, char* argv[])
                 {0, 0, 0, 0}
         };
 
+        /* Processing of arguments */
         while ((res = getopt_long(argc, argv, "vh", opts, &index)) != -1) {
                 switch (res) {
                         case    0:
@@ -44,7 +46,6 @@ int main(int argc, char* argv[])
                                 break;
                         case    'h':
                                 print_usage();
-                                return 0;
                                 break;
                         case    '?':
                                 return -1;
@@ -53,12 +54,12 @@ int main(int argc, char* argv[])
         }
 
         if (dflag == 1) {
-                fp = fopen(darg, "r");
+                fp = fopen(darg, "r");           /* Open additional dictionary */
         } else {
 #ifdef  MONO
                 fp = fopen(DICNAME, "r");
 #else
-                fp = fopen(DICPATH, "r");
+                fp = fopen(DICPATH, "r");        /* Open standard dictionary */
 #endif
         }
 
@@ -67,22 +68,23 @@ int main(int argc, char* argv[])
                 return 1;
         }
 
-        int lines = -1;
-        int point = 0;
+        lines = -1;
+        point = 0;
 
+        /* Count line for text-file */
         while ((i = getc(fp)) != EOF) {
                 if (i == '\n')  lines++;
         }
 
-        buf = (char**)malloc2d(BUFLEN, (lines + 1));
-        init2d(buf, BUFLEN, lines);
-        read_file(lines, buf, fp);
+        buf = (char**)malloc2d(BUFLEN, (lines + 1));    /* Allocate memory */
+        init2d(buf, BUFLEN, lines);                     /* Initialize array */
+        read_file(lines, buf, fp);                      /* Reading file to array */
 
-        point = create_rand(lines);
-        fprintf(stdout, "%s", buf[point]);
+        point = create_rand(lines);                     /* Get pseudo-random nuber */
+        fprintf(stdout, "%s", buf[point]);              /* Print of string */
 
-        fclose(fp);
-        free2d(buf, (lines + 1));
+        fclose(fp);                                     /* Close a file */
+        free2d(buf, (lines + 1));                       /* Memory release */
 
         return 0;
 
@@ -103,16 +105,19 @@ Mandatory arguments to long options are mandatory for short options too.\n\
 \n\
 Report %s bugs to sasairc@ssiserver.moe.hm\n\
 ", PROGNAME, VERSION, PROGNAME, PROGNAME);
+
+        exit(0);
 }
 
 int read_file(int lines, char** buf, FILE* fp)
 {
         int i = 0;
 
-        rewind(fp);
+        rewind(fp);        /* Seek file-strem to the top */
         while (fgets(buf[i], sizeof(char) * BUFLEN, fp) != NULL) {
                 i++;
         }
+
         return 0;
 }
 
@@ -121,13 +126,17 @@ int create_rand(int lines)
         int ret;
         struct timeval lo_timeval;
 
-        gettimeofday(&lo_timeval, NULL);
+        gettimeofday(&lo_timeval, NULL);        /* Get localtime */
 
+        /* 
+         * # Setting factor for pseudo-random number
+         * Current microseconds * PID
+         */
         srand((unsigned)(
                 lo_timeval.tv_usec * getpid()
         ));
 
-        ret = (int)(rand()%(lines-0+1));
+        ret = (int)(rand()%(lines-0+1));        /* Create pseudo-random number */
 
         return ret;
 }
@@ -137,13 +146,13 @@ char** malloc2d(int x, int y)
         char** buf;
         int i;
 
-        buf = (char**) malloc(sizeof(char*) * y);
+        buf = (char**) malloc(sizeof(char*) * y);                /* Allocate array for Y coordinate */
         if (buf == NULL) {
                 fprintf(stderr, "malloc2d(): malloc to (char**)var failure.\n");
                 exit(2);
         }
         for (i = 0; i < y; i++) {
-                buf[i] = (char*)malloc(sizeof(char) * x);
+                buf[i] = (char*)malloc(sizeof(char) * x);        /* Allocate array for X coordinate */
         }
 
         return buf;
@@ -153,25 +162,28 @@ int init2d(char** buf, int x, int y)
 {
         int i, j;
 
+        /* Initialize each element of array */
         for (i = 0; i < y; i++) {
-                if (buf[i] == NULL)     buf[i] = (char*)malloc(sizeof(char) * x);
+                if (buf[i] == NULL)     buf[i] = (char*)malloc(sizeof(char) * x);        /* If memory allocation failure, do retry memory allocation. */
                 for (j = 0; j < x; j++) {
                         buf[i][j] = ' ';
                 }
         }
+
+        return 0;
 }
                         
 void free2d(char** buf, int y)
 {
-        int i = 0;
+        int i;
 
         for (i = 0; i < y; i++) {
                 if (buf[i] != NULL) {
-                        free(buf[i]);
+                        free(buf[i]);        /* Memory release the Y coordinate. */
                         buf[i] = NULL;
                 }
         }
-        free(buf);
+        free(buf);                           /* Release for Memory */
 
         return;
 }
