@@ -15,7 +15,7 @@
 
 #define PROGNAME    "yasuna"
 //#define MONO      /* パスを組み込みたくないときにお使い下さい */
-#define VERSION     "0.1"
+#define VERSION     "0.2"
 #define BUFLEN      512
 
 char** malloc2d(int x, int y);
