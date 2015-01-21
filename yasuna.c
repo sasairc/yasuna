@@ -20,6 +20,8 @@ int main(int argc, char* argv[])
 {
         int i = 0;
         int dflag = 0;          /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
+        int nflag = 0;          /* Number flag(--number=INT). this flag use getopt_long() */
+        int narg;               /* Number arguments(--number=INT). this val use getopt_long() */
         int res, index;         /* Use getopt_long() */
         int lines, point;       /* Text lines and Lines pointer */
         char* darg = NULL;      /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
@@ -27,18 +29,27 @@ int main(int argc, char* argv[])
         FILE* fp = NULL;
 
         struct option opts[] = {
-                {"dict", required_argument, NULL,   0},
+                {"dict", required_argument, NULL, 0},
+                {"number", required_argument, NULL, 'n'},
+                {"list", no_argument, NULL, 'l'},
                 {"help", no_argument, NULL, 'h'},
                 {"version", no_argument, NULL, 'v'},
                 {0, 0, 0, 0}
         };
 
         /* Processing of arguments */
-        while ((res = getopt_long(argc, argv, "vh", opts, &index)) != -1) {
+        while ((res = getopt_long(argc, argv, "vhln:", opts, &index)) != -1) {
                 switch (res) {
                         case    0:
                                 darg = optarg;
                                 dflag = 1;
+                                break;
+                        case    'n':
+                                narg = atoi(optarg);
+                                nflag = 1;
+                                break;
+                        case    'l':
+                                print_list(dflag, darg, buf, fp);
                                 break;
                         case    'v':
                                 fprintf(stdout, "%s %s\n", PROGNAME, VERSION);
@@ -54,12 +65,12 @@ int main(int argc, char* argv[])
         }
 
         if (dflag == 1) {
-                fp = fopen(darg, "r");           /* Open additional dictionary */
+                fp = fopen(darg, "r");          /* Open additional dictionary */
         } else {
 #ifdef  MONO
                 fp = fopen(DICNAME, "r");
 #else
-                fp = fopen(DICPATH, "r");        /* Open standard dictionary */
+                fp = fopen(DICPATH, "r");       /* Open standard dictionary */
 #endif
         }
 
@@ -80,7 +91,12 @@ int main(int argc, char* argv[])
         init2d(buf, BUFLEN, lines);                     /* Initialize array */
         read_file(lines, buf, fp);                      /* Reading file to array */
 
-        point = create_rand(lines);                     /* Get pseudo-random nuber */
+        if (nflag == 0) {
+                point = create_rand(lines);             /* Get pseudo-random nuber */
+        } else {
+                if (lines >= narg)      point = narg;
+        }
+
         fprintf(stdout, "%s", buf[point]);              /* Print of string */
 
         fclose(fp);                                     /* Close a file */
@@ -88,6 +104,46 @@ int main(int argc, char* argv[])
 
         return 0;
 
+}
+
+int print_list(int dflag, char* darg, char** buf, FILE* fp)
+{
+        int i;
+        int lines = -1;
+
+        if (dflag == 1) {
+                fp = fopen(darg, "r");          /* Open additional dictionary */
+        } else {
+#ifdef  MONO
+                fp = fopen(DICNAME, "r");
+#else
+                fp = fopen(DICPATH, "r");       /* Open standard dictionary */
+#endif
+        }
+
+        /* Count line for text-file */
+        if (fp == NULL) {
+                fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
+                return 1;
+        }
+        
+        /* Count line for text-file */
+        while ((i = getc(fp)) != EOF) {
+                if (i == '\n')  lines++;
+        }
+
+        buf = (char**)malloc2d(BUFLEN, (lines + 1));    /* Allocate memory */
+        init2d(buf, BUFLEN, lines);                     /* Initialize array */
+        read_file(lines, buf, fp);                      /* Reading file to array */
+
+        for (i = 0; i <= lines; i++) {
+                fprintf(stdout, "%d %s", i, buf[i]);
+        }
+
+        fclose(fp);                                     /* Close a file */
+        free2d(buf, (lines + 1));                       /* Memory release */
+        
+        exit(0);
 }
 
 int print_usage(void)
@@ -99,6 +155,8 @@ Usage: %s [OPTION]...\n\
 Mandatory arguments to long options are mandatory for short options too.\n\
 \n\
        --dict=PATH           specfiles the dictionary\n\
+  -l,  --list                print all quotes list and exit\n\
+  -n,  --number INT          specify quote number\n\
 \n\
   -h,  --help                display this help and exit\n\
   -v,  --version             output version infomation and exit\n\
@@ -146,7 +204,7 @@ char** malloc2d(int x, int y)
         char** buf;
         int i;
 
-        buf = (char**) malloc(sizeof(char*) * y);                /* Allocate array for Y coordinate */
+        buf = (char**) malloc(sizeof(char*) * y);               /* Allocate array for Y coordinate */
         if (buf == NULL) {
                 fprintf(stderr, "malloc2d(): malloc to (char**)var failure.\n");
                 exit(2);
@@ -164,7 +222,7 @@ int init2d(char** buf, int x, int y)
 
         /* Initialize each element of array */
         for (i = 0; i < y; i++) {
-                if (buf[i] == NULL)     buf[i] = (char*)malloc(sizeof(char) * x);        /* If memory allocation failure, do retry memory allocation. */
+                if (buf[i] == NULL)     buf[i] = (char*)malloc(sizeof(char) * x);       /* If memory allocation failure, do retry memory allocation. */
                 for (j = 0; j < x; j++) {
                         buf[i][j] = ' ';
                 }
