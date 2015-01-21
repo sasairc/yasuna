@@ -8,21 +8,23 @@ yasuna
 
 
 ### install
-* Debian/GNU Linux or Debian based System.(amd64)
+
+* Debian/GNU Linux or Debian based system.(amd64)
   ```shellsession
-  # cat 'deb http://ssiserver.moe.hm/debian ./' >> /etc/apt/sources.list
+  # echo 'deb http://ssiserver.moe.hm/debian ./' >> /etc/apt/sources.list
   # apt-get update
   # apt-get install yasuna
   ```
-* Debian/GNU Linux or Debian based System.(not amd64)
+  
+* Debian/GNU Linux or Debian based system.(not amd64) 
   ```shellsession
-  $ wget -O - http://ssiserver.moe.hm/debian/yasuna_0.1-1.tar.gz | tar zxvf -	# バージョンはその都度置き換え下さい
-  $ cd yasuna
-  $ dpkg-buildpackage -uc -us
-  # dpkg -i ../yasuna_*.deb
+  $ wget -O - http://ssiserver.moe.hm/debian/yasuna_0.1-1.tar.gz | tar zxvf -	# バージョンに注意  
+  $ cd yasuna 
+  $ dpkg-buildpackage -uc -us 
+  # dpkg -i ../yasuna_*.deb 
   ```
 
-* Other
+* Other systems.
   ```shellsession
   $ make PREFIX=/foo/bar	# デフォルトでは、PREFIX=/usr/localです
   # make install PREFIX=/foo/bar
