@@ -21,7 +21,7 @@
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
 
-#define MONO      /* パスを組み込みたくないときにお使い下さい */
+//#define MONO      /* パスを組み込みたくないときにお使い下さい */
 #define BUFLEN      512
 
 extern char** malloc2d(int x, int y);
