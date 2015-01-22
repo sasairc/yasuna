@@ -23,5 +23,5 @@ clean:
 install:
 	install -pd $(BINDIR)
 	install -pd $(DICDIR)
-	install -pm 444 $(DICNME) $(DICDIR)/
-	install -pm 555 $(TARGET) $(BINDIR)/
+	install -pm 755 $(TARGET) $(BINDIR)/
+	install -pm 644 $(DICNME) $(DICDIR)/
