@@ -20,10 +20,16 @@ yasuna
   ```shellsession
   $ cat info.txt
   注意 : バージョンは、適時置き換えて下さい。
-  $ wget -O - http://ssiserver.moe.hm/debian/yasuna_0.1-1.tar.gz | tar zxvf -
+  $ wget -O - http://ssiserver.moe.hm/debian/yasuna_0.3-1.tar.gz | tar zxvf -
   $ cd yasuna 
   $ dpkg-buildpackage -uc -us 
   # dpkg -i ../yasuna_*.deb 
+  ```
+
+* Mac OS X / Homebrew
+  ```shellsession
+  $ brew tap 844196/Renge    # Tap
+  $ brew install yasuna      # Install
   ```
 
 * Other systems.
@@ -57,5 +63,12 @@ yasuna
   cpu MHz         : 2933.470
   ```
 
+### Thanks
+* [Masaya Tk](https://github.com/844196)  
+  Homebrew用のリポジトリを提供して頂き、ありがとうございます！
+ 
 #### License
 [WTFPL version 2](http://www.wtfpl.net/txt/copying/)
+
+### Author
+sasairc (https://github.com/sasairc)
