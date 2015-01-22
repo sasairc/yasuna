@@ -18,230 +18,249 @@
 
 int main(int argc, char* argv[])
 {
-        int i = 0;
-        int dflag = 0;          /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
-        int nflag = 0;          /* Number flag(--number=INT). this flag use getopt_long() */
-        int narg;               /* Number arguments(--number=INT). this val use getopt_long() */
-        int res, index;         /* Use getopt_long() */
-        int lines, point;       /* Text lines and Lines pointer */
-        char* darg = NULL;      /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
-        char** buf = NULL;      /* Buffer */
-        FILE* fp = NULL;
+    int i = 0;
+    int lflag = 0;      /* List flag(--list). */
+    int dflag = 0;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
+    int nflag = 0;      /* Number flag(--number=INT). this flag use getopt_long() */
+    int narg;           /* Number arguments(--number=INT). this val use getopt_long() */
+    int res, index;     /* Use getopt_long() */
+    int lines, point;   /* Text lines and Lines pointer */
+    char* darg = NULL;  /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
+    char** buf = NULL;  /* Buffer */
+    FILE* fp = NULL;
 
-        struct option opts[] = {
-                {"dict", required_argument, NULL, 0},
-                {"number", required_argument, NULL, 'n'},
-                {"list", no_argument, NULL, 'l'},
-                {"help", no_argument, NULL, 'h'},
-                {"version", no_argument, NULL, 'v'},
-                {0, 0, 0, 0}
-        };
+    struct option opts[] = {
+        {"dict", required_argument, NULL,   0},
+        {"number", required_argument, NULL, 'n'},
+        {"list", no_argument, NULL, 'l'},
+        {"help", no_argument, NULL, 'h'},
+        {"version", no_argument, NULL, 'v'},
+        {0, 0, 0, 0}
+    };
 
-        /* Processing of arguments */
-        while ((res = getopt_long(argc, argv, "vhln:", opts, &index)) != -1) {
-                switch (res) {
-                        case    0:
-                                darg = optarg;
-                                dflag = 1;
-                                break;
-                        case    'n':
-                                narg = atoi(optarg);
-                                nflag = 1;
-                                break;
-                        case    'l':
-                                print_list(dflag, darg, buf, fp);
-                                break;
-                        case    'v':
-                                fprintf(stdout, "%s %s\n", PROGNAME, VERSION);
-                                return 0;
-                                break;
-                        case    'h':
-                                print_usage();
-                                break;
-                        case    '?':
-                                return -1;
-                                break;
-                }
+    /* Processing of arguments */
+    while ((res = getopt_long(argc, argv, "vhln:", opts, &index)) != -1) {
+        switch (res) {
+            case    0:
+                darg = optarg;
+                dflag = 1;
+                break;
+            case    'n':
+                narg = atoi(optarg);
+                nflag = 1;
+                break;
+            case    'l':
+                lflag = 1;
+                break;
+            case    'v':
+                fprintf(stdout, "%s %s\n", PROGNAME, VERSION);
+                return 0;
+            case    'h':
+                print_usage();
+                break;
+            case    '?':
+                return -1;
         }
+    }
 
-        if (dflag == 1) {
-                fp = fopen(darg, "r");          /* Open additional dictionary */
+    /* Open after checking file type */
+    if (dflag == 1) {
+        if (check_file_type(darg) == 0) {
+            fp = fopen(darg, "r");      /* Open additional dictionary */
         } else {
+            return 1;
+        }
+    } else {
 #ifdef  MONO
-                fp = fopen(DICNAME, "r");
-#else
-                fp = fopen(DICPATH, "r");       /* Open standard dictionary */
-#endif
-        }
-
-        if (fp == NULL) {
-                fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
-                return 1;
-        }
-
-        lines = -1;
-        point = 0;
-
-        /* Count line for text-file */
-        while ((i = getc(fp)) != EOF) {
-                if (i == '\n')  lines++;
-        }
-
-        buf = (char**)malloc2d(BUFLEN, (lines + 1));    /* Allocate memory */
-        init2d(buf, BUFLEN, lines);                     /* Initialize array */
-        read_file(lines, buf, fp);                      /* Reading file to array */
-
-        if (nflag == 0) {
-                point = create_rand(lines);             /* Get pseudo-random nuber */
+        if (check_file_type(DICNAME) == 0) {
+            fp = fopen(DICNAME, "r");
         } else {
-                if (lines >= narg)      point = narg;
+            return 2;
         }
-
-        fprintf(stdout, "%s", buf[point]);              /* Print of string */
-
-        fclose(fp);                                     /* Close a file */
-        free2d(buf, (lines + 1));                       /* Memory release */
-
-        return 0;
-
-}
-
-int print_list(int dflag, char* darg, char** buf, FILE* fp)
-{
-        int i;
-        int lines = -1;
-
-        if (dflag == 1) {
-                fp = fopen(darg, "r");          /* Open additional dictionary */
-        } else {
-#ifdef  MONO
-                fp = fopen(DICNAME, "r");
 #else
-                fp = fopen(DICPATH, "r");       /* Open standard dictionary */
+        if (check_file_type(DICPATH) == 0) {
+            fp = fopen(DICPATH, "r");   /* Open standard dictionary */
+        } else {
+            return 3;
+        }
 #endif
-        }
+    }
 
-        /* Count line for text-file */
-        if (fp == NULL) {
-                fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
-                return 1;
-        }
-        
-        /* Count line for text-file */
-        while ((i = getc(fp)) != EOF) {
-                if (i == '\n')  lines++;
-        }
+    if (fp == NULL) {
+        fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
+        return 4;
+    }
 
-        buf = (char**)malloc2d(BUFLEN, (lines + 1));    /* Allocate memory */
-        init2d(buf, BUFLEN, lines);                     /* Initialize array */
-        read_file(lines, buf, fp);                      /* Reading file to array */
+    lines = -1;
+    point = 0;
 
+    /* Count line for text-file */
+    while ((i = getc(fp)) != EOF) {
+        if (i == '\n')  lines++;
+    }
+
+    buf = (char**)malloc2d(BUFLEN, (lines + 1));    /* Allocate memory */
+    init2d(buf, BUFLEN, lines);                     /* Initialize array */
+    read_file(lines, buf, fp);                      /* Reading file to array */
+
+    if (lflag == 1) {                               /* Print all quotes list and exit */
         for (i = 0; i <= lines; i++) {
-                fprintf(stdout, "%d %s", i, buf[i]);
+        fprintf(stdout, "%d %s", i, buf[i]);
         }
+        return 0;
+    }
 
-        fclose(fp);                                     /* Close a file */
-        free2d(buf, (lines + 1));                       /* Memory release */
-        
-        exit(0);
+    if (nflag == 0) {
+        point = create_rand(lines);                 /* Get pseudo-random nuber */
+    } else {
+        if (lines >= narg)  point = narg;
+    }
+
+    fprintf(stdout, "%s", buf[point]);              /* Print of string */
+
+    fclose(fp);                                     /* Close a file */
+    free2d(buf, (lines + 1));                       /* Memory release */
+
+    return 0;
+
 }
 
 int print_usage(void)
 {
-        fprintf(stdout, "\
+    fprintf(stdout, "\
 %s %s, Yasuna Oribe will talk.\n\
 Usage: %s [OPTION]...\n\
 \n\
 Mandatory arguments to long options are mandatory for short options too.\n\
 \n\
-       --dict=PATH           specfiles the dictionary\n\
   -l,  --list                print all quotes list and exit\n\
   -n,  --number INT          specify quote number\n\
+       --dict=PATH           specfiles the dictionary\n\
 \n\
   -h,  --help                display this help and exit\n\
   -v,  --version             output version infomation and exit\n\
 \n\
-Report %s bugs to sasairc@ssiserver.moe.hm\n\
-", PROGNAME, VERSION, PROGNAME, PROGNAME);
+Report %s bugs to %s <%s>\n\
+", PROGNAME, VERSION, PROGNAME, PROGNAME, AUTHOR, MAIL_TO);
 
-        exit(0);
+    exit(0);
 }
+
+int check_file_type(char* filename)
+{
+    int i, c;
+    FILE* fp = NULL;
+
+    int rtf[5] = {0x7B, 0x5C, 0x72, 0x74, 0x66};    /* {\rtf is Ritch-test format's header */
+
+    fp = fopen(filename, "rb");
+    if (fp == NULL) {
+        return -1;
+    }
+
+    while (0 == feof(fp)) {
+        c = fgetc(fp);
+        if (c == EOF) {             /* Plain text */
+            break;
+        } else if (c <= 8) {        /* Binary or Unknown format */
+            fclose(fp);
+            return 1;
+        } else if (c == 0x7B) {     /* Ritch text format */
+            rewind(fp);
+            for (i = 0; i < 5; i++) {
+                c = fgetc(fp);
+                if (c == rtf[i]) {
+                    continue;
+                } else {
+                    fclose(fp);
+                    return 0;
+                }
+            }
+            fclose(fp);
+
+            return 2;
+        }
+    }
+    fclose(fp);
+
+    return 0;
+}   
 
 int read_file(int lines, char** buf, FILE* fp)
 {
-        int i = 0;
+    int i = 0;
 
-        rewind(fp);        /* Seek file-strem to the top */
-        while (fgets(buf[i], sizeof(char) * BUFLEN, fp) != NULL) {
-                i++;
-        }
+    rewind(fp);     /* Seek file-strem to the top */
+    while (fgets(buf[i], sizeof(char) * BUFLEN, fp) != NULL) {
+        i++;
+    }
 
-        return 0;
+    return 0;
 }
 
 int create_rand(int lines)
 {
-        int ret;
-        struct timeval lo_timeval;
+    int ret;
+    struct timeval lo_timeval;
 
-        gettimeofday(&lo_timeval, NULL);        /* Get localtime */
+    gettimeofday(&lo_timeval, NULL);    /* Get localtime */
 
-        /* 
-         * # Setting factor for pseudo-random number
-         * Current microseconds * PID
-         */
-        srand((unsigned)(
-                lo_timeval.tv_usec * getpid()
-        ));
+    /* 
+     * # Setting factor for pseudo-random number
+     * Current microseconds * PID
+     */
+    srand((unsigned)(
+        lo_timeval.tv_usec * getpid()
+    ));
 
-        ret = (int)(rand()%(lines-0+1));        /* Create pseudo-random number */
+    ret = (int)(rand()%(lines-0+1));    /* Create pseudo-random number */
 
-        return ret;
+    return ret;
 }
 
 char** malloc2d(int x, int y)
 {
-        char** buf;
-        int i;
+    char** buf;
+    int i;
 
-        buf = (char**) malloc(sizeof(char*) * y);               /* Allocate array for Y coordinate */
-        if (buf == NULL) {
-                fprintf(stderr, "malloc2d(): malloc to (char**)var failure.\n");
-                exit(2);
-        }
-        for (i = 0; i < y; i++) {
-                buf[i] = (char*)malloc(sizeof(char) * x);        /* Allocate array for X coordinate */
-        }
+    buf = (char**) malloc(sizeof(char*) * y);       /* Allocate array for Y coordinate */
+    if (buf == NULL) {
+        fprintf(stderr, "malloc2d(): malloc to (char**)var failure.\n");
+        exit(2);
+    }
+    for (i = 0; i < y; i++) {
+        buf[i] = (char*)malloc(sizeof(char) * x);   /* Allocate array for X coordinate */
+    }
 
-        return buf;
+    return buf;
 }
 
 int init2d(char** buf, int x, int y)
 {
-        int i, j;
+    int i, j;
 
-        /* Initialize each element of array */
-        for (i = 0; i < y; i++) {
-                if (buf[i] == NULL)     buf[i] = (char*)malloc(sizeof(char) * x);       /* If memory allocation failure, do retry memory allocation. */
-                for (j = 0; j < x; j++) {
-                        buf[i][j] = ' ';
-                }
+    /* Initialize each element of array */
+    for (i = 0; i < y; i++) {
+        if (buf[i] == NULL) buf[i] = (char*)malloc(sizeof(char) * x);   /* If memory allocation failure, do retry memory allocation. */
+        for (j = 0; j < x; j++) {
+            buf[i][j] = ' ';
         }
+    }
 
-        return 0;
+    return 0;
 }
-                        
+            
 void free2d(char** buf, int y)
 {
-        int i;
+    int i;
 
-        for (i = 0; i < y; i++) {
-                if (buf[i] != NULL) {
-                        free(buf[i]);        /* Memory release the Y coordinate. */
-                        buf[i] = NULL;
-                }
+    for (i = 0; i < y; i++) {
+        if (buf[i] != NULL) {
+            free(buf[i]);       /* Memory release the Y coordinate. */
+            buf[i] = NULL;
         }
-        free(buf);                           /* Release for Memory */
+    }
+    free(buf);                  /* Release for Memory */
 
-        return;
+    return;
 }

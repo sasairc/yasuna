@@ -14,14 +14,19 @@
 #include <stdio.h>
 
 #define PROGNAME    "yasuna"
-//#define MONO      /* パスを組み込みたくないときにお使い下さい */
-#define VERSION     "0.2"
+#define VERSION     "0.3"
+
+#define AUTHOR      "sasairc"
+#define MAIL_TO     "sasairc@ssiserver.moe.hm"
+
+//#define MONO        /* パスを組み込みたくないときにお使い下さい */
 #define BUFLEN      512
 
-char** malloc2d(int x, int y);
-int init2d(char** buf, int x, int y);
-void free2d(char** buf, int y);
-int read_file(int lines, char** buf, FILE* fp);
-int create_rand(int lines);
+extern char** malloc2d(int x, int y);
+extern int init2d(char** buf, int x, int y);
+extern void free2d(char** buf, int y);
+extern int check_file_type(char* filename);
+extern int read_file(int lines, char** buf, FILE* fp);
+extern int create_rand(int lines);
 
 #endif

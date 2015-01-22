@@ -1,17 +1,17 @@
 TARGET	:= yasuna
-DICNME	:= yasuna-quotes
 PREFIX	:= /usr/local
-BINDIR	:= $(PREFIX)/bin
+BINDIR	:= /usr/local/bin
 DICDIR	:= $(PREFIX)/share/yasuna
+DICNME	:= yasuna-quotes
 MAKE	:= make
-CC	:= cc
-RM	:= rm
+CC		:= cc
+RM		:= rm
 CFLAGS	:= -g
 
 all: $(TARGET)
 
 DEFCFLAGS = -DPREFIX=\"$(PREFIX)\" \
-		-DDICNAME=\"$(DICNME)\" \
+			-DDICNAME=\"$(DICNME)\" \
 		-DDICPATH=\"$(DICDIR)/$(DICNME)\"
 
 yasuna: yasuna.c
