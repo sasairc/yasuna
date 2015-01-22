@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
                 lflag = 1;
                 break;
             case    'v':
-                fprintf(stdout, "%s %s\n", PROGNAME, VERSION);
+                fprintf(stdout, "%s %d.%d.%d\n", PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL);
                 return 0;
             case    'h':
                 print_usage();
@@ -128,7 +128,7 @@ int main(int argc, char* argv[])
 int print_usage(void)
 {
     fprintf(stdout, "\
-%s %s, Yasuna Oribe will talk.\n\
+%s %d.%d.%d, Yasuna Oribe will talk.\n\
 Usage: %s [OPTION]...\n\
 \n\
 Mandatory arguments to long options are mandatory for short options too.\n\
@@ -141,7 +141,8 @@ Mandatory arguments to long options are mandatory for short options too.\n\
   -v,  --version             output version infomation and exit\n\
 \n\
 Report %s bugs to %s <%s>\n\
-", PROGNAME, VERSION, PROGNAME, PROGNAME, AUTHOR, MAIL_TO);
+", PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL, \
+PROGNAME, PROGNAME, AUTHOR, MAIL_TO);
 
     exit(0);
 }

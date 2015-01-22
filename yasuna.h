@@ -14,12 +14,14 @@
 #include <stdio.h>
 
 #define PROGNAME    "yasuna"
-#define VERSION     "0.3"
+#define VERSION     0
+#define PATCHLEVEL  3
+#define SUBLEVEL    1
 
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
 
-//#define MONO        /* パスを組み込みたくないときにお使い下さい */
+#define MONO      /* パスを組み込みたくないときにお使い下さい */
 #define BUFLEN      512
 
 extern char** malloc2d(int x, int y);
