@@ -19,15 +19,13 @@
 int main(int argc, char* argv[])
 {
     int i = 0;
-    int lflag = 0;      /* List flag(--list). */
-    int dflag = 0;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
-    int nflag = 0;      /* Number flag(--number=INT). this flag use getopt_long() */
-    int narg;           /* Number arguments(--number=INT). this val use getopt_long() */
     int res, index;     /* Use getopt_long() */
     int lines, point;   /* Text lines and Lines pointer */
-    char* darg = NULL;  /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
-    char** buf = NULL;  /* Buffer */
+    char** buf = NULL;/* Buffer */
     FILE* fp = NULL;
+    yasuna_t yasuna = { /* flag and args */
+        0, 0, 0, 0 ,NULL,
+    };
 
     struct option opts[] = {
         {"dict", required_argument, NULL,   0},
@@ -42,15 +40,15 @@ int main(int argc, char* argv[])
     while ((res = getopt_long(argc, argv, "vhln:", opts, &index)) != -1) {
         switch (res) {
             case    0:
-                darg = optarg;
-                dflag = 1;
+                yasuna.darg = optarg;
+                yasuna.dflag = 1;
                 break;
             case    'n':
-                narg = atoi(optarg);
-                nflag = 1;
+                yasuna.narg = atoi(optarg);
+                yasuna.nflag = 1;
                 break;
             case    'l':
-                lflag = 1;
+                yasuna.lflag = 1;
                 break;
             case    'v':
                 fprintf(stdout, "%s %d.%d.%d\n", PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL);
@@ -64,9 +62,9 @@ int main(int argc, char* argv[])
     }
 
     /* Open after checking file type */
-    if (dflag == 1) {
-        if (check_file_type(darg) == 0) {
-            fp = fopen(darg, "r");      /* Open additional dictionary */
+    if (yasuna.dflag == 1) {
+        if (check_file_type(yasuna.darg) == 0) {
+            fp = fopen(yasuna.darg, "r");       /* Open additional dictionary */
         } else {
             return 1;
         }
@@ -103,17 +101,17 @@ int main(int argc, char* argv[])
     init2d(buf, BUFLEN, lines);                     /* Initialize array */
     read_file(lines, buf, fp);                      /* Reading file to array */
 
-    if (lflag == 1) {                               /* Print all quotes list and exit */
+    if (yasuna.lflag == 1) {                                /* Print all quotes list and exit */
         for (i = 0; i <= lines; i++) {
         fprintf(stdout, "%d %s", i, buf[i]);
         }
         return 0;
     }
 
-    if (nflag == 0) {
+    if (yasuna.nflag == 0) {
         point = create_rand(lines);                 /* Get pseudo-random nuber */
     } else {
-        if (lines >= narg)  point = narg;
+        if (lines >= yasuna.narg)   point = yasuna.narg;
     }
 
     fprintf(stdout, "%s", buf[point]);              /* Print of string */
