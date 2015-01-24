@@ -7,6 +7,7 @@ MAKE	:= make
 CC		:= cc
 RM		:= rm
 CFLAGS	:= -g
+OBJ		= *.o
 
 all: $(TARGET)
 
@@ -15,9 +16,15 @@ DEFCFLAGS = -DPREFIX=\"$(PREFIX)\" \
 		-DDICPATH=\"$(DICDIR)/$(DICNME)\"
 
 yasuna: yasuna.c
-	$(CC) $(DEFCFLAGS) $(CFLAGS) yasuna.c -o $(TARGET)
+	$(CC) $(DEFCFLAGS) $(CFLAGS) -c yasuna.c -o yasuna.o
+	$(CC) $(DEFCFLAGS) $(CFLAGS) -c memory.c -o memory.o
+	$(CC) $(DEFCFLAGS) $(CFLAGS) \
+		yasuna.o \
+		memory.o \
+		-o $(TARGET)
 
 clean:
+	-$(RM) -f $(OBJ)
 	-$(RM) -f $(TARGET)
 
 install:
