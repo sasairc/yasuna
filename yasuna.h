@@ -16,7 +16,7 @@
 #define PROGNAME    "yasuna"
 #define VERSION     0
 #define PATCHLEVEL  3
-#define SUBLEVEL    2
+#define SUBLEVEL    3
 
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
@@ -32,11 +32,14 @@ typedef struct YASUNA_T {
     char* darg;     /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
 } yasuna_t;
 
-extern char** malloc2d(int x, int y);
-extern int init2d(char** buf, int x, int y);
-extern void free2d(char** buf, int y);
+/* This functions is required yasuna.c */
 extern int check_file_type(char* filename);
 extern int read_file(int lines, char** buf, FILE* fp);
 extern int create_rand(int lines);
+
+/* This functions is required memory.c */
+extern char** malloc2d(int x, int y);
+extern int init2d(char** buf, int x, int y);
+extern void free2d(char** buf, int y);
 
 #endif

@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
     int i = 0;
     int res, index;     /* Use getopt_long() */
     int lines, point;   /* Text lines and Lines pointer */
-    char** buf = NULL;/* Buffer */
+    char** buf = NULL;  /* Buffer */
     FILE* fp = NULL;
     yasuna_t yasuna = { /* flag and args */
         0, 0, 0, 0 ,NULL,
@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
     init2d(buf, BUFLEN, lines);                     /* Initialize array */
     read_file(lines, buf, fp);                      /* Reading file to array */
 
-    if (yasuna.lflag == 1) {                                /* Print all quotes list and exit */
+    if (yasuna.lflag == 1) {                        /* Print all quotes list and exit */
         for (i = 0; i <= lines; i++) {
         fprintf(stdout, "%d %s", i, buf[i]);
         }
@@ -215,51 +215,4 @@ int create_rand(int lines)
     ret = (int)(rand()%(lines-0+1));    /* Create pseudo-random number */
 
     return ret;
-}
-
-char** malloc2d(int x, int y)
-{
-    char** buf;
-    int i;
-
-    buf = (char**) malloc(sizeof(char*) * y);       /* Allocate array for Y coordinate */
-    if (buf == NULL) {
-        fprintf(stderr, "malloc2d(): malloc to (char**)var failure.\n");
-        exit(2);
-    }
-    for (i = 0; i < y; i++) {
-        buf[i] = (char*)malloc(sizeof(char) * x);   /* Allocate array for X coordinate */
-    }
-
-    return buf;
-}
-
-int init2d(char** buf, int x, int y)
-{
-    int i, j;
-
-    /* Initialize each element of array */
-    for (i = 0; i < y; i++) {
-        if (buf[i] == NULL) buf[i] = (char*)malloc(sizeof(char) * x);   /* If memory allocation failure, do retry memory allocation. */
-        for (j = 0; j < x; j++) {
-            buf[i][j] = ' ';
-        }
-    }
-
-    return 0;
-}
-            
-void free2d(char** buf, int y)
-{
-    int i;
-
-    for (i = 0; i < y; i++) {
-        if (buf[i] != NULL) {
-            free(buf[i]);       /* Memory release the Y coordinate. */
-            buf[i] = NULL;
-        }
-    }
-    free(buf);                  /* Release for Memory */
-
-    return;
 }
