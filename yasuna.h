@@ -22,7 +22,7 @@
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
 
 //#define MONO      /* パスを組み込みたくないときに使うといいかもネ */
-#define BUFLEN      256
+#define BUFLEN      192
 
 typedef struct YASUNA_T {
     int lflag;      /* List flag(--list). */
