@@ -16,13 +16,13 @@
 #define PROGNAME    "yasuna"
 #define VERSION     0
 #define PATCHLEVEL  3
-#define SUBLEVEL    3
+#define SUBLEVEL    4
 
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
 
 //#define MONO      /* パスを組み込みたくないときに使うといいかもネ */
-#define BUFLEN      512
+#define BUFLEN      256
 
 typedef struct YASUNA_T {
     int lflag;      /* List flag(--list). */
