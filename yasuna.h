@@ -16,7 +16,7 @@
 #define PROGNAME    "yasuna"
 #define VERSION     0
 #define PATCHLEVEL  3
-#define SUBLEVEL    4
+#define SUBLEVEL    5
 
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"

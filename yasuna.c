@@ -103,7 +103,7 @@ int main(int argc, char* argv[])
 
     if (yasuna.lflag == 1) {                        /* Print all quotes list and exit */
         for (i = 0; i <= lines; i++) {
-        fprintf(stdout, "%d %s", i, buf[i]);
+        fprintf(stdout, "%d %s\n", i, buf[i]);
         }
         return 0;
     }
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
         if (lines >= yasuna.narg)   point = yasuna.narg;
     }
 
-    fprintf(stdout, "%s", buf[point]);              /* Print of string */
+    fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
 
     fclose(fp);                                     /* Close a file */
     free2d(buf, (lines + 1));                       /* Memory release */
@@ -191,6 +191,14 @@ int read_file(int lines, char** buf, FILE* fp)
 
     rewind(fp);     /* Seek file-strem to the top */
     while (fgets(buf[i], sizeof(char) * BUFLEN, fp) != NULL) {
+        if (buf[i][strlen(buf[i]) - 1] == '\n') {   /* Checking string length */
+            /* 0: string < BUFLEN */
+            buf[i][strlen(buf[i]) - 1] = '\0';
+        } else {
+            /* 1: string > BUFLEN */
+            fprintf(stderr, "%s: capacity of buffer is not enough: BUFLEN=%d\n", PROGNAME, BUFLEN);
+            exit(5);
+        }
         i++;
     }
 
