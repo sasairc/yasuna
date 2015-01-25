@@ -1,7 +1,7 @@
 yasuna
 ======
 
-![default](http://36.media.tumblr.com/6a85c9b9713ad1b578728e2df964e955/tumblr_nihzltGEMm1u2jamko1_1280.png)
+![default](http://40.media.tumblr.com/31588dda0481de91e5f6ba133dcdbc31/tumblr_niqnxibarS1u2jamko1_1280.png)
 
 折部やすなちゃんの名言をランダムで表示します。  
 ※ 参考もといパクリ元　[844196/Renge](https://github.com/844196/Renge)
