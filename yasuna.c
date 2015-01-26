@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
         if (lines >= yasuna.narg)   point = yasuna.narg;
     }
 
-    fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
+    fprintf(stdout, "%s\n", buf[point]);            /* Print of string */
 
     fclose(fp);                                     /* Close a file */
     free2d(buf, (lines + 1));                       /* Memory release */
@@ -220,7 +220,7 @@ int create_rand(int lines)
         lo_timeval.tv_usec * getpid()
     ));
 
-    ret = (int)(rand()%(lines-0+1));    /* Create pseudo-random number */
+    ret = (int)(rand()%(lines+1));  /* Create pseudo-random number */
 
     return ret;
 }
