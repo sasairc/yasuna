@@ -18,8 +18,8 @@ char** malloc2d(int x, int y)
 
     buf = (char**) malloc(sizeof(char*) * y);       /* Allocate array for Y coordinate */
     if (buf == NULL) {
-        fprintf(stderr, "malloc2d(): malloc to (char**)var failure.\n");
-        exit(2);
+        fprintf(stderr, "%s: malloc2d(): malloc to (char**)var failure.\n", PROGNAME);
+        exit(5);
     }
     for (i = 0; i < y; i++) {
         buf[i] = (char*)malloc(sizeof(char) * x);   /* Allocate array for X coordinate */
