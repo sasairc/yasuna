@@ -97,11 +97,10 @@ int main(int argc, char* argv[])
         if (i == '\n')  lines++;
     }
 
-    buf = (char**)malloc2d(BUFLEN, (lines + 1));    /* Allocate memory */
-    init2d(buf, BUFLEN, lines);                     /* Initialize array */
-    read_file(lines, buf, fp);                      /* Reading file to array */
+    buf = (char**)malloc(sizeof(char*) * (lines + 1));  /* Allocate array for Y coordinate */
+    read_file(lines, buf, fp);                          /* Reading file to array */
 
-    if (yasuna.lflag == 1) {                        /* Print all quotes list and exit */
+    if (yasuna.lflag == 1) {                            /* Print all quotes list and exit */
         for (i = 0; i <= lines; i++) {
         fprintf(stdout, "%d %s\n", i, buf[i]);
         }
@@ -109,15 +108,15 @@ int main(int argc, char* argv[])
     }
 
     if (yasuna.nflag == 0) {
-        point = create_rand(lines);                 /* Get pseudo-random nuber */
+        point = create_rand(lines);                     /* Get pseudo-random nuber */
     } else {
         if (lines >= yasuna.narg)   point = yasuna.narg;
     }
 
-    fprintf(stdout, "%s\n", buf[point]);            /* Print of string */
+    fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
 
-    fclose(fp);                                     /* Close a file */
-    free2d(buf, (lines + 1));                       /* Memory release */
+    fclose(fp);                                         /* Close a file */
+    free2d(buf, (lines + 1));                           /* Memory release */
 
     return 0;
 
@@ -139,7 +138,7 @@ Mandatory arguments to long options are mandatory for short options too.\n\
   -v,  --version             output version infomation and exit\n\
 \n\
 Report %s bugs to %s <%s>\n\
-", PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL, \
+", PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL,
 PROGNAME, PROGNAME, AUTHOR, MAIL_TO);
 
     exit(0);
@@ -188,15 +187,24 @@ int check_file_type(char* filename)
 int read_file(int lines, char** buf, FILE* fp)
 {
     int i = 0;
+    char str[BUFLEN] = {"\0"};
 
     rewind(fp);     /* Seek file-strem to the top */
-    while (fgets(buf[i], sizeof(char) * BUFLEN, fp) != NULL) {
-        if (buf[i][strlen(buf[i]) - 1] == '\n') {   /* Checking string length */
+
+    while (fgets(str, sizeof(char) * BUFLEN, fp) != NULL) {
+        if (str[strlen(str) - 1] == '\n') { /* Checking string length */
             /* 0: string < BUFLEN */
-            buf[i][strlen(buf[i]) - 1] = '\0';
+            str[strlen(str) - 1] = '\0';
+            buf[i] = (char*)malloc(         /* Allocate array for X coordinate */
+                    (strlen(str) + 1) * sizeof(char)
+            );
+            strcpy(buf[i], str);            /* Copy, str to buffer */
         } else {
             /* 1: string > BUFLEN */
             fprintf(stderr, "%s: capacity of buffer is not enough: BUFLEN=%d\n", PROGNAME, BUFLEN);
+            fclose(fp);                     /* Close a file */
+            free2d(buf, (i + 1));           /* Memory release */
+
             exit(5);
         }
         i++;
@@ -220,7 +228,7 @@ int create_rand(int lines)
         lo_timeval.tv_usec * getpid()
     ));
 
-    ret = (int)(rand()%(lines+1));  /* Create pseudo-random number */
+    ret = (int)(rand()%(lines+1));      /* Create pseudo-random number */
 
     return ret;
 }
