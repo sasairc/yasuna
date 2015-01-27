@@ -16,13 +16,13 @@
 #define PROGNAME    "yasuna"
 #define VERSION     0
 #define PATCHLEVEL  3
-#define SUBLEVEL    5
+#define SUBLEVEL    6
 
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
 
-//#define MONO      /* パスを組み込みたくないときに使うといいかもネ */
-#define BUFLEN      192
+//#define MONO        /* パスを組み込みたくないときに使うといいかもネ */
+#define BUFLEN      512
 
 typedef struct YASUNA_T {
     int lflag;      /* List flag(--list). */
@@ -38,8 +38,8 @@ extern int read_file(int lines, char** buf, FILE* fp);
 extern int create_rand(int lines);
 
 /* This functions is required memory.c */
-extern char** malloc2d(int x, int y);
-extern int init2d(char** buf, int x, int y);
+//extern char** malloc2d(int x, int y);
+//extern int init2d(char** buf, int x, int y);
 extern void free2d(char** buf, int y);
 
 #endif
