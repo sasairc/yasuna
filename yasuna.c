@@ -14,16 +14,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
-#include <time.h>
+#include <sys/time.h>
+#include <sys/stat.h>
 
 int main(int argc, char* argv[])
 {
     int i = 0;
     int res, index;     /* Use getopt_long() */
     int lines, point;   /* Text lines and Lines pointer */
-    char** buf = NULL;  /* Buffer */
+    char* path = NULL;  /* Dictionary file path */
+    char** buf = NULL;  /* String buffer */
     FILE* fp = NULL;
-    yasuna_t yasuna = { /* flag and args */
+    struct stat st;     /* File status */
+    yasuna_t yasuna = { /* Flag and args */
         0, 0, 0, 0 ,NULL,
     };
 
@@ -61,32 +64,67 @@ int main(int argc, char* argv[])
         }
     }
 
-    /* Open after checking file type */
     if (yasuna.dflag == 1) {
-        if (check_file_type(yasuna.darg) == 0) {
-            fp = fopen(yasuna.darg, "r");       /* Open additional dictionary */
-        } else {
+        path = (char*)malloc(sizeof(char) * strlen(yasuna.darg));
+        if (path == NULL) {
+            fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
             return 1;
         }
+        strcpy(path, yasuna.darg);
     } else {
 #ifdef  MONO
-        if (check_file_type(DICNAME) == 0) {
-            fp = fopen(DICNAME, "r");
-        } else {
-            return 2;
+        path = (char*)malloc(sizeof(char) * strlen(DICNAME));
+        if (path == NULL) {
+            fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
+            return 1;
         }
+        strcpy(path, DICNAME);
 #else
-        if (check_file_type(DICPATH) == 0) {
-            fp = fopen(DICPATH, "r");   /* Open standard dictionary */
-        } else {
-            return 3;
+        path = (char*)malloc(sizeof(char) * strlen(DICPATH));
+        if (path == NULL) {
+            fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
+            return 1;
         }
+        strcpy(path, DICPATH);
 #endif
+    }
+
+    /* Checking type of file or directory */
+    if (stat(path, &st) != 0) {
+        fprintf(stderr, "%s: %s: no such file or directory\n", PROGNAME, path);
+        free(path);
+
+        return 2;
+    }
+    if ((st.st_mode & S_IFMT) == S_IFDIR) {
+        fprintf(stderr, "%s: %s: is a directory\n", PROGNAME, path);
+        free(path);
+
+        return 3;
+    }
+
+    /* Checking file permission */
+    if (access(path, R_OK) != 0) {
+        fprintf(stderr, "%s: %s: permission denied\n", PROGNAME, path);
+        free(path);
+
+        return 4;
+    }
+    /* Open after checking file type */
+    if (check_file_type(path) == 0) {
+        fp = fopen(path, "r");
+    } else {
+        fprintf(stderr, "%s: %s: unknown file type\n", PROGNAME, path);
+        free(path);
+        
+        return 5;
     }
 
     if (fp == NULL) {
         fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
-        return 4;
+        free(path);
+
+        return 6;
     }
 
     lines = -1;
@@ -98,12 +136,29 @@ int main(int argc, char* argv[])
     }
 
     buf = (char**)malloc(sizeof(char*) * (lines + 1));  /* Allocate array for Y coordinate */
-    read_file(lines, buf, fp);                          /* Reading file to array */
 
-    if (yasuna.lflag == 1) {                            /* Print all quotes list and exit */
+    /* Reading file to array */
+    if (read_file(lines, buf, fp) != 0) {
+        fprintf(
+                stderr,
+                "%s: capacity of buffer is not enough: BUFLEN=%d\n",
+                PROGNAME, BUFLEN
+        );
+        fclose(fp);
+        free(path);
+        free2d(buf, (i + 1));
+
+        return 7;
+    }
+
+    /* Print all quotes list and exit */
+    if (yasuna.lflag == 1) {
         for (i = 0; i <= lines; i++) {
         fprintf(stdout, "%d %s\n", i, buf[i]);
         }
+        free(path);
+        free2d(buf, (lines + 1));
+
         return 0;
     }
 
@@ -116,7 +171,8 @@ int main(int argc, char* argv[])
     fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
 
     fclose(fp);                                         /* Close a file */
-    free2d(buf, (lines + 1));                           /* Memory release */
+    free(path);                                         /* Memory release (filepath) */
+    free2d(buf, (lines + 1));                           /* Memory release (buffer) */
 
     return 0;
 
@@ -201,11 +257,7 @@ int read_file(int lines, char** buf, FILE* fp)
             strcpy(buf[i], str);            /* Copy, str to buffer */
         } else {
             /* 1: string > BUFLEN */
-            fprintf(stderr, "%s: capacity of buffer is not enough: BUFLEN=%d\n", PROGNAME, BUFLEN);
-            fclose(fp);                     /* Close a file */
-            free2d(buf, (i + 1));           /* Memory release */
-
-            exit(5);
+            return -1;
         }
         i++;
     }
