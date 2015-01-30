@@ -6,7 +6,7 @@ DICNME	:= yasuna-quotes
 MAKE	:= make
 CC		:= cc
 RM		:= rm
-CFLAGS	:= -g
+CFLAGS	:= -O2 -g -Wall
 OBJ		= *.o
 
 all: $(TARGET)

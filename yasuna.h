@@ -16,7 +16,7 @@
 #define PROGNAME    "yasuna"
 #define VERSION     0
 #define PATCHLEVEL  3
-#define SUBLEVEL    6
+#define SUBLEVEL    7
 
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
@@ -33,6 +33,7 @@ typedef struct YASUNA_T {
 } yasuna_t;
 
 /* This functions is required yasuna.c */
+extern int print_usage();
 extern int check_file_type(char* filename);
 extern int read_file(int lines, char** buf, FILE* fp);
 extern int create_rand(int lines);
