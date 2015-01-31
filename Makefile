@@ -2,7 +2,7 @@ TARGET	:= yasuna
 PREFIX	:= /usr/local
 BINDIR	:= $(PREFIX)/bin
 DICDIR	:= $(PREFIX)/share/yasuna
-DICNME	:= yasuna-quotes
+DICNME	:= old-yasuna-quotes
 MAKE	:= make
 CC		:= cc
 RM		:= rm
@@ -31,4 +31,4 @@ install:
 	install -pd $(BINDIR)
 	install -pd $(DICDIR)
 	install -pm 755 $(TARGET) $(BINDIR)/
-	install -pm 644 $(DICNME) $(DICDIR)/
+	install -pm 644 ./quotes/$(DICNME) $(DICDIR)/
