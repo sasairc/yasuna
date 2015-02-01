@@ -16,6 +16,7 @@
 #include <getopt.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <sys/resource.h>
 
 int main(int argc, char* argv[])
 {
@@ -174,8 +175,17 @@ int main(int argc, char* argv[])
     free(path);                                         /* Memory release (filepath) */
     free2d(buf, (lines + 1));                           /* Memory release (buffer) */
 
-    return 0;
+#ifdef  DEBUG
+    struct rusage usage;                                /* Struct on resource usage */
 
+    if (getrusage(RUSAGE_SELF, &usage) != 0) {          /* Get resource usage */
+        fprintf(stderr, "[DEBUG]: getrusage() failed.\n");
+        return 8;
+    }
+    fprintf(stderr, "[DEBUG]: Max RRS = %ld KB\n", usage.ru_maxrss);
+#endif
+
+    return 0;
 }
 
 int print_usage(void)

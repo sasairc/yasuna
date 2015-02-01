@@ -22,6 +22,7 @@
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
 
 //#define MONO        /* パスを組み込みたくないときに使うといいかもネ */
+//#define DEBUG
 #define BUFLEN      512
 
 typedef struct YASUNA_T {
