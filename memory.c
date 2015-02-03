@@ -1,6 +1,8 @@
 /*
  * yasuna - Yasuna Oribe will talk.
  *
+ * memory.c
+ *
  * Copyright (c) 2015 sasairc
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -8,7 +10,7 @@
  * for more details.
  */
 
-#include "./yasuna.h"
+#include "./memory.h"
 #include <stdlib.h>
 
 char** malloc2d(int x, int y)
@@ -18,8 +20,7 @@ char** malloc2d(int x, int y)
 
     buf = (char**) malloc(sizeof(char*) * y);       /* Allocate array for Y coordinate */
     if (buf == NULL) {
-        fprintf(stderr, "%s: malloc2d(): malloc to (char**)var failure.\n", PROGNAME);
-        exit(7);
+        return NULL;
     }
     for (i = 0; i < y; i++) {
         buf[i] = (char*)malloc(sizeof(char) * x);   /* Allocate array for X coordinate */

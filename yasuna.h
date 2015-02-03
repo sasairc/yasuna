@@ -1,6 +1,8 @@
 /*
  * yasuna - Yasuna Oribe will talk.
  *
+ * yasuna.h
+ * 
  * Copyright (c) 2015 sasairc
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -38,10 +40,5 @@ extern int print_usage();
 extern int check_file_type(char* filename);
 extern int read_file(int lines, char** buf, FILE* fp);
 extern int create_rand(int lines);
-
-/* This functions is required memory.c */
-//extern char** malloc2d(int x, int y);
-//extern int init2d(char** buf, int x, int y);
-extern void free2d(char** buf, int y);
 
 #endif

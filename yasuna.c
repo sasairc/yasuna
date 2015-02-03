@@ -1,6 +1,8 @@
 /*
  * yasuna - Yasuna Oribe will talk.
  *
+ * yasuna.c
+ *
  * Copyright (c) 2015 sasairc
  * This work is free. You can redistribute it and/or modify it under the
  * terms of the Do What The Fuck You Want To Public License, Version 2,
@@ -9,6 +11,7 @@
  */
 
 #include "./yasuna.h"
+#include "./memory.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
