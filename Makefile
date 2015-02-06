@@ -29,8 +29,14 @@ clean:
 	-$(RM) -f $(OBJ)
 	-$(RM) -f $(TARGET)
 
-install:
+install-bin:
 	install -pd $(BINDIR)
 	install -pd $(DICDIR)
 	install -pm 755 $(TARGET) $(BINDIR)/
 	install -pm 644 ./quotes/$(DICNME) $(DICDIR)/
+
+install-man:
+	install -pd $(PREFIX)/share/man/man6
+	install -pm 644 yasuna.6 $(PREFIX)/share/man/man6
+
+install: install-bin install-man
