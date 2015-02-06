@@ -11,15 +11,17 @@ OBJ		= *.o
 
 all: $(TARGET)
 
-DEFCFLAGS = -DPREFIX=\"$(PREFIX)\" \
+DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"  \
 			-DDICNAME=\"$(DICNME)\" \
-		-DDICPATH=\"$(DICDIR)/$(DICNME)\"
+			-DDICPATH=\"$(DICDIR)/\"
 
-yasuna: yasuna.c
+yasuna: yasuna.c file.c memory.c
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c yasuna.c -o yasuna.o
+	$(CC) $(DEFCFLAGS) $(CFLAGS) -c file.c -o file.o
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c memory.c -o memory.o
 	$(CC) $(DEFCFLAGS) $(CFLAGS) \
 		yasuna.o \
+		file.o   \
 		memory.o \
 		-o $(TARGET)
 

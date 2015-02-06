@@ -11,6 +11,7 @@
  */
 
 #include "./yasuna.h"
+#include "./file.h"
 #include "./memory.h"
 #include <stdio.h>
 #include <string.h>
@@ -35,11 +36,11 @@ int main(int argc, char* argv[])
     };
 
     struct option opts[] = {
-        {"dict", required_argument, NULL,   0},
-        {"number", required_argument, NULL, 'n'},
-        {"list", no_argument, NULL, 'l'},
-        {"help", no_argument, NULL, 'h'},
-        {"version", no_argument, NULL, 'v'},
+        {"dict",    required_argument, NULL,  0 },
+        {"number",  required_argument, NULL, 'n'},
+        {"list",    no_argument,       NULL, 'l'},
+        {"help",    no_argument,       NULL, 'h'},
+        {"version", no_argument,       NULL, 'v'},
         {0, 0, 0, 0}
     };
 
@@ -72,6 +73,7 @@ int main(int argc, char* argv[])
         path = (char*)malloc(sizeof(char) * strlen(yasuna.darg));
         if (path == NULL) {
             fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
+
             return 1;
         }
         strcpy(path, yasuna.darg);
@@ -80,16 +82,21 @@ int main(int argc, char* argv[])
         path = (char*)malloc(sizeof(char) * strlen(DICNAME));
         if (path == NULL) {
             fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
+
             return 1;
         }
         strcpy(path, DICNAME);
 #else
-        path = (char*)malloc(sizeof(char) * strlen(DICPATH));
+        path = (char*)malloc(
+                sizeof(char) * ((strlen(DICPATH) + strlen(DICNAME)) + 1)
+        );
         if (path == NULL) {
             fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
+
             return 1;
         }
         strcpy(path, DICPATH);
+        strcat(path, DICNAME);
 #endif
     }
 
@@ -131,18 +138,12 @@ int main(int argc, char* argv[])
         return 6;
     }
 
-    lines = -1;
     point = 0;
-
-    /* Count line for text-file */
-    while ((i = getc(fp)) != EOF) {
-        if (i == '\n')  lines++;
-    }
-
+    lines = count_file_lines(fp);                       /* Count line for text-file */
     buf = (char**)malloc(sizeof(char*) * (lines + 1));  /* Allocate array for Y coordinate */
 
     /* Reading file to array */
-    if (read_file(lines, buf, fp) != 0) {
+    if (read_file(lines, BUFLEN, buf, fp) != 0) {
         fprintf(
                 stderr,
                 "%s: capacity of buffer is not enough: BUFLEN=%d\n",
@@ -150,7 +151,7 @@ int main(int argc, char* argv[])
         );
         fclose(fp);
         free(path);
-        free2d(buf, (i + 1));
+        free2d(buf, (lines + 1));
 
         return 7;
     }
@@ -211,71 +212,6 @@ Report %s bugs to %s <%s>\n\
 PROGNAME, PROGNAME, AUTHOR, MAIL_TO);
 
     exit(0);
-}
-
-int check_file_type(char* filename)
-{
-    int i, c;
-    FILE* fp = NULL;
-
-    int rtf[5] = {0x7B, 0x5C, 0x72, 0x74, 0x66};    /* {\rtf is Ritch-test format's header */
-
-    fp = fopen(filename, "rb");
-    if (fp == NULL) {
-        return -1;
-    }
-
-    while (0 == feof(fp)) {
-        c = fgetc(fp);
-        if (c == EOF) {             /* Plain text */
-            break;
-        } else if (c <= 8) {        /* Binary or Unknown format */
-            fclose(fp);
-            return 1;
-        } else if (c == 0x7B) {     /* Ritch text format */
-            rewind(fp);
-            for (i = 0; i < 5; i++) {
-                c = fgetc(fp);
-                if (c == rtf[i]) {
-                    continue;
-                } else {
-                    fclose(fp);
-                    return 0;
-                }
-            }
-            fclose(fp);
-
-            return 2;
-        }
-    }
-    fclose(fp);
-
-    return 0;
-}   
-
-int read_file(int lines, char** buf, FILE* fp)
-{
-    int i = 0;
-    char str[BUFLEN] = {"\0"};
-
-    rewind(fp);     /* Seek file-strem to the top */
-
-    while (fgets(str, sizeof(char) * BUFLEN, fp) != NULL) {
-        if (str[strlen(str) - 1] == '\n') { /* Checking string length */
-            /* 0: string < BUFLEN */
-            str[strlen(str) - 1] = '\0';
-            buf[i] = (char*)malloc(         /* Allocate array for X coordinate */
-                    (strlen(str) + 1) * sizeof(char)
-            );
-            strcpy(buf[i], str);            /* Copy, str to buffer */
-        } else {
-            /* 1: string > BUFLEN */
-            return -1;
-        }
-        i++;
-    }
-
-    return 0;
 }
 
 int create_rand(int lines)
