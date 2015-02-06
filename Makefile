@@ -8,7 +8,6 @@ CC		:= cc
 RM		:= rm
 CFLAGS	:= -O2 -g -Wall
 OBJ		= *.o
-UNAME	= $(shell uname)
 
 all: $(TARGET)
 
@@ -40,8 +39,4 @@ install-man:
 	install -pd $(PREFIX)/share/man/man6
 	install -pm 644 yasuna.6 $(PREFIX)/share/man/man6
 
-ifneq ($(UNAME),"Darwin")
-install: install-bin install-man
-else
 install: install-bin
-endif
