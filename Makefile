@@ -37,8 +37,8 @@ install-bin:
 	install -pm 644 ./quotes/$(DICNME) $(DICDIR)/
 
 install-man:
-		install -pd $(PREFIX)/share/man/man6
-		install -pm 644 yasuna.6 $(PREFIX)/share/man/man6
+	install -pd $(PREFIX)/share/man/man6
+	install -pm 644 yasuna.6 $(PREFIX)/share/man/man6
 
 ifneq ($(UNAME),"Darwin")
 install: install-bin install-man
