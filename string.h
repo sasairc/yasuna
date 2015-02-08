@@ -13,6 +13,7 @@
 #ifndef YSTRING_H
 #define YSTRING_H
 
+/* This functions is required string.c */
 extern int strrep(char* src, char* haystack, char* needle);
 extern char* strlion(int argnum, ...);
 
