@@ -5,7 +5,7 @@ DICDIR	:= $(PREFIX)/share/yasuna
 DICNME	:= yasuna-quotes
 MAKE	:= make
 CC		:= cc
-RM		:= rm
+RM	 	:= rm
 CFLAGS	:= -O2 -g -Wall
 OBJ		= *.o
 
@@ -31,12 +31,13 @@ clean:
 
 install-bin:
 	install -pd $(BINDIR)
-	install -pd $(DICDIR)
 	install -pm 755 $(TARGET) $(BINDIR)/
+install-quotes:
 	install -pm 644 ./quotes/$(DICNME) $(DICDIR)/
+	install -pd $(DICDIR)
 
 install-man:
 	install -pd $(PREFIX)/share/man/man6
 	install -pm 644 yasuna.6 $(PREFIX)/share/man/man6
 
-install: install-bin
+install: install-bin install-quotes
