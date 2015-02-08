@@ -12,6 +12,7 @@
 
 #include "./yasuna.h"
 #include "./file.h"
+#include "./string.h"
 #include "./memory.h"
 #include <stdio.h>
 #include <string.h>
@@ -70,33 +71,27 @@ int main(int argc, char* argv[])
     }
 
     if (yasuna.dflag == 1) {
-        path = (char*)malloc(sizeof(char) * strlen(yasuna.darg));
+        path = strlion(1, yasuna.darg);
         if (path == NULL) {
             fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
 
             return 1;
         }
-        strcpy(path, yasuna.darg);
     } else {
 #ifdef  MONO
-        path = (char*)malloc(sizeof(char) * strlen(DICNAME));
+        path = strlion(1, DICNAME);
         if (path == NULL) {
             fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
 
             return 1;
         }
-        strcpy(path, DICNAME);
 #else
-        path = (char*)malloc(
-                sizeof(char) * ((strlen(DICPATH) + strlen(DICNAME)) + 1)
-        );
+        path = strlion(2, DICPATH, DICNAME);
         if (path == NULL) {
             fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
 
             return 1;
         }
-        strcpy(path, DICPATH);
-        strcat(path, DICNAME);
 #endif
     }
 

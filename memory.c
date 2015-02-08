@@ -11,6 +11,7 @@
  */
 
 #include "./memory.h"
+#include <stdarg.h>
 #include <stdlib.h>
 
 char** malloc2d(int x, int y)
