@@ -71,28 +71,18 @@ int main(int argc, char* argv[])
     }
 
     if (yasuna.dflag == 1) {
-        path = strlion(1, yasuna.darg);
-        if (path == NULL) {
-            fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
-
-            return 1;
-        }
+        path = strlion(1, yasuna.darg); 
     } else {
 #ifdef  MONO
-        path = strlion(1, DICNAME);
-        if (path == NULL) {
-            fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
-
-            return 1;
-        }
+        path = strlion(1, DICNAME);             /* With MONO build */
 #else
         path = strlion(2, DICPATH, DICNAME);
-        if (path == NULL) {
-            fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
-
-            return 1;
-        }
 #endif
+    }
+    if (path == NULL) {
+        fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
+
+        return 1;
     }
 
     /* Checking type of file or directory */
