@@ -21,7 +21,6 @@
 #include <getopt.h>
 #include <sys/time.h>
 #include <sys/stat.h>
-#include <sys/resource.h>
 
 int main(int argc, char* argv[])
 {
@@ -106,6 +105,7 @@ int main(int argc, char* argv[])
 
         return 4;
     }
+
     /* Open after checking file type */
     if (check_file_type(path) == 0) {
         fp = fopen(path, "r");
@@ -115,7 +115,6 @@ int main(int argc, char* argv[])
         
         return 5;
     }
-
     if (fp == NULL) {
         fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
         free(path);
@@ -157,22 +156,11 @@ int main(int argc, char* argv[])
     } else {
         if (lines >= yasuna.narg)   point = yasuna.narg;
     }
-
     fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
 
     fclose(fp);                                         /* Close a file */
     free(path);                                         /* Memory release (filepath) */
     free2d(buf, (lines + 1));                           /* Memory release (buffer) */
-
-#ifdef  DEBUG
-    struct rusage usage;                                /* Struct on resource usage */
-
-    if (getrusage(RUSAGE_SELF, &usage) != 0) {          /* Get resource usage */
-        fprintf(stderr, "[DEBUG]: getrusage() failed.\n");
-        return 8;
-    }
-    fprintf(stderr, "[DEBUG]: Max RRS = %ld KB\n", usage.ru_maxrss);
-#endif
 
     return 0;
 }
