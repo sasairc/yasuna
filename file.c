@@ -18,10 +18,10 @@
 
 int check_file_type(char* filename)
 {
-    int i, c;
-    FILE* fp = NULL;
+    int     i, c;
+    FILE*   fp = NULL;
 
-    int rtf[5] = {0x7B, 0x5C, 0x72, 0x74, 0x66};    /* {\rtf is Ritch-test format's header */
+    int     rtf[5] = {0x7B, 0x5C, 0x72, 0x74, 0x66};    /* {\rtf is Ritch-test format's header */
 
     fp = fopen(filename, "rb");
     if (fp == NULL) {
@@ -72,8 +72,8 @@ int count_file_lines(FILE* fp)
 
 int read_file(int lines, size_t length, char** buf, FILE* fp)
 {
-    int i = 0;
-    char* str = (char*)malloc(sizeof(char) * length);   /* Allocate buffer */
+    int     i = 0;
+    char*   str = (char*)malloc(sizeof(char) * length); /* Allocate buffer */
 
     while (fgets(str, sizeof(char) * length, fp) != NULL) {
         if (str[strlen(str) - 1] == '\n') { /* Checking string length */

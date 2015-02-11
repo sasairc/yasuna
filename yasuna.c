@@ -24,14 +24,14 @@
 
 int main(int argc, char* argv[])
 {
-    int i = 0;
-    int res, index;     /* Use getopt_long() */
-    int lines, point;   /* Text lines and Lines pointer */
-    char* path = NULL;  /* Dictionary file path */
-    char** buf = NULL;  /* String buffer */
-    FILE* fp = NULL;
-    struct stat st;     /* File status */
-    yasuna_t yasuna = { /* Flag and args */
+    int     res,   index;   /* Use getopt_long() */
+    int     lines, point;   /* Text lines and Lines pointer */
+    int     i       = 0;
+    char*   path    = NULL; /* Dictionary file path */
+    char**  buf     = NULL; /* String buffer */
+    FILE*   fp      = NULL; /* quotes file */
+    struct  stat st;        /* File status */
+    yasuna_t yasuna = {     /* Flag and args */
         0, 0, 0, 0 ,NULL,
     };
 

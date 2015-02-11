@@ -16,8 +16,8 @@
 
 char** malloc2d(int x, int y)
 {
-    char** buf;
-    int i;
+    char**  buf;
+    int     i;
 
     buf = (char**) malloc(sizeof(char*) * y);       /* Allocate array for Y coordinate */
     if (buf == NULL) {
