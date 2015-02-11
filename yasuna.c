@@ -127,7 +127,8 @@ int main(int argc, char* argv[])
     buf = (char**)malloc(sizeof(char*) * (lines + 1));  /* Allocate array for Y coordinate */
 
     /* Reading file to array */
-    if (read_file(lines, BUFLEN, buf, fp) != 0) {
+    rewind(fp);                                         /* Seek file-strem to the top */
+    if (read_file(lines, BUFLEN, buf, fp) == 0) {
         fprintf(
                 stderr,
                 "%s: capacity of buffer is not enough: BUFLEN=%d\n",

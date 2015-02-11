@@ -75,7 +75,6 @@ int read_file(int lines, size_t length, char** buf, FILE* fp)
     int i = 0;
     char* str = (char*)malloc(sizeof(char) * length);   /* Allocate buffer */
 
-    rewind(fp);                             /* Seek file-strem to the top */
     while (fgets(str, sizeof(char) * length, fp) != NULL) {
         if (str[strlen(str) - 1] == '\n') { /* Checking string length */
             /* 0: string < BUFLEN */
@@ -87,11 +86,11 @@ int read_file(int lines, size_t length, char** buf, FILE* fp)
         } else {
             /* 1: string > BUFLEN */
             free(str);
-            return -1;
+            return 0;
         }
         i++;
     }
     free(str);
 
-    return 0;
+    return i;
 }
