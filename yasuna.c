@@ -146,6 +146,7 @@ int main(int argc, char* argv[])
         for (i = 0; i <= lines; i++) {
         fprintf(stdout, "%d %s\n", i, buf[i]);
         }
+        fclose(fp);
         free(path);
         free2d(buf, (lines + 1));
 
