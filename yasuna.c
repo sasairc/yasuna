@@ -25,7 +25,8 @@
 int main(int argc, char* argv[])
 {
     int     res,   index;   /* Use getopt_long() */
-    int     lines, point;   /* Text lines and Lines pointer */
+    int     lines;          /* Text lines */
+    int     point   = 0;    /* Lines pointer */
     int     i       = 0;
     char*   path    = NULL; /* Dictionary file path */
     char**  buf     = NULL; /* String buffer */
@@ -122,7 +123,6 @@ int main(int argc, char* argv[])
         return 6;
     }
 
-    point = 0;
     lines = count_file_lines(fp);                       /* Count line for text-file */
     buf = (char**)malloc(sizeof(char*) * (lines + 1));  /* Allocate array for Y coordinate */
 
@@ -139,6 +139,8 @@ int main(int argc, char* argv[])
         free2d(buf, (lines + 1));
 
         return 7;
+    } else {
+        fclose(fp);     /* Close file */
     }
 
     /* Print all quotes list and exit */
@@ -146,7 +148,6 @@ int main(int argc, char* argv[])
         for (i = 0; i <= lines; i++) {
         fprintf(stdout, "%d %s\n", i, buf[i]);
         }
-        fclose(fp);
         free(path);
         free2d(buf, (lines + 1));
 
@@ -160,7 +161,6 @@ int main(int argc, char* argv[])
     }
     fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
 
-    fclose(fp);                                         /* Close a file */
     free(path);                                         /* Memory release (filepath) */
     free2d(buf, (lines + 1));                           /* Memory release (buffer) */
 
