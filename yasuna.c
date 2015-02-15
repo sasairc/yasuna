@@ -88,13 +88,13 @@ int main(int argc, char* argv[])
     /* Checking type of file or directory */
     if (stat(path, &st) != 0) {
         fprintf(stderr, "%s: %s: no such file or directory\n", PROGNAME, path);
-        free(path);
+        release(NULL, path, 0, NULL);
 
         return 2;
     }
     if ((st.st_mode & S_IFMT) == S_IFDIR) {
         fprintf(stderr, "%s: %s: is a directory\n", PROGNAME, path);
-        free(path);
+        release(NULL, path, 0, NULL);
 
         return 3;
     }
@@ -102,7 +102,7 @@ int main(int argc, char* argv[])
     /* Checking file permission */
     if (access(path, R_OK) != 0) {
         fprintf(stderr, "%s: %s: permission denied\n", PROGNAME, path);
-        free(path);
+        release(NULL, path, 0, NULL);
 
         return 4;
     }
@@ -112,19 +112,19 @@ int main(int argc, char* argv[])
         fp = fopen(path, "r");
     } else {
         fprintf(stderr, "%s: %s: unknown file type\n", PROGNAME, path);
-        free(path);
+        release(NULL, path, 0, NULL);
         
         return 5;
     }
     if (fp == NULL) {
         fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
-        free(path);
+        release(NULL, path, 0, NULL);
 
         return 6;
     }
 
     lines = count_file_lines(fp);                       /* Count line for text-file */
-    buf = (char**)malloc(sizeof(char*) * (lines + 1));  /* Allocate array for Y coordinate */
+    buf = (char**)malloc(sizeof(char*) * lines);        /* Allocate array for Y coordinate */
 
     /* Reading file to array */
     rewind(fp);                                         /* Seek file-strem to the top */
@@ -134,37 +134,44 @@ int main(int argc, char* argv[])
                 "%s: capacity of buffer is not enough: BUFLEN=%d\n",
                 PROGNAME, BUFLEN
         );
-        fclose(fp);
-        free(path);
-        free2d(buf, (lines + 1));
+        release(fp, path, lines, buf);
 
         return 7;
-    } else {
-        fclose(fp);     /* Close file */
     }
-
+    
     /* Print all quotes list and exit */
     if (yasuna.lflag == 1) {
-        for (i = 0; i <= lines; i++) {
+        for (i = 0; i < lines; i++) {
         fprintf(stdout, "%d %s\n", i, buf[i]);
         }
-        free(path);
-        free2d(buf, (lines + 1));
+        release(fp, path, lines, buf);
 
         return 0;
     }
-
     if (yasuna.nflag == 0) {
         point = create_rand(lines);                     /* Get pseudo-random nuber */
     } else {
         if (lines >= yasuna.narg)   point = yasuna.narg;
     }
-    fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
 
-    free(path);                                         /* Memory release (filepath) */
-    free2d(buf, (lines + 1));                           /* Memory release (buffer) */
+    fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
+    release(fp, path, lines, buf);                      /* release memory */
 
     return 0;
+}
+
+void release(FILE* fp, char* path, int lines, char** buf)
+{
+    if (fp != NULL) {
+        fclose(fp);
+    }
+    if (path != NULL) {
+        free(path);
+        path = NULL;
+    }
+    if (buf != NULL) {
+        free2d(buf, lines);
+    }
 }
 
 int print_usage(void)

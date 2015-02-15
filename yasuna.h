@@ -35,6 +35,7 @@ typedef struct YASUNA_T {
 } yasuna_t;
 
 /* This functions is required yasuna.c */
+extern void release(FILE* fp, char* path, int lines, char** buf);
 extern int print_usage(void);
 extern int create_rand(int lines);
 
