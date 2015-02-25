@@ -6,6 +6,7 @@ yasuna
 ![default](http://40.media.tumblr.com/07da53a3d6945721a4ca8aa4513b8277/tumblr_nizi5dPpPK1u2jamko1_1280.png)
 
 折部やすなちゃんの名言をランダムで表示します。  
+誤字脱字等あれば、issueやtwitterで報告して頂けると嬉しいです。	
 ※ 参考もといパクリ元　[844196/Renge](https://github.com/844196/Renge)
 
 
