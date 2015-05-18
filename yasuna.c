@@ -37,7 +37,7 @@ int main(int argc, char* argv[])
     };
 
     struct option opts[] = {
-        {"dict",    required_argument, NULL,  0 },
+        {"file",    required_argument, NULL, 'f'},
         {"number",  required_argument, NULL, 'n'},
         {"list",    no_argument,       NULL, 'l'},
         {"help",    no_argument,       NULL, 'h'},
@@ -46,11 +46,11 @@ int main(int argc, char* argv[])
     };
 
     /* Processing of arguments */
-    while ((res = getopt_long(argc, argv, "vhln:", opts, &index)) != -1) {
+    while ((res = getopt_long(argc, argv, "f:n:lvh", opts, &index)) != -1) {
         switch (res) {
-            case    0:
-                yasuna.darg = optarg;
-                yasuna.dflag = 1;
+            case    'f':
+                yasuna.farg = optarg;
+                yasuna.fflag = 1;
                 break;
             case    'n':
                 yasuna.narg = atoi(optarg);
@@ -70,8 +70,8 @@ int main(int argc, char* argv[])
         }
     }
 
-    if (yasuna.dflag == 1) {
-        path = strlion(1, yasuna.darg); 
+    if (yasuna.fflag == 1) {
+        path = strlion(1, yasuna.farg); 
     } else {
 #ifdef  MONO
         path = strlion(1, DICNAME);             /* With MONO build */
@@ -184,7 +184,7 @@ Mandatory arguments to long options are mandatory for short options too.\n\
 \n\
   -l,  --list                print all quotes list and exit\n\
   -n,  --number INT          specify quote number\n\
-       --dict=PATH           specfiles the dictionary\n\
+  -f,  --file=PATH           specfiles the dictionary file\n\
 \n\
   -h,  --help                display this help and exit\n\
   -v,  --version             output version infomation and exit\n\
