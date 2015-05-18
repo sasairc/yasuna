@@ -17,8 +17,8 @@
 
 #define PROGNAME    "yasuna"
 #define VERSION     0
-#define PATCHLEVEL  3
-#define SUBLEVEL    10
+#define PATCHLEVEL  4
+#define SUBLEVEL    0   
 
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
@@ -28,10 +28,10 @@
 
 typedef struct YASUNA_T {
     int lflag;      /* List flag(--list). */
-    int dflag;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
+    int fflag;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
     int nflag;      /* Number flag(--number=INT). this flag use getopt_long() */
     int narg;       /* Number arguments(--number=INT). this val use getopt_long() */
-    char* darg;     /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
+    char* farg;     /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
 } yasuna_t;
 
 /* This functions is required yasuna.c */
