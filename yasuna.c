@@ -148,8 +148,11 @@ int main(int argc, char* argv[])
 
         return 0;
     }
+
     if (yasuna.nflag == 0) {
-        point = create_rand(lines);                     /* Get pseudo-random nuber */
+        do {
+            point = create_rand(lines);                 /* Get pseudo-random nuber */
+        } while (buf[point] == NULL);
     } else {
         if (lines >= yasuna.narg)   point = yasuna.narg;
     }
