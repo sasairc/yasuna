@@ -75,7 +75,7 @@ int read_file(int lines, size_t length, char** buf, FILE* fp)
     int     i = 0;
     char*   str = (char*)malloc(sizeof(char) * length); /* Allocate buffer */
 
-    while (fgets(str, sizeof(char) * length, fp) != NULL) {
+    while (i <= lines && fgets(str, sizeof(char) * length, fp) != NULL) {
         if (str[strlen(str) - 1] == '\n') { /* Checking string length */
             /* 0: string < BUFLEN */
             str[strlen(str) - 1] = '\0';
@@ -83,7 +83,7 @@ int read_file(int lines, size_t length, char** buf, FILE* fp)
                 (strlen(str) + 1) * sizeof(char)
             );
             strcpy(buf[i], str);            /* Copy, str to buffer */
-        } else {
+        } else if (length < strlen(str)) {
             /* 1: string > BUFLEN */
             free(str);
 
