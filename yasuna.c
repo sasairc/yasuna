@@ -31,7 +31,6 @@ int main(int argc, char* argv[])
     char*   path    = NULL; /* Dictionary file path */
     char**  buf     = NULL; /* String buffer */
     FILE*   fp      = NULL; /* quotes file */
-    struct  stat st;        /* File status */
     yasuna_t yasuna = {     /* Flag and args */
         0, 0, 0, 0 ,NULL,
     };
@@ -84,43 +83,15 @@ int main(int argc, char* argv[])
 
         return 1;
     }
-
-    /* Checking type of file or directory */
-    if (stat(path, &st) != 0) {
-        fprintf(stderr, "%s: %s: no such file or directory\n", PROGNAME, path);
+    if (check_file_stat(path) != 0) {
         release(NULL, path, 0, NULL);
 
         return 2;
     }
-    if ((st.st_mode & S_IFMT) == S_IFDIR) {
-        fprintf(stderr, "%s: %s: is a directory\n", PROGNAME, path);
+    if ((fp = open_file(path)) == NULL) {
         release(NULL, path, 0, NULL);
 
         return 3;
-    }
-
-    /* Checking file permission */
-    if (access(path, R_OK) != 0) {
-        fprintf(stderr, "%s: %s: permission denied\n", PROGNAME, path);
-        release(NULL, path, 0, NULL);
-
-        return 4;
-    }
-
-    /* Open after checking file type */
-    if (check_file_type(path) == 0) {
-        fp = fopen(path, "r");
-    } else {
-        fprintf(stderr, "%s: %s: unknown file type\n", PROGNAME, path);
-        release(NULL, path, 0, NULL);
-        
-        return 5;
-    }
-    if (fp == NULL) {
-        fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
-        release(NULL, path, 0, NULL);
-
-        return 6;
     }
 
     lines = count_file_lines(fp);                       /* Count line for text-file */
@@ -163,6 +134,53 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+int check_file_stat(char* path)
+{
+    struct  stat st;        /* File status */
+
+    /* Checking type of file or directory */
+    if (stat(path, &st) != 0) {
+        fprintf(stderr, "%s: %s: no such file or directory\n", PROGNAME, path);
+
+        return 1;
+    }
+    if ((st.st_mode & S_IFMT) == S_IFDIR) {
+        fprintf(stderr, "%s: %s: is a directory\n", PROGNAME, path);
+
+        return 2;
+    }
+
+    /* Checking file permission */
+    if (access(path, R_OK) != 0) {
+        fprintf(stderr, "%s: %s: permission denied\n", PROGNAME, path);
+
+        return 3;
+    }
+
+    return 0;
+}
+
+FILE* open_file(char* path)
+{
+    FILE* fp;
+
+    /* Open after checking file type */
+    if (check_file_type(path) == 0) {
+        fp = fopen(path, "r");
+    } else {
+        fprintf(stderr, "%s: %s: unknown file type\n", PROGNAME, path);
+        
+        return NULL;
+    }
+    if (fp == NULL) {
+        fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
+
+        return NULL;
+    }
+
+    return fp;
+}
+
 void release(FILE* fp, char* path, int lines, char** buf)
 {
     if (fp != NULL) {
@@ -175,6 +193,26 @@ void release(FILE* fp, char* path, int lines, char** buf)
     if (buf != NULL) {
         free2d(buf, lines);
     }
+}
+
+int create_rand(int lines)
+{
+    int ret;
+    struct timeval lo_timeval;
+
+    gettimeofday(&lo_timeval, NULL);    /* Get localtime */
+
+    /* 
+     * # Setting factor for pseudo-random number
+     * Current microseconds * PID
+     */
+    srand((unsigned)(
+        lo_timeval.tv_usec * getpid()
+    ));
+
+    ret = (int)(rand()%(lines+1));      /* Create pseudo-random number */
+
+    return ret;
 }
 
 int print_usage(void)
@@ -197,24 +235,4 @@ Report %s bugs to %s <%s>\n\
 PROGNAME, PROGNAME, AUTHOR, MAIL_TO);
 
     exit(0);
-}
-
-int create_rand(int lines)
-{
-    int ret;
-    struct timeval lo_timeval;
-
-    gettimeofday(&lo_timeval, NULL);    /* Get localtime */
-
-    /* 
-     * # Setting factor for pseudo-random number
-     * Current microseconds * PID
-     */
-    srand((unsigned)(
-        lo_timeval.tv_usec * getpid()
-    ));
-
-    ret = (int)(rand()%(lines+1));      /* Create pseudo-random number */
-
-    return ret;
 }
