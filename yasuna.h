@@ -16,8 +16,8 @@
 #include <stdio.h>
 
 #define PROGNAME    "yasuna"
-#define VERSION     0
-#define PATCHLEVEL  7
+#define VERSION     7
+#define PATCHLEVEL  0
 #define SUBLEVEL    0
 
 #define AUTHOR      "sasairc"
