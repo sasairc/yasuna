@@ -10,11 +10,19 @@
  * for more details.
  */
 
+
 #ifndef YSTRING_H
 #define YSTRING_H
+
+//#define   WITH_GLIB   /* use glib */
+#define LOCALE "ja_JP.UTF-8"
 
 /* This functions is required string.c */
 extern int strrep(char* src, char* haystack, char* needle);
 extern char* strlion(int argnum, ...);
+extern int mbstrlen(char* src);
+extern int strunesc(char* src);
+extern int strmax(int val, char** src);
+extern int strlftonull(char* str);
 
 #endif
