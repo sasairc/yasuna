@@ -14,6 +14,7 @@
 #define FILE_H
 
 #include <stdio.h>
+#include <sys/time.h>
 
 /* This functions is required file.c */
 extern int check_file_type(char* filename);
@@ -21,5 +22,6 @@ extern int count_file_lines(FILE* fp);
 extern int read_file(int lines, size_t length, char** buf, FILE* fp);
 extern int p_count_file_lines(char** buf);
 extern char** p_read_file_char(int t_lines, size_t t_length, FILE* fp);
+extern int watch_fd(int fd, long timeout);
 
 #endif
