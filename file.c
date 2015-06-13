@@ -91,3 +91,80 @@ int read_file(int lines, size_t length, char** buf, FILE* fp)
 
     return i;
 }
+
+int p_count_file_lines(char** buf)
+{
+    int i;
+
+    for (i = 0; buf[i] != NULL; i++);
+
+    return i;
+}
+
+char** p_read_file_char(int t_lines, size_t t_length, FILE* fp)
+{
+    int     lines   = t_lines,
+            length  = t_length;
+    int     i       = 0,
+            x       = 0,
+            y       = 0;
+    char    c;
+    char*   str     = (char*)malloc(sizeof(char) * t_length);   /* allocate temporary array */
+    char**  buf     = (char**)malloc(sizeof(char*) * t_lines);  /* allocate array of Y coordinate */
+
+    if (str == NULL || buf == NULL)
+        return NULL;
+
+    while ((c = fgetc(fp)) != EOF) {
+        switch (c) {
+            case    '\n':
+                /* reallocate array of Y coordinate */
+                if (y == (lines - 1)) {
+                    lines += t_lines;
+                    if ((buf = (char**)realloc(buf, sizeof(char*) * lines)) == NULL)
+                        goto ERR;
+                }
+                /* allocate array for X coordinate */
+                buf[y] = (char*)malloc(sizeof(char) * (strlen(str) + 1));
+                strcpy(buf[y], str);    /* copy, str to buffer */
+                for (i = 0; i < length; i++) {
+                    str[i] = '\0';      /* refresh temporary array */
+                }
+                x = 0;
+                y++;
+                break;
+            default:
+                /* reallocate temporary array */
+                if (x == (length - 1)) {
+                    length += t_length;
+                    if ((str = (char*)realloc(str, length)) == NULL)
+                        goto ERR;
+                }
+                str[x] = c;
+                x++;
+                continue;
+        }
+    }
+    buf[y] = NULL;
+
+    return buf;
+
+
+ERR:
+    lines   -= t_lines;
+    length  -= t_length;
+
+    if (buf != NULL) {
+        for (i = 0; i < lines; i++) {
+            if (buf[i] != NULL) {
+                free(buf[i]);
+                buf[i] = NULL;
+            }
+        }
+        free(buf);
+    }
+    if (str != NULL)
+        free(str);
+
+    return NULL;
+}
