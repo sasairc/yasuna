@@ -92,31 +92,27 @@ int main(int argc, char* argv[])
 
         return 3;
     }
-
-    lines = count_file_lines(fp);                       /* count line for text-file */
-    buf = (char**)malloc(sizeof(char*) * lines);        /* allocate array for Y coordinate */
-
-    /* reading file to array */
-    rewind(fp);                                         /* seek file-strem to the top */
-    if (read_file(lines, BUFLEN, buf, fp) == 0) {
+    if ((buf = p_read_file_char(TH_LINES, TH_LENGTH, fp)) == NULL) {
         fprintf(
                 stderr,
-                "%s: capacity of buffer is not enough: BUFLEN=%d\n",
-                PROGNAME, BUFLEN
+                "%s: p_read_file_char() failure\n",
+                PROGNAME
         );
-        release(fp, path, lines, buf);
-
+        release(fp, path, 0, NULL);
+            
         return 7;
     }
+    lines = p_count_file_lines(buf);            /* count line for text-file */
+
     for (i = 0; i < lines; i++)
-        strlftonull(buf[i]);    /* rf to null */
+        strlftonull(buf[i]);                    /* rf to null */
 
     /* 
      * print all quotes list and exit
      */
     if (yasuna.lflag == 1) {
         for (i = 0; i < lines; i++) {
-        fprintf(stdout, "%d %s\n", i, buf[i]);
+        fprintf(stdout, "%4d %s\n", i, buf[i]);
         }
         release(fp, path, lines, buf);
 
@@ -125,14 +121,14 @@ int main(int argc, char* argv[])
 
     if (yasuna.nflag == 0) {
         do {
-            point = create_rand(lines);                 /* get pseudo-random nuber */
+            point = create_rand(lines);         /* get pseudo-random nuber */
         } while (buf[point] == NULL);
     } else {
         if (lines >= yasuna.narg)   point = yasuna.narg;
     }
 
-    fprintf(stdout, "%s\n", buf[point]);                /* print of string */
-    release(fp, path, lines, buf);                      /* release memory */
+    fprintf(stdout, "%s\n", buf[point]);        /* print of string */
+    release(fp, path, lines, buf);              /* release memory */
 
     return 0;
 }
@@ -196,6 +192,8 @@ void release(FILE* fp, char* path, int lines, char** buf)
     if (buf != NULL) {
         free2d(buf, lines);
     }
+
+    return;
 }
 
 int create_rand(int lines)
