@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
             point = create_rand(lines);         /* get pseudo-random nuber */
         } while (buf[point] == NULL);
     } else {
-        if (lines >= yasuna.narg)   point = yasuna.narg;
+        if (lines > yasuna.narg)    point = yasuna.narg;
     }
 
     fprintf(stdout, "%s\n", buf[point]);        /* print of string */
