@@ -24,17 +24,16 @@
 
 int main(int argc, char* argv[])
 {
-    int     res,   index;   /* Use getopt_long() */
-    int     lines;          /* Text lines */
-    int     point   = 0;    /* Lines pointer */
+    int     res,   index;   /* use getopt_long() */
+    int     lines;          /* text lines */
+    int     point   = 0;    /* lines pointer */
     int     i       = 0;
-    char*   path    = NULL; /* Dictionary file path */
-    char**  buf     = NULL; /* String buffer */
+    char*   path    = NULL; /* dictionary file path */
+    char**  buf     = NULL; /* string buffer */
     FILE*   fp      = NULL; /* quotes file */
-    yasuna_t yasuna = {     /* Flag and args */
+    yasuna_t yasuna = {     /* flag and args */
         0, 0, 0, 0 ,NULL,
     };
-
     struct option opts[] = {
         {"file",    required_argument, NULL, 'f'},
         {"number",  required_argument, NULL, 'n'},
@@ -44,7 +43,7 @@ int main(int argc, char* argv[])
         {0, 0, 0, 0}
     };
 
-    /* Processing of arguments */
+    /* processing of arguments */
     while ((res = getopt_long(argc, argv, "f:n:lvh", opts, &index)) != -1) {
         switch (res) {
             case    'f':
@@ -73,7 +72,7 @@ int main(int argc, char* argv[])
         path = strlion(1, yasuna.farg); 
     } else {
 #ifdef  MONO
-        path = strlion(1, DICNAME);             /* With MONO build */
+        path = strlion(1, DICNAME);             /* with MONO build */
 #else
         path = strlion(2, DICPATH, DICNAME);
 #endif
@@ -93,27 +92,27 @@ int main(int argc, char* argv[])
 
         return 3;
     }
-
-    lines = count_file_lines(fp);                       /* Count line for text-file */
-    buf = (char**)malloc(sizeof(char*) * lines);        /* Allocate array for Y coordinate */
-
-    /* Reading file to array */
-    rewind(fp);                                         /* Seek file-strem to the top */
-    if (read_file(lines, BUFLEN, buf, fp) == 0) {
+    if ((buf = p_read_file_char(TH_LINES, TH_LENGTH, fp)) == NULL) {
         fprintf(
                 stderr,
-                "%s: capacity of buffer is not enough: BUFLEN=%d\n",
-                PROGNAME, BUFLEN
+                "%s: p_read_file_char() failure\n",
+                PROGNAME
         );
-        release(fp, path, lines, buf);
-
+        release(fp, path, 0, NULL);
+            
         return 7;
     }
-    
-    /* Print all quotes list and exit */
+    lines = p_count_file_lines(buf);            /* count line for text-file */
+
+    for (i = 0; i < lines; i++)
+        strlftonull(buf[i]);                    /* rf to null */
+
+    /* 
+     * print all quotes list and exit
+     */
     if (yasuna.lflag == 1) {
         for (i = 0; i < lines; i++) {
-        fprintf(stdout, "%d %s\n", i, buf[i]);
+        fprintf(stdout, "%4d %s\n", i, buf[i]);
         }
         release(fp, path, lines, buf);
 
@@ -122,23 +121,23 @@ int main(int argc, char* argv[])
 
     if (yasuna.nflag == 0) {
         do {
-            point = create_rand(lines);                 /* Get pseudo-random nuber */
+            point = create_rand(lines);         /* get pseudo-random nuber */
         } while (buf[point] == NULL);
     } else {
         if (lines >= yasuna.narg)   point = yasuna.narg;
     }
 
-    fprintf(stdout, "%s\n", buf[point]);                /* Print of string */
-    release(fp, path, lines, buf);                      /* release memory */
+    fprintf(stdout, "%s\n", buf[point]);        /* print of string */
+    release(fp, path, lines, buf);              /* release memory */
 
     return 0;
 }
 
 int check_file_stat(char* path)
 {
-    struct  stat st;        /* File status */
+    struct  stat st;        /* file status */
 
-    /* Checking type of file or directory */
+    /* checking type of file or directory */
     if (stat(path, &st) != 0) {
         fprintf(stderr, "%s: %s: no such file or directory\n", PROGNAME, path);
 
@@ -150,7 +149,7 @@ int check_file_stat(char* path)
         return 2;
     }
 
-    /* Checking file permission */
+    /* checking file permission */
     if (access(path, R_OK) != 0) {
         fprintf(stderr, "%s: %s: permission denied\n", PROGNAME, path);
 
@@ -164,7 +163,7 @@ FILE* open_file(char* path)
 {
     FILE* fp;
 
-    /* Open after checking file type */
+    /* open after checking file type */
     if (check_file_type(path) == 0) {
         fp = fopen(path, "r");
     } else {
@@ -193,6 +192,8 @@ void release(FILE* fp, char* path, int lines, char** buf)
     if (buf != NULL) {
         free2d(buf, lines);
     }
+
+    return;
 }
 
 int create_rand(int lines)
@@ -200,17 +201,17 @@ int create_rand(int lines)
     int ret;
     struct timeval lo_timeval;
 
-    gettimeofday(&lo_timeval, NULL);    /* Get localtime */
+    gettimeofday(&lo_timeval, NULL);    /* get localtime */
 
     /* 
-     * # Setting factor for pseudo-random number
-     * Current microseconds * PID
+     * # setting factor for pseudo-random number
+     * current microseconds * PID
      */
     srand((unsigned)(
         lo_timeval.tv_usec * getpid()
     ));
 
-    ret = (int)(rand()%(lines+1));      /* Create pseudo-random number */
+    ret = (int)(rand()%(lines+1));      /* create pseudo-random number */
 
     return ret;
 }

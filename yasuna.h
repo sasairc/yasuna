@@ -17,14 +17,21 @@
 
 #define PROGNAME    "yasuna"
 #define VERSION     7
-#define PATCHLEVEL  0
+#define PATCHLEVEL  1
 #define SUBLEVEL    0
 
 #define AUTHOR      "sasairc"
 #define MAIL_TO     "sasairc@ssiserver.moe.hm"
 
-//#define MONO        /* パスを組み込みたくないときに使うといいかもネ */
-#define BUFLEN      512
+/*
+ * # setting of realloc() timing
+ * TH_LINES  : threshold of lines
+ * TH_LENGTH : threshold of string (sizeof(char) * TH_LENGTH)
+ */
+#define TH_LINES    512 
+#define TH_LENGTH   512
+
+//#define MONO              /* パスを組み込みたくないときに使うといいかもネ */
 
 typedef struct YASUNA_T {
     int lflag;      /* List flag(--list). */

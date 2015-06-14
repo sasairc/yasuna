@@ -19,8 +19,8 @@ OBJS	= $(SRCS:.c=.o)
 all: $(TARGET) $(OBJS)
 
 DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"  \
-			-DDICNAME=\"$(DICNME)\" \
-			-DDICPATH=\"$(DICDIR)/\"
+ 		-DDICNAME=\"$(DICNME)\" \
+		-DDICPATH=\"$(DICDIR)/\" \
 
 yasuna: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $(TARGET)
