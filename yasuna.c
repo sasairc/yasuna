@@ -10,27 +10,26 @@
  * for more details.
  */
 
+#include "./config.h"
 #include "./yasuna.h"
+#include "./subset.h"
 #include "./file.h"
 #include "./string.h"
 #include "./memory.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <getopt.h>
-#include <sys/time.h>
-#include <sys/stat.h>
 
 int main(int argc, char* argv[])
 {
-    int     res,   index;   /* use getopt_long() */
-    int     lines;          /* text lines */
-    int     point   = 0;    /* lines pointer */
-    int     i       = 0;
+    int     i       = 0,
+            res     = 0,    /* use getopt_long() */
+            index   = 0,
+            lines   = 0,    /* text lines */
+            point   = 0;    /* lines pointer */
+    FILE*   fp      = NULL; /* quotes file */
     char*   path    = NULL; /* dictionary file path */
     char**  buf     = NULL; /* string buffer */
-    FILE*   fp      = NULL; /* quotes file */
     yasuna_t yasuna = {     /* flag and args */
         0, 0, 0, 0 ,NULL,
     };
@@ -133,53 +132,6 @@ int main(int argc, char* argv[])
     return 0;
 }
 
-int check_file_stat(char* path)
-{
-    struct  stat st;        /* file status */
-
-    /* checking type of file or directory */
-    if (stat(path, &st) != 0) {
-        fprintf(stderr, "%s: %s: no such file or directory\n", PROGNAME, path);
-
-        return 1;
-    }
-    if ((st.st_mode & S_IFMT) == S_IFDIR) {
-        fprintf(stderr, "%s: %s: is a directory\n", PROGNAME, path);
-
-        return 2;
-    }
-
-    /* checking file permission */
-    if (access(path, R_OK) != 0) {
-        fprintf(stderr, "%s: %s: permission denied\n", PROGNAME, path);
-
-        return 3;
-    }
-
-    return 0;
-}
-
-FILE* open_file(char* path)
-{
-    FILE* fp;
-
-    /* open after checking file type */
-    if (check_file_type(path) == 0) {
-        fp = fopen(path, "r");
-    } else {
-        fprintf(stderr, "%s: %s: unknown file type\n", PROGNAME, path);
-        
-        return NULL;
-    }
-    if (fp == NULL) {
-        fprintf(stderr, "%s : internal error -- 'no quotes file\n", PROGNAME);
-
-        return NULL;
-    }
-
-    return fp;
-}
-
 void release(FILE* fp, char* path, int lines, char** buf)
 {
     if (fp != NULL) {
@@ -194,26 +146,6 @@ void release(FILE* fp, char* path, int lines, char** buf)
     }
 
     return;
-}
-
-int create_rand(int lines)
-{
-    int ret;
-    struct timeval lo_timeval;
-
-    gettimeofday(&lo_timeval, NULL);    /* get localtime */
-
-    /* 
-     * # setting factor for pseudo-random number
-     * current microseconds * PID
-     */
-    srand((unsigned)(
-        lo_timeval.tv_usec * getpid()
-    ));
-
-    ret = (int)(rand()%(lines+1));      /* create pseudo-random number */
-
-    return ret;
 }
 
 int print_usage(void)

@@ -13,7 +13,7 @@ CC	:= cc
 RM	:= rm
 CFLAGS	:= -O2 -g -Wall
 LDFLAGS	:=
-SRCS	= yasuna.c file.c string.c memory.c
+SRCS	= yasuna.c subset.c file.c string.c memory.c
 OBJS	= $(SRCS:.c=.o)
 
 all: $(TARGET) $(OBJS)
@@ -27,6 +27,9 @@ yasuna: $(OBJS)
 
 yasuna.o: yasuna.c
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c yasuna.c -o yasuna.o
+
+subset.o: subset.c
+	$(CC) $(DEFCFLAGS) $(CFLAGS) -c subset.c -o subset.o
 
 file.o: file.c
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c file.c -o file.o
