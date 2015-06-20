@@ -24,13 +24,14 @@
 
 int main(int argc, char* argv[])
 {
-    int     res,   index;   /* use getopt_long() */
-    int     lines;          /* text lines */
-    int     point   = 0;    /* lines pointer */
-    int     i       = 0;
+    int     i       = 0,
+            res     = 0,    /* use getopt_long() */
+            index   = 0,
+            lines   = 0,    /* text lines */
+            point   = 0;    /* lines pointer */
+    FILE*   fp      = NULL; /* quotes file */
     char*   path    = NULL; /* dictionary file path */
     char**  buf     = NULL; /* string buffer */
-    FILE*   fp      = NULL; /* quotes file */
     yasuna_t yasuna = {     /* flag and args */
         0, 0, 0, 0 ,NULL,
     };
@@ -161,7 +162,7 @@ int check_file_stat(char* path)
 
 FILE* open_file(char* path)
 {
-    FILE* fp;
+    FILE*   fp;
 
     /* open after checking file type */
     if (check_file_type(path) == 0) {
@@ -198,8 +199,8 @@ void release(FILE* fp, char* path, int lines, char** buf)
 
 int create_rand(int lines)
 {
-    int ret;
-    struct timeval lo_timeval;
+    int     ret;
+    struct  timeval lo_timeval;
 
     gettimeofday(&lo_timeval, NULL);    /* get localtime */
 
