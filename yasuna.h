@@ -15,24 +15,6 @@
 
 #include <stdio.h>
 
-#define PROGNAME    "yasuna"
-#define VERSION     7
-#define PATCHLEVEL  1
-#define SUBLEVEL    0
-
-#define AUTHOR      "sasairc"
-#define MAIL_TO     "sasairc@ssiserver.moe.hm"
-
-/*
- * # setting of realloc() timing
- * TH_LINES  : threshold of lines
- * TH_LENGTH : threshold of string (sizeof(char) * TH_LENGTH)
- */
-#define TH_LINES    512 
-#define TH_LENGTH   512
-
-//#define MONO              /* パスを組み込みたくないときに使うといいかもネ */
-
 typedef struct YASUNA_T {
     int lflag;      /* List flag(--list). */
     int fflag;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
@@ -42,10 +24,7 @@ typedef struct YASUNA_T {
 } yasuna_t;
 
 /* This functions is required yasuna.c */
-extern int check_file_stat(char* path);
-extern FILE* open_file(char* path);
 extern void release(FILE* fp, char* path, int lines, char** buf);
-extern int create_rand(int lines);
 extern int print_usage(void);
 
 #endif
