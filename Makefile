@@ -15,12 +15,14 @@ CFLAGS	:= -O2 -g -Wall
 LDFLAGS	:=
 SRCS	= yasuna.c subset.c file.c string.c memory.c
 OBJS	= $(SRCS:.c=.o)
+ARCH	:= $(shell gcc -print-multiarch)
 
 all: $(TARGET) $(OBJS)
 
 DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"  \
  		-DDICNAME=\"$(DICNME)\" \
 		-DDICPATH=\"$(DICDIR)/\" \
+		-DARCH=\"$(ARCH)\"
 
 yasuna: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $(TARGET)
