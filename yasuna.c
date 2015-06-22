@@ -57,11 +57,9 @@ int main(int argc, char* argv[])
                 yasuna.lflag = 1;
                 break;
             case    'v':
-                fprintf(stdout, "%s %d.%d.%d\n", PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL);
-                return 0;
+                print_version();
             case    'h':
                 print_usage();
-                break;
             case    '?':
                 return -1;
         }
@@ -146,6 +144,13 @@ void release(FILE* fp, char* path, int lines, char** buf)
     }
 
     return;
+}
+
+int print_version(void)
+{
+    fprintf(stdout, "%s %d.%d.%d (%s)\n", PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL, ARCH);
+
+    exit(0);
 }
 
 int print_usage(void)

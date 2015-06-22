@@ -25,6 +25,7 @@ typedef struct YASUNA_T {
 
 /* This functions is required yasuna.c */
 extern void release(FILE* fp, char* path, int lines, char** buf);
+extern int print_version(void);
 extern int print_usage(void);
 
 #endif
