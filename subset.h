@@ -13,9 +13,11 @@
 #ifndef SUBSET_H
 #define SUBSET_H
 
+#include "./yasuna.h"
 #include <stdio.h>
 
 /* This functions is required subset.c */
+extern char* concat_file_path(yasuna_t* yasuna);
 extern int check_file_stat(char* path);
 extern FILE* open_file(char* path);
 extern int create_rand(int lines);

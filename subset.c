@@ -12,12 +12,35 @@
 
 #include "./config.h"
 #include "./subset.h"
+#include "./string.h"
 #include "./file.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+
+char* concat_file_path(yasuna_t* yasuna)
+{
+    char*   path = NULL;
+
+    if (yasuna->fflag == 1) {
+        path = strlion(1, yasuna->farg);    
+    } else {
+#ifdef  MONO
+        path = strlion(1, DICNAME);             /* with MONO build */
+#else
+        path = strlion(2, DICPATH, DICNAME);
+#endif
+    }
+    if (path == NULL) {
+        fprintf(stderr, "%s: strlion() failure\n", PROGNAME);
+
+        return NULL;
+    }
+
+    return path;
+}
 
 int check_file_stat(char* path)
 {
