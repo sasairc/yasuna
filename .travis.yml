@@ -6,5 +6,5 @@ before_install:
     - gcc --version
     - clang --version
 script:
-    - make
+    - make CC=$CC
     - make clean
