@@ -1,7 +1,9 @@
 yasuna
 ======
+[![build](https://img.shields.io/travis/sasairc/yasuna.svg?style=flat)](https://travis-ci.org/sasairc/yasuna)
 [![version](https://img.shields.io/badge/tag-7.2.1-orange.svg?style=flat)](https://github.com/sasairc/yasuna/releases)
 [![license](https://img.shields.io/badge/License-WTFPL2-blue.svg?style=flat)](http://www.wtfpl.net/txt/copying/)
+
 
 ![default](http://40.media.tumblr.com/07da53a3d6945721a4ca8aa4513b8277/tumblr_nizi5dPpPK1u2jamko1_1280.png)
 
