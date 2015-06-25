@@ -2,8 +2,9 @@ language: c
 compiler:
     - gcc
     - clang
-script:
-    - clang --version
-    - make CC="clang" && make clean
+before_install:
     - gcc --version
-    - make && make clean
+    - clang --version
+script:
+    - make
+    - make clean
