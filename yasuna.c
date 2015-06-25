@@ -13,8 +13,8 @@
 #include "./config.h"
 #include "./yasuna.h"
 #include "./subset.h"
-#include "./file.h"
 #include "./string.h"
+#include "./file.h"
 #include "./memory.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,18 +64,7 @@ int main(int argc, char* argv[])
                 return -1;
         }
     }
-
-    if (yasuna.fflag == 1) {
-        path = strlion(1, yasuna.farg); 
-    } else {
-#ifdef  MONO
-        path = strlion(1, DICNAME);             /* with MONO build */
-#else
-        path = strlion(2, DICPATH, DICNAME);
-#endif
-    }
-    if (path == NULL) {
-        fprintf(stderr, "%s: malloc() failed.\n", PROGNAME);
+    if ((path = concat_file_path(&yasuna)) == NULL) {
 
         return 1;
     }
@@ -100,7 +89,6 @@ int main(int argc, char* argv[])
         return 7;
     }
     lines = p_count_file_lines(buf);            /* count line for text-file */
-
     for (i = 0; i < lines; i++)
         strlftonull(buf[i]);                    /* rf to null */
 
