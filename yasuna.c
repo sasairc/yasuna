@@ -28,8 +28,8 @@ int main(int argc, char* argv[])
             lines   = 0,    /* text lines */
             point   = 0;    /* lines pointer */
     FILE*   fp      = NULL; /* quotes file */
-    char*   path    = NULL; /* dictionary file path */
-    char**  buf     = NULL; /* string buffer */
+    char*   path    = NULL, /* dictionary file path */
+        **  buf     = NULL; /* string buffer */
     yasuna_t yasuna = {     /* flag and args */
         0, 0, 0, 0 ,NULL,
     };
