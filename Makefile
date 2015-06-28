@@ -13,33 +13,33 @@ CC	:= cc
 RM	:= rm
 CFLAGS	:= -O2 -g -Wall
 LDFLAGS	:=
-SRCS	= yasuna.c subset.c file.c string.c memory.c
+SRCS	= $(wildcard *.c)
 OBJS	= $(SRCS:.c=.o)
 ARCH	:= $(shell gcc -print-multiarch)
-
-all: $(TARGET) $(OBJS)
 
 DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"  \
  		-DDICNAME=\"$(DICNME)\" \
 		-DDICPATH=\"$(DICDIR)/\" \
 		-DARCH=\"$(ARCH)\"
 
+all: $(TARGET) $(OBJS)
+
 yasuna: $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $(TARGET)
 
-yasuna.o: yasuna.c
+yasuna.o: yasuna.c yasuna.h config.h
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c yasuna.c -o yasuna.o
 
-subset.o: subset.c
+subset.o: subset.c subset.h config.h
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c subset.c -o subset.o
 
-file.o: file.c
+file.o: file.c file.h
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c file.c -o file.o
 
-string.o: string.c
+string.o: string.c string.h
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c string.c -o string.o
 
-memory.o: memory.c
+memory.o: memory.c memory.h
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c memory.c -o memory.o
 
 install-bin: $(TARGET)
