@@ -5,7 +5,7 @@
 
 ARGS=("./yasuna" "--file" "quotes/yasuna-quotes")
 N=32
-Q=4096
+Q=256
 
 echo "N = $N, Q = $Q"
 
