@@ -30,6 +30,9 @@ yasuna: $(OBJS)
 yasuna.o: yasuna.c yasuna.h config.h
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c yasuna.c -o yasuna.o
 
+info.o:	info.c info.h config.h
+	$(CC) $(DEFCFLAGS) $(CFLAGS) -c info.c -o info.o
+
 subset.o: subset.c subset.h config.h
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c subset.c -o subset.o
 
