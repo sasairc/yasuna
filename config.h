@@ -13,21 +13,22 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#define PROGNAME    "yasuna"
-#define VERSION     7
-#define PATCHLEVEL  2
-#define SUBLEVEL    1
+#define PROGNAME        "yasuna"
+#define VERSION         7
+#define PATCHLEVEL      2
+#define SUBLEVEL        2
+#define EXTRAVERSION    "-devel"
 
-#define AUTHOR      "sasairc"
-#define MAIL_TO     "sasairc@ssiserver.moe.hm"
+#define AUTHOR          "sasairc"
+#define MAIL_TO         "sasairc@ssiserver.moe.hm"
 
 /*
  * # setting of realloc() timing
  * TH_LINES  : threshold of lines
  * TH_LENGTH : threshold of string (sizeof(char) * TH_LENGTH)
  */
-#define TH_LINES    512 
-#define TH_LENGTH   512
+#define TH_LINES        512 
+#define TH_LENGTH       512
 
 #undef MONO             /* パスを組み込みたくないときに使うといいかもネ */
 
