@@ -31,9 +31,12 @@ int main(int argc, char* argv[])
     FILE*   fp      = NULL; /* quotes file */
     char*   path    = NULL, /* dictionary file path */
         **  buf     = NULL; /* string buffer */
-    yasuna_t yasuna = {     /* flag and args */
+
+    /* flag and args */
+    yasuna_t yasuna = { 
         0, 0, 0, 0 ,NULL,
     };
+
     struct option opts[] = {
         {"file",    required_argument, NULL, 'f'},
         {"number",  required_argument, NULL, 'n'},
@@ -65,6 +68,7 @@ int main(int argc, char* argv[])
                 return -1;
         }
     }
+
     if ((path = concat_file_path(&yasuna)) == NULL) {
 
         return 1;
@@ -89,6 +93,7 @@ int main(int argc, char* argv[])
             
         return 7;
     }
+
     lines = p_count_file_lines(buf);            /* count line for text-file */
     for (i = 0; i < lines; i++)
         strlftonull(buf[i]);                    /* rf to null */
