@@ -4,5 +4,7 @@ compiler:
     - clang
 script:
     - make CC=$CC
+    - ./yasuna --version
+    - ./yasuna --help
     - ./test.sh
     - make clean

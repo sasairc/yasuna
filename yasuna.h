@@ -23,7 +23,6 @@ typedef struct YASUNA_T {
     char* farg;     /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
 } yasuna_t;
 
-/* This functions is required yasuna.c */
 extern void release(FILE* fp, char* path, int lines, char** buf);
 extern int print_version(void);
 extern int print_usage(void);
