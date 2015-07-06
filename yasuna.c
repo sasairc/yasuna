@@ -83,6 +83,7 @@ int main(int argc, char* argv[])
 
         return 3;
     }
+
     if ((buf = p_read_file_char(TH_LINES, TH_LENGTH, fp)) == NULL) {
         fprintf(
                 stderr,
@@ -93,7 +94,6 @@ int main(int argc, char* argv[])
             
         return 7;
     }
-
     lines = p_count_file_lines(buf);            /* count line for text-file */
     for (i = 0; i < lines; i++)
         strlftonull(buf[i]);                    /* rf to null */
