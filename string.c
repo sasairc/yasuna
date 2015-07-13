@@ -240,6 +240,7 @@ char** str_to_args(char* str)
     } else {
         return NULL;
     }
+
     /* string to args */
     for (dspf = sx = ay = ax = xt = 0; sx <= strlen(str); sx++) {
         if (str[sx] == ' ' || str[sx] == '\t' || str[sx] == '\0') {
@@ -261,6 +262,8 @@ char** str_to_args(char* str)
             dspf = 0;
         }
     }
+    /* null-terminated */
+    args[elmc] = NULL;
 
 #ifdef  DEBUG
     fprintf(stderr, "DEBUG: str_to_args(): args(%p)\n", args);
