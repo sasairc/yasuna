@@ -85,11 +85,8 @@ int main(int argc, char* argv[])
     }
 
     if ((buf = p_read_file_char(TH_LINES, TH_LENGTH, fp)) == NULL) {
-        fprintf(
-                stderr,
-                "%s: p_read_file_char() failure\n",
-                PROGNAME
-        );
+        fprintf(stderr, "%s: p_read_file_char() failure\n",
+                PROGNAME);
         release(fp, path, 0, NULL);
             
         return 7;
