@@ -19,6 +19,7 @@
 #include "./memory.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <getopt.h>
 
 int main(int argc, char* argv[])
@@ -54,6 +55,14 @@ int main(int argc, char* argv[])
                 yasuna.fflag = 1;
                 break;
             case    'n':
+                for (i = 0; *(optarg + i) != '\0'; i++) {
+                    if (!isdigit(*(optarg + i))) {
+                        fprintf(stderr, "%s: %s: invalid number of quote\n",
+                                PROGNAME, optarg);
+
+                        return -1;
+                    }
+                }
                 yasuna.narg = atoi(optarg);
                 yasuna.nflag = 1;
                 break;
