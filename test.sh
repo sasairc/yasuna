@@ -44,7 +44,7 @@ function sequential_test() {
 	return 
 }
 
-#random_test
+random_test
 echo ""
 sequential_test
 
