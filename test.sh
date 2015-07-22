@@ -31,16 +31,20 @@ function sequential_test() {
 	for ((i = 0; i < `cat $QUOTES | wc -l`; i++)); do
 		${ARGS[@]} -n $i >> out.txt
 	done
-	diff out.txt $QUOTES || \
-		echo "failed"    && \
-		exit 2
 
+	diff out.txt $QUOTES 
+	test $? -ne 0 && \
+		rm out.txt && \
+		echo "failed" && \
+		return;
+
+	rm out.txt
 	echo "done"
 
-	return
+	return 
 }
 
-random_test
+#random_test
 echo ""
 sequential_test
 
