@@ -18,7 +18,9 @@
 #include "./file.h"
 #include "./memory.h"
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include <getopt.h>
 
 int main(int argc, char* argv[])
@@ -54,6 +56,14 @@ int main(int argc, char* argv[])
                 yasuna.fflag = 1;
                 break;
             case    'n':
+                for (i = 0; i < strlen(optarg); i++) {
+                    if (!isdigit(*(optarg + i))) {
+                        fprintf(stderr, "%s: %s: invalid number of quote\n",
+                                PROGNAME, optarg);
+
+                        return -1;
+                    }
+                }
                 yasuna.narg = atoi(optarg);
                 yasuna.nflag = 1;
                 break;
@@ -85,11 +95,8 @@ int main(int argc, char* argv[])
     }
 
     if ((buf = p_read_file_char(TH_LINES, TH_LENGTH, fp)) == NULL) {
-        fprintf(
-                stderr,
-                "%s: p_read_file_char() failure\n",
-                PROGNAME
-        );
+        fprintf(stderr, "%s: p_read_file_char() failure\n",
+                PROGNAME);
         release(fp, path, 0, NULL);
             
         return 7;
