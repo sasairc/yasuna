@@ -57,7 +57,11 @@ install-man:
 	install -pd $(MANDIR)
 	install -pm 644 ./yasuna.6 $(MANDIR)/
 
-install: install-bin install-quotes
+install-zsh-compdef:
+	install -pd $(DICDIR)/zsh
+	install -pm 644 ./_yasuna.zsh $(DICDIR)/zsh/
+
+install: install-bin install-quotes install-man install-zsh-compdef
 
 .PHONY: clean
 clean:
