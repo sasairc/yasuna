@@ -6,7 +6,7 @@ TARGET	= yasuna
 DICNME	= yasuna-quotes
 PREFIX	:= /usr/local
 BINDIR	:= $(PREFIX)/bin
-DICDIR	:= $(PREFIX)/share/yasuna
+DICDIR	:= $(PREFIX)/share/$(TARGET)
 MANDIR	:= $(PREFIX)/share/man/ja/man6
 MAKE	:= make
 CC	:= cc
@@ -24,7 +24,7 @@ DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"  \
 
 all: $(TARGET) $(OBJS)
 
-yasuna: $(OBJS)
+$(TARGET): $(OBJS)
 	$(CC) $(LDFLAGS) $(OBJS) -o $(TARGET)
 
 yasuna.o: yasuna.c yasuna.h config.h
@@ -55,11 +55,11 @@ install-quotes:
 
 install-man:
 	install -pd $(MANDIR)
-	install -pm 644 ./yasuna.6 $(MANDIR)/
+	install -pm 644 $(TARGET).6 $(MANDIR)/
 
 install-zsh-compdef:
-	install -pd $(DICDIR)/zsh
-	install -pm 644 ./_yasuna.zsh $(DICDIR)/zsh/
+	install -pd $(PREFIX)/share/$(TARGET)/zsh
+	install -pm 644 _$(TARGET).zsh $(PREFIX)/share/$(TARGET)/zsh
 
 install: install-bin install-quotes install-man install-zsh-compdef
 
