@@ -13,8 +13,8 @@ CC	:= cc
 RM	:= rm
 CFLAGS	:= -O2 -g -Wall
 LDFLAGS	:=
-
 CMDLINE	:= 0
+
 SRCS	= $(wildcard *.c)
 OBJS	= $(SRCS:.c=.o)
 ARCH	= $(shell gcc -print-multiarch)
@@ -29,9 +29,9 @@ all: $(TARGET) $(OBJS)
 $(TARGET): $(OBJS)
 ifeq ($(CMDLINE), 0)
 	@echo "  BUILD   $@"
-	@$(CC) $(LDFLAGS) $(OBJS) -o $(TARGET)
+	@$(CC) $(LDFLAGS) $^ -o $@
 else
-	$(CC) $(LDFLAGS) $(OBJS) -o $(TARGET)
+	$(CC) $(LDFLAGS) $^ -o $@
 endif
 
 %.o: %.c %.h
@@ -44,19 +44,19 @@ endif
 
 install-bin: $(TARGET)
 	install -pd $(BINDIR)
-	install -pm 755 $(TARGET) $(BINDIR)/
+	install -pm 755 $< $(BINDIR)/
 
-install-quotes:
+install-quotes: quotes/$(DICNME)
 	install -pd $(DICDIR)
-	install -pm 644 ./quotes/$(DICNME) $(DICDIR)/
+	install -pm 644 $< $(DICDIR)/
 
-install-man:
+install-man: yasuna.6
 	install -pd $(MANDIR)
-	install -pm 644 $(TARGET).6 $(MANDIR)/
+	install -pm 644 $< $(MANDIR)/
 
-install-zsh-compdef:
+install-zsh-compdef: _yasuna.zsh
 	install -pd $(PREFIX)/share/$(TARGET)/zsh
-	install -pm 644 _$(TARGET).zsh $(PREFIX)/share/$(TARGET)/zsh
+	install -pm 644 $< $(PREFIX)/share/$(TARGET)/zsh
 
 install: install-bin install-quotes install-man install-zsh-compdef
 
