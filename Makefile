@@ -14,6 +14,7 @@ RM	:= rm
 CFLAGS	:= -O2 -g -Wall
 LDFLAGS	:=
 
+CMDLINE	:= 0
 SRCS	= $(wildcard *.c)
 OBJS	= $(SRCS:.c=.o)
 ARCH	= $(shell gcc -print-multiarch)
@@ -26,10 +27,20 @@ DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"       \
 all: $(TARGET) $(OBJS)
 
 $(TARGET): $(OBJS)
+ifeq ($(CMDLINE), 0)
+	@echo "  BUILD   $@"
+	@$(CC) $(LDFLAGS) $(OBJS) -o $(TARGET)
+else
 	$(CC) $(LDFLAGS) $(OBJS) -o $(TARGET)
+endif
 
 %.o: %.c %.h
+ifeq ($(CMDLINE), 0)
+	@echo "  CC      $@"
+	@$(CC) $(DEFCFLAGS) $(CFLAGS) -c $< -o $@
+else
 	$(CC) $(DEFCFLAGS) $(CFLAGS) -c $< -o $@
+endif
 
 install-bin: $(TARGET)
 	install -pd $(BINDIR)
