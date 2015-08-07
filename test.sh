@@ -4,7 +4,7 @@
 #
 
 QUOTES="./quotes/yasuna-quotes"
-ARGS=("./yasuna" "--file" "$QUOTES")
+ARGS=("$1" "--file" "$QUOTES")
 
 function random_test() {
 	local N=16
