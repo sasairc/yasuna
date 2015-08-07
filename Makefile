@@ -40,3 +40,4 @@ install: install-bin		\
 	install-quotes		\
 	install-man		\
 	install-zsh-compdef	\
+	clean
