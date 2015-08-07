@@ -4,7 +4,7 @@ compiler:
     - clang
 before_install:
     - sudo apt-get update
-    - sudo apt-get -y tree
+    - sudo apt-get -y install tree
 script:
     - export CC="$CC" TEST_PREFIX="`pwd`/test_prefix"
     - make PREFIX="${TEST_PREFIX}"
