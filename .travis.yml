@@ -2,9 +2,18 @@ language: c
 compiler:
     - gcc
     - clang
+before_install:
+    - sudo apt-get update
+    - sudo apt-get -y install tree
 script:
-    - make CC=$CC
-    - ./yasuna --version
-    - ./yasuna --help
-    - ./test.sh
+    - export CC="$CC" TEST_PREFIX="`pwd`/test_prefix"
+    - make PREFIX="${TEST_PREFIX}"
+    - make PREFIX="${TEST_PREFIX}" install
+    - tree ${TEST_PREFIX}
+    - ${TEST_PREFIX}/bin/yasuna --version
+    - ${TEST_PREFIX}/bin/yasuna --help
+    - ${TEST_PREFIX}/bin/yasuna
+    - ./test.sh "${TEST_PREFIX}/bin/yasuna"
     - make clean
+    - rm -rf ${TEST_PREFIX}
+    - unset TEST_PREFIX

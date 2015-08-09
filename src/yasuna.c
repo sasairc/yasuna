@@ -98,8 +98,8 @@ int main(int argc, char* argv[])
         fprintf(stderr, "%s: p_read_file_char() failure\n",
                 PROGNAME);
         release(fp, path, 0, NULL);
-            
-        return 7;
+
+        return 4;
     }
     lines = p_count_file_lines(buf);            /* count line for text-file */
     for (i = 0; i < lines; i++)

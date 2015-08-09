@@ -44,7 +44,7 @@ $ make PREFIX=/foo/bar	# デフォルトでは、PREFIX=/usr/localです
 ```
 
 ## zshでの補完
-`_yasuna.zsh`を`_yasuna`とリネームし、`$fpath`の通ったディレクトリに配置して下さい。
+`$(PREFIX)/share/yasuna/zsh/_yasuna.zsh`を`_yasuna`として、`$fpath`の通ったディレクトリにコピーして下さい。
 
 ## Usage
 * Basic usage	
