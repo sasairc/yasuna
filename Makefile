@@ -24,7 +24,7 @@ install-quotes:
 	@$(MAKE) -C ./quotes	$@
 	
 install-man:
-	@$(MAKE) -C ./docs	$@
+	@$(MAKE) -C ./doc	$@
 	
 install-zsh-compdef: 
 	@$(MAKE) -C ./compdef	$@
