@@ -6,7 +6,7 @@ yasuna
 [![build](https://img.shields.io/travis/sasairc/yasuna.svg?style=flat)](https://travis-ci.org/sasairc/yasuna)
 [![yasuna](https://img.shields.io/badge/yasuna-kawaii-orange.svg?style=flat)](http://houbunsha.co.jp/comics/detail.php?p=%A5%AD%A5%EB%A5%DF%A1%BC%A5%D9%A5%A4%A5%D9%A1%BC)
 
-![default](http://40.media.tumblr.com/07da53a3d6945721a4ca8aa4513b8277/tumblr_nizi5dPpPK1u2jamko1_1280.png)
+![default](http://41.media.tumblr.com/78dd1ad58e3c540b7a769d0d107a12e7/tumblr_ntaaaw5uqk1u2jamko1_1280.png)
 
 折部やすなちゃんの名言をランダムで表示します。  
 誤字脱字等あれば、issueやtwitterで報告して頂けると嬉しいです。		
