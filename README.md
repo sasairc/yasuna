@@ -20,16 +20,6 @@ yasuna
 # apt-get update
 # apt-get install yasuna
 ```
-  
-#### Debian/GNU Linux or Debian based system.(not amd64) 
-```shellsession
-$ cat info.txt
-注意 : バージョンは、適時置き換えて下さい。
-$ wget -O - http://ssiserver.moe.hm/debian/yasuna_0.3-1.tar.gz | tar zxvf -
-$ cd yasuna 
-$ dpkg-buildpackage -uc -us 
-# dpkg -i ../yasuna_*.deb 
-```
 
 #### Mac OS X / Homebrew
 ```shellsession
