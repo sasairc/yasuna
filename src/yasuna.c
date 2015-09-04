@@ -94,6 +94,7 @@ int main(int argc, char* argv[])
         return 3;
     }
 
+    /* reading file to array */
     if ((buf = p_read_file_char(TH_LINES, TH_LENGTH, fp)) == NULL) {
         fprintf(stderr, "%s: p_read_file_char() failure\n",
                 PROGNAME);
@@ -101,17 +102,21 @@ int main(int argc, char* argv[])
 
         return 4;
     }
-    lines = p_count_file_lines(buf);            /* count line for text-file */
+    /* count line for text-file */
+    if ((lines = p_count_file_lines(buf)) == 0) {
+        release(fp, path, lines, buf);
+
+        return 0;
+    }
+
     for (i = 0; i < lines; i++)
-        strlftonull(buf[i]);                    /* rf to null */
+        strlftonull(buf[i]);                    /* lf to null */
 
     /* 
      * print all quotes list and exit
      */
     if (yasuna.lflag == 1) {
-        for (i = 0; i < lines; i++) {
-        fprintf(stdout, "%4d %s\n", i, buf[i]);
-        }
+        print_all_quotes(lines, buf);
         release(fp, path, lines, buf);
 
         return 0;
