@@ -9,20 +9,19 @@ yasuna \- 折部やすなの名言を表示する
 \fI--file=PATH\fR [\fIオプション\fR]...
 .SH 説明
 .PP
-キルミーベイベーの登場人物である、折部やすなの名言をランダムで標準出力へ表示します。
+キルミーベイベーの登場人物である、折部やすなちゃんの名言をランダムで標準出力へ出力します。
 .br
-単語ファイルが\fB\-\-file=PATH\fRオプションにて指定されていない限り、
+単語ファイルが\fI\-\-file=PATH\fRオプションにて指定されていない限り、標準でPREFIX/share/yasuna/yasuna-quotesが使用されます。
 .br
-標準でPREFIX/share/yasuna/yasuna-quotesが使用されます。
 長いオプションに必須の引数は短いオプションにも必須です。
 .TP
 \fB\-l\fR, \fB\-\-list\fR
 \&単語のリストを番号付きで表示し終了する
 .TP
-\fB\-n\fR, \fB\-\-number=INT\fR
+\fB\-n\fR, \fB\-\-number\fR\fI=INT\fR
 \&\fB\-\-list\fR で得た番号(INT)を指定して表示する
 .TP
-\fB\-f\fR, \fB-\-file\fR
+\fB\-f\fR, \fB-\-file\fR\fI=FILE\fR
 \&使用する単語ファイル(PATH)を指定する
 .TP
 \fB\-h\fR, \fB-\-help\fR
@@ -37,24 +36,30 @@ yasuna \- 折部やすなの名言を表示する
 正常終了、
 .TP
 1
-メモリの確保に失敗した、
+ファイルパスの連結に失敗、
 .TP
 2
 指定された単語ファイルが存在しないか、通常ファイルではなくディレクトリである
+.br
 または通常ファイルに対するアクセス権が無い、
 .TP
 3
 指定された通常ファイルは存在するが、プレーンテキストでは無い
-または、デフォルトの単語ファイルが存在しない、
+.br
+または、ファイルのオープンに失敗、
 .TP
-7
-単語の文字列長が、BUFLENとして定義されているバッファ容量を超えている、　
+4
+単語ファイルを読み込む際、メモリ確保に失敗、
 .TP
 255
 引数の解析に失敗（例：無効な引数を渡した）
+.SH "追加情報"
 .PP
-標準で使用する単語ファイルはMakefileの\fIDICDIR変数\fR及び、\fIDICNME変数\fRで変更できます。
-一時的なバッファの最大サイズは、必要に応じてyasuna.hの\fIBUFLEN定数\fRにて変更して下さい。
+標準で使用する単語ファイルは、Makefileの\fIDICDIR変数\fR及び、\fIDICNME変数\fRにて指定されます。
+.PP
+単語ファイルより読み込んだデータを格納するバッファの容量初期値及び、再確保する際に加算される値は、
+.br
+src/config.hの\fITH_LINES\fR定数と\fITH_LENGTH\fR定数にて変更できます。
 .SH 謝辞
 元々このプログラムの発端は、@844196さんのRengeです。
 .br
@@ -74,4 +79,5 @@ for more details.
 
 .SH 関連項目
 .B renge
+.B clangsay
 .B cowsay

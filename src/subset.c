@@ -114,3 +114,13 @@ int create_rand(int lines)
 
     return ret;
 }
+
+void print_all_quotes(int lines, char** buf)
+{
+    int i   = 0;
+
+    for (i = 0; i < lines; i++)
+        fprintf(stdout, "%4d %s\n", i, buf[i]);
+
+    return;
+}
