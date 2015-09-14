@@ -76,17 +76,8 @@ FILE* open_file(char* path)
 {
     FILE*   fp;
 
-    /* open after checking file type */
-    if (check_file_type(path) == 0) {
-        fp = fopen(path, "r");
-    } else {
-        fprintf(stderr, "%s: %s: unknown file type\n",
-                PROGNAME, path);
-        
-        return NULL;
-    }
-    if (fp == NULL) {
-        fprintf(stderr, "%s : internal error -- 'no quotes file\n",
+    if ((fp = fopen(path, "r")) == NULL) {
+        fprintf(stderr, "%s: fp is NULL\n",
                 PROGNAME);
 
         return NULL;
