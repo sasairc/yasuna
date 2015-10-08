@@ -16,7 +16,7 @@
 #define PROGNAME        "yasuna"
 #define VERSION         7
 #define PATCHLEVEL      3
-#define SUBLEVEL        0
+#define SUBLEVEL        1
 #define EXTRAVERSION    ""
 
 #define AUTHOR          "sasairc"
