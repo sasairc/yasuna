@@ -60,6 +60,10 @@ $ make PREFIX=/foo/bar	# デフォルトでは、PREFIX=/usr/localです
 	  cpu MHz         : 2933.470
 	```
 
+## Note
+Twitter: [@sasairc_yasuna](https://twitter.com/sasairc_yasuna)にて本プログラムを使用しています。	
+`-n, --number`オプション同等の機能も実装していますので、興味があればプレビューとして使ってみて下さい。
+
 ## Thanks
 * [Masaya Tk](https://github.com/844196)  
 	Homebrew用のリポジトリを提供して頂き、ありがとうございます！
