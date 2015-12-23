@@ -110,8 +110,10 @@ void print_all_quotes(int lines, char** buf)
 {
     int i   = 0;
 
-    for (i = 0; i < lines; i++)
+    while (i < lines) {
         fprintf(stdout, "%4d %s\n", i, buf[i]);
+        i++;
+    }
 
     return;
 }
