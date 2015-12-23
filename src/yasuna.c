@@ -79,10 +79,9 @@ int main(int argc, char* argv[])
         }
     }
 
-    if ((path = concat_file_path(&yasuna)) == NULL) {
-
+    if ((path = concat_file_path(&yasuna)) == NULL)
         return 1;
-    }
+
     if (check_file_stat(path) != 0) {
         release(NULL, path, 0, NULL);
 
