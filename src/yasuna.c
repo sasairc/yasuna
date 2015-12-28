@@ -106,13 +106,6 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    /* lf to null */
-    i = 0;
-    while (i < lines) {
-        strlftonull(buf[i]);
-        i++;
-    }
-
     /* 
      * print all quotes list and exit
      */
@@ -131,6 +124,7 @@ int main(int argc, char* argv[])
         if (lines > yasuna.narg)
             point = yasuna.narg;
     }
+    strlftonull(buf[point]);
 
     /* print of string */
     fprintf(stdout, "%s\n", buf[point]);

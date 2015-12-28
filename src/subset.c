@@ -103,6 +103,7 @@ void print_all_quotes(int lines, char** buf)
     int i   = 0;
 
     while (i < lines) {
+        strlftonull(buf[i]);
         fprintf(stdout, "%4d %s\n", i, buf[i]);
         i++;
     }
