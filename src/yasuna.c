@@ -79,18 +79,15 @@ int main(int argc, char* argv[])
         }
     }
 
+    /* concat file path */
     if ((path = concat_file_path(&yasuna)) == NULL)
         return 1;
 
-    if (check_file_stat(path) != 0) {
+    /* open yasuna-quotes */
+    if (open_quote_file(path, &fp) > 0) {
         release(NULL, path, 0, NULL);
 
         return 2;
-    }
-    if ((fp = open_file(path)) == NULL) {
-        release(NULL, path, 0, NULL);
-
-        return 3;
     }
 
     /* reading file to array */
@@ -99,8 +96,9 @@ int main(int argc, char* argv[])
                 PROGNAME);
         release(fp, path, 0, NULL);
 
-        return 4;
+        return 3;
     }
+
     /* count line for text-file */
     if ((lines = p_count_file_lines(buf)) == 0) {
         release(fp, path, lines, buf);
@@ -108,8 +106,12 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    for (i = 0; i < lines; i++)
-        strlftonull(buf[i]);                    /* lf to null */
+    /* lf to null */
+    i = 0;
+    while (i < lines) {
+        strlftonull(buf[i]);
+        i++;
+    }
 
     /* 
      * print all quotes list and exit
@@ -123,15 +125,18 @@ int main(int argc, char* argv[])
 
     if (yasuna.nflag == 0) {
         do {
-            point = create_rand(lines);         /* get pseudo-random nuber */
+            point = create_rand(lines);     /* get pseudo-random nuber */
         } while (buf[point] == NULL);
     } else {
         if (lines > yasuna.narg)
             point = yasuna.narg;
     }
 
-    fprintf(stdout, "%s\n", buf[point]);        /* print of string */
-    release(fp, path, lines, buf);              /* release memory */
+    /* print of string */
+    fprintf(stdout, "%s\n", buf[point]);
+
+    /* release memory */
+    release(fp, path, lines, buf);
 
     return 0;
 }
@@ -140,6 +145,7 @@ void release(FILE* fp, char* path, int lines, char** buf)
 {
     if (fp != NULL) {
         fclose(fp);
+        fp = NULL;
     }
     if (path != NULL) {
         free(path);
