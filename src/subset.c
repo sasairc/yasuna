@@ -43,17 +43,17 @@ char* concat_file_path(yasuna_t* yasuna)
     return path;
 }
 
-int check_file_stat(char* path)
+int open_quote_file(char* path, FILE** fp)
 {
-    struct  stat st;        /* file status */
+    struct  stat st;
 
-    /* checking type of file or directory */
     if (stat(path, &st) != 0) {
         fprintf(stderr, "%s: %s: no such file or directory\n",
                 PROGNAME, path);
 
         return 1;
     }
+
     if ((st.st_mode & S_IFMT) == S_IFDIR) {
         fprintf(stderr, "%s: %s: is a directory\n",
                 PROGNAME, path);
@@ -61,7 +61,6 @@ int check_file_stat(char* path)
         return 2;
     }
 
-    /* checking file permission */
     if (access(path, R_OK) != 0) {
         fprintf(stderr, "%s: %s: permission denied\n",
                 PROGNAME, path);
@@ -69,21 +68,14 @@ int check_file_stat(char* path)
         return 3;
     }
 
-    return 0;
-}
-
-FILE* open_file(char* path)
-{
-    FILE*   fp;
-
-    if ((fp = fopen(path, "r")) == NULL) {
+    if ((*fp = fopen(path, "r")) == NULL) {
         fprintf(stderr, "%s: fp is NULL\n",
                 PROGNAME);
 
-        return NULL;
+        return 4;
     }
 
-    return fp;
+    return 0;
 }
 
 int create_rand(int lines)
@@ -111,6 +103,7 @@ void print_all_quotes(int lines, char** buf)
     int i   = 0;
 
     while (i < lines) {
+        strlftonull(buf[i]);
         fprintf(stdout, "%4d %s\n", i, buf[i]);
         i++;
     }
