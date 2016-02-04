@@ -19,7 +19,8 @@
 
 /* This functions is required subset.c */
 extern char* concat_file_path(yasuna_t* yasuna);
-extern int open_quote_file(char* path, FILE** fp);
+extern int open_dict_file(char* path, FILE** fp);
+extern int read_dict_file(FILE* fp, polyaness_t** pt);
 extern int create_rand(int lines);
 extern void print_all_quotes(polyaness_t* pt);
 

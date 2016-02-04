@@ -85,25 +85,17 @@ int main(int argc, char* argv[])
         return 1;
 
     /* open yasuna-quotes */
-    if (open_quote_file(path, &fp) > 0) {
+    if (open_dict_file(path, &fp) < 0) {
         release(NULL, path, NULL);
 
         return 2;
     }
 
-    /* initialize libpolyaness */
-    if (init_polyaness(fp, &pt) < 0) {
-        fprintf(stderr, "%s: init_polyaness() failure\n",
-                PROGNAME);
+    /* read dict */
+    if (read_dict_file(fp, &pt) < 0) {
         release(NULL, path, NULL);
-        
-        return 3;
-    }
-    /* no data */
-    if (pt->recs == 0) {
-        release(fp, path, pt);
 
-        return 0;
+        return 3;
     }
 
     /* do parse polyaness */
@@ -112,7 +104,7 @@ int main(int argc, char* argv[])
                 PROGNAME);
         release(fp, path, pt);
 
-        return 5;
+        return 4;
     }
 
     /* 

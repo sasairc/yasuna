@@ -43,7 +43,7 @@ char* concat_file_path(yasuna_t* yasuna)
     return path;
 }
 
-int open_quote_file(char* path, FILE** fp)
+int open_dict_file(char* path, FILE** fp)
 {
     struct  stat st;
 
@@ -51,28 +51,47 @@ int open_quote_file(char* path, FILE** fp)
         fprintf(stderr, "%s: %s: no such file or directory\n",
                 PROGNAME, path);
 
-        return 1;
+        return -1;
     }
 
     if ((st.st_mode & S_IFMT) == S_IFDIR) {
         fprintf(stderr, "%s: %s: is a directory\n",
                 PROGNAME, path);
 
-        return 2;
+        return -2;
     }
 
     if (access(path, R_OK) != 0) {
         fprintf(stderr, "%s: %s: permission denied\n",
                 PROGNAME, path);
 
-        return 3;
+        return -3;
     }
 
     if ((*fp = fopen(path, "r")) == NULL) {
         fprintf(stderr, "%s: fp is NULL\n",
                 PROGNAME);
 
-        return 4;
+        return -4;
+    }
+
+    return 0;
+}
+
+int read_dict_file(FILE* fp, polyaness_t** pt)
+{
+    /* initialize libpolyaness */
+    if (init_polyaness(fp, pt) < 0) {
+        fprintf(stderr, "%s: init_polyaness() failure\n",
+                PROGNAME);
+        
+        return -1;
+    }
+    /* no data */
+    if ((*pt)->recs == 0) {
+        release_polyaness(*pt);
+
+        return -1;
     }
 
     return 0;
