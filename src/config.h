@@ -16,8 +16,8 @@
 #define PROGNAME        "yasuna"
 #define VERSION         7
 #define PATCHLEVEL      3
-#define SUBLEVEL        3
-#define EXTRAVERSION    ""
+#define SUBLEVEL        4
+#define EXTRAVERSION    "-devel with-polyaness"
 
 #define AUTHOR          "sasairc"
 #define MAIL_TO         "sasairc@ssiserver.moe.hm"
