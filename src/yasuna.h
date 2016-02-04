@@ -14,6 +14,7 @@
 #define _YASUNA_H
 
 #include <stdio.h>
+#include "./polyaness.h"
 
 typedef struct YASUNA_T {
     int lflag;      /* List flag(--list). */
@@ -23,8 +24,6 @@ typedef struct YASUNA_T {
     char* farg;     /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
 } yasuna_t;
 
-extern void release(FILE* fp, char* path, int lines, char** buf);
-extern int print_version(void);
-extern int print_usage(void);
+extern void release(FILE* fp, char* path, polyaness_t* polyaness);
 
 #endif

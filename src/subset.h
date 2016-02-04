@@ -14,12 +14,13 @@
 #define SUBSET_H
 
 #include "./yasuna.h"
+#include "./polyaness.h"
 #include <stdio.h>
 
 /* This functions is required subset.c */
 extern char* concat_file_path(yasuna_t* yasuna);
 extern int open_quote_file(char* path, FILE** fp);
 extern int create_rand(int lines);
-extern void print_all_quotes(int lines, char** buf);
+extern void print_all_quotes(polyaness_t* pt);
 
 #endif

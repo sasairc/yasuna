@@ -13,7 +13,7 @@
 #include "./config.h"
 #include "./subset.h"
 #include "./string.h"
-#include "./file.h"
+#include "./polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -98,13 +98,19 @@ int create_rand(int lines)
     return ret;
 }
 
-void print_all_quotes(int lines, char** buf)
+void print_all_quotes(polyaness_t* pt)
 {
-    int i   = 0;
+    int     i       = 0;
 
-    while (i < lines) {
-        strlftonull(buf[i]);
-        fprintf(stdout, "%4d %s\n", i, buf[i]);
+    char*   speaker = NULL,
+        *   quote   = NULL;
+
+    while (i < pt->recs) {
+        speaker = get_polyaness("speaker", i, &pt);
+        quote = get_polyaness("quote", i, &pt);
+
+        fprintf(stdout, "%4d: %s: %s\n",
+                i, speaker, quote);
         i++;
     }
 
