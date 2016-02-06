@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
         return 2;
     }
 
-    /* read dict */
+    /* read dict file */
     if (read_dict_file(fp, &pt) < 0) {
         release(NULL, path, NULL);
 
@@ -99,9 +99,7 @@ int main(int argc, char* argv[])
     }
 
     /* do parse polyaness */
-    if (parse_polyaness(fp, &pt) < 0) {
-        fprintf(stderr, "%s: parse_polyaness() failure\n",
-                PROGNAME);
+    if (parse_dict_file(fp, &pt) < 0) {
         release(fp, path, pt);
 
         return 4;
@@ -121,10 +119,10 @@ int main(int argc, char* argv[])
         quote = get_polyaness("quote",
                 create_rand(pt->recs - 1), &pt);
     } else {
-        if (yasuna.narg < pt->recs)
-            quote = get_polyaness("quote", yasuna.narg, &pt);
+        if ((yasuna.narg + 1) < pt->recs)
+            quote = get_polyaness("quote", yasuna.narg + 1, &pt);
         else
-            quote = get_polyaness("quote", 0, &pt);
+            quote = get_polyaness("quote", 1, &pt);
     }
 
     /* print of string */
