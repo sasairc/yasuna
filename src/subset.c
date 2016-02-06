@@ -14,6 +14,7 @@
 #include "./subset.h"
 #include "./file.h"
 #include "./string.h"
+#include "./memory.h"
 #include "./polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -151,21 +152,29 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     }
 
     (*pt)->recs++;
-    (*pt)->record = (polyaness_cell**)
-        realloc((*pt)->record, sizeof(polyaness_cell*) * (*pt)->recs);
-    (*pt)->record[(*pt)->recs - 1] = (polyaness_cell*)
-        malloc(sizeof(polyaness_cell));
+    if (((*pt)->record = (polyaness_cell**)
+        realloc((*pt)->record, sizeof(polyaness_cell*) * (*pt)->recs)) == NULL)
+        goto ERR;
+
+    if (((*pt)->record[(*pt)->recs - 1] = (polyaness_cell*)
+        malloc(sizeof(polyaness_cell))) == NULL)
+        goto ERR;
 
     (*pt)->record[(*pt)->recs - 1]->keys = 1;
+
     (*pt)->record[(*pt)->recs - 1]->key = (char**)
         malloc(sizeof(char*));
     (*pt)->record[(*pt)->recs - 1]->value = (char**)
         malloc(sizeof(char*));
+    if ((*pt)->record[(*pt)->recs - 1]->key == NULL         ||
+            (*pt)->record[(*pt)->recs - 1]->value == NULL)
+        goto ERR;
 
-    quote = (char*)
-        malloc(sizeof(char) * (strlen("quote") + 1));
+    if ((quote = (char*)
+        malloc(sizeof(char) * (strlen("quote") + 1))) == NULL)
+        goto ERR;
+
     memcpy(quote, "quote\0", strlen("quote") + 1);
-
     while (i < (*pt)->recs) {
         strlftonull(buf[i - 1]);
         (*pt)->record[i]->key[0] = quote;
@@ -175,6 +184,15 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     free(buf);
 
     return 0;
+
+ERR:
+    if (quote != NULL)
+        free(quote);
+    
+    if (buf != NULL)
+        free2d(buf, p_count_file_lines(buf));
+
+    return -2;
 }
 
 int create_rand(int lines)
