@@ -119,10 +119,10 @@ int main(int argc, char* argv[])
         quote = get_polyaness("quote",
                 create_rand(pt->recs - 1), &pt);
     } else {
-        if ((yasuna.narg + 1) < pt->recs)
-            quote = get_polyaness("quote", yasuna.narg + 1, &pt);
+        if (yasuna.narg < pt->recs)
+            quote = get_polyaness("quote", yasuna.narg, &pt);
         else
-            quote = get_polyaness("quote", 1, &pt);
+            quote = get_polyaness("quote", 0, &pt);
     }
 
     /* print of string */

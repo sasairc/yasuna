@@ -94,7 +94,7 @@ int read_dict_file(FILE* fp, polyaness_t** pt)
     if ((*pt)->recs == 0) {
         release_polyaness(*pt);
 
-        return -1;
+        return -2;
     }
 
     return 0;
@@ -102,6 +102,8 @@ int read_dict_file(FILE* fp, polyaness_t** pt)
 
 int parse_dict_file(FILE* fp, polyaness_t** pt)
 {
+    int     i       = 0;
+
     char*   type    = NULL;
 
     if (parse_polyaness(fp, pt) < 0) {
@@ -111,6 +113,7 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
         return -1;
     }
 
+    /* get filetype record */
     if ((type = get_polyaness("filetype", 0, pt)) == NULL) {
         if (plain_dict_to_polyaness(fp, pt) < 0) {
             fprintf(stderr, "%s: plain_dict_to_polyaness() failure\n",
@@ -122,15 +125,34 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
         return 0;
     }
 
-    if (strcmp("polyaness_dict", type) != 0) {
+    /* check record filetype:polyaness_dict */
+    if (strcmp("polyaness_dict", type) == 0) {
+        /* release header */
+        while (i < (*pt)->record[0]->keys) {
+            if ((*pt)->record[0]->key[i] != NULL)
+                free((*pt)->record[0]->key[i]);
+            if ((*pt)->record[0]->value[i] != NULL)
+                free((*pt)->record[0]->value[i]);
+            i++;
+        }
+        free((*pt)->record[0]->key);
+        free((*pt)->record[0]->value);
+        free((*pt)->record[0]);
+
+        /* shift record */
+        i = 0;
+        while (i < (*pt)->recs) {
+            (*pt)->record[i] = (*pt)->record[i + 1];
+            i++;
+        }
+        (*pt)->recs--;
+    } else {
         if (plain_dict_to_polyaness(fp, pt) < 0) {
             fprintf(stderr, "%s: plain_dict_to_polyaness() failure\n",
                     PROGNAME);
 
             return -3;
         }
-
-        return 0;
     }
 
     return 0;
@@ -138,7 +160,7 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
 
 int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 {
-    int     i       = 1;
+    int     i       = 0;
 
     char*   quote   = NULL,
         **  buf     = NULL;
@@ -151,48 +173,31 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
         return -1;
     }
 
-    (*pt)->recs++;
-    if (((*pt)->record = (polyaness_cell**)
-        realloc((*pt)->record, sizeof(polyaness_cell*) * (*pt)->recs)) == NULL)
-        goto ERR;
-
-    if (((*pt)->record[(*pt)->recs - 1] = (polyaness_cell*)
-        malloc(sizeof(polyaness_cell))) == NULL)
-        goto ERR;
-
-    (*pt)->record[(*pt)->recs - 1]->keys = 1;
-
-    (*pt)->record[(*pt)->recs - 1]->key = (char**)
-        malloc(sizeof(char*));
-    (*pt)->record[(*pt)->recs - 1]->value = (char**)
-        malloc(sizeof(char*));
-    if ((*pt)->record[(*pt)->recs - 1]->key == NULL         ||
-            (*pt)->record[(*pt)->recs - 1]->value == NULL)
-        goto ERR;
-
     if ((quote = (char*)
-        malloc(sizeof(char) * (strlen("quote") + 1))) == NULL)
-        goto ERR;
+                malloc(sizeof(char) * (strlen("quote") + 1))) == NULL) {
+        fprintf(stderr, "%s: malloc() failure\n",
+                PROGNAME);
 
+        if (quote != NULL)
+            free(quote);
+    
+        if (buf != NULL)
+            free2d(buf, p_count_file_lines(buf));
+
+        return -2;
+    }
+
+    /* mapping char* address to polyaness_t */
     memcpy(quote, "quote\0", strlen("quote") + 1);
     while (i < (*pt)->recs) {
-        strlftonull(buf[i - 1]);
+        strlftonull(buf[i]);
         (*pt)->record[i]->key[0] = quote;
-        (*pt)->record[i]->value[0] = buf[i - 1];
+        (*pt)->record[i]->value[0] = buf[i];
         i++;
     }
     free(buf);
 
     return 0;
-
-ERR:
-    if (quote != NULL)
-        free(quote);
-    
-    if (buf != NULL)
-        free2d(buf, p_count_file_lines(buf));
-
-    return -2;
 }
 
 int create_rand(int lines)
@@ -201,7 +206,8 @@ int create_rand(int lines)
 
     struct  timeval lo_timeval;
 
-    gettimeofday(&lo_timeval, NULL);    /* get localtime */
+    /* get localtime */
+    gettimeofday(&lo_timeval, NULL);
 
     /* 
      * # setting factor for pseudo-random number
@@ -211,24 +217,19 @@ int create_rand(int lines)
         lo_timeval.tv_usec * getpid()
     ));
 
-    do {
-        ret = (int)(rand()%(lines+1));      /* create pseudo-random number */
-    } while (ret == 0);
+    /* create pseudo-random number */
+    ret = (int)(rand()%(lines+1));
 
     return ret;
 }
 
 void print_all_quotes(polyaness_t* pt)
 {
-    int     i       = 1;
-
-    char*   quote   = NULL;
+    int     i       = 0;
 
     while (i < pt->recs) {
-        quote = get_polyaness("quote", i, &pt);
-
         fprintf(stdout, "%4d %s\n",
-                i - 1, quote);
+                i, get_polyaness("quote", i, &pt));
         i++;
     }
 
