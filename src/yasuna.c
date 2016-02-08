@@ -15,7 +15,6 @@
 #include "./info.h"
 #include "./subset.h"
 #include "./string.h"
-#include "./file.h"
 #include "./memory.h"
 #include <stdio.h>
 #include <string.h>
@@ -25,14 +24,16 @@
 
 int main(int argc, char* argv[])
 {
-    int     i       = 0,
-            res     = 0,    /* use getopt_long() */
-            index   = 0,
-            lines   = 0,    /* text lines */
-            point   = 0;    /* lines pointer */
-    FILE*   fp      = NULL; /* quotes file */
-    char*   path    = NULL, /* dictionary file path */
-        **  buf     = NULL; /* string buffer */
+    int             i       = 0,
+                    res     = 0,    /* use getopt_long() */
+                    index   = 0;
+
+    FILE*           fp      = NULL; /* dict file */
+
+    char*           path    = NULL, /* dict file path */
+        *           quote   = NULL;
+
+    polyaness_t*    pt      = NULL;
 
     /* flag and args */
     yasuna_t yasuna = { 
@@ -84,58 +85,56 @@ int main(int argc, char* argv[])
         return 1;
 
     /* open yasuna-quotes */
-    if (open_quote_file(path, &fp) > 0) {
-        release(NULL, path, 0, NULL);
+    if (open_dict_file(path, &fp) < 0) {
+        release(NULL, path, NULL);
 
         return 2;
     }
 
-    /* reading file to array */
-    if ((buf = p_read_file_char(TH_LINES, TH_LENGTH, fp)) == NULL) {
-        fprintf(stderr, "%s: p_read_file_char() failure\n",
-                PROGNAME);
-        release(fp, path, 0, NULL);
+    /* read dict file */
+    if (read_dict_file(fp, &pt) < 0) {
+        release(NULL, path, NULL);
 
         return 3;
     }
 
-    /* count line for text-file */
-    if ((lines = p_count_file_lines(buf)) == 0) {
-        release(fp, path, lines, buf);
+    /* do parse polyaness */
+    if (parse_dict_file(fp, &pt) < 0) {
+        release(fp, path, pt);
 
-        return 0;
+        return 4;
     }
 
     /* 
      * print all quotes list and exit
      */
     if (yasuna.lflag == 1) {
-        print_all_quotes(lines, buf);
-        release(fp, path, lines, buf);
+        print_all_quotes(pt);
+        release(fp, path, pt);
 
         return 0;
     }
 
     if (yasuna.nflag == 0) {
-        do {
-            point = create_rand(lines);     /* get pseudo-random nuber */
-        } while (buf[point] == NULL);
+        quote = get_polyaness("quote",
+                create_rand(pt->recs - 1), &pt);
     } else {
-        if (lines > yasuna.narg)
-            point = yasuna.narg;
+        if (yasuna.narg < pt->recs)
+            quote = get_polyaness("quote", yasuna.narg, &pt);
+        else
+            quote = get_polyaness("quote", 0, &pt);
     }
-    strlftonull(buf[point]);
 
     /* print of string */
-    fprintf(stdout, "%s\n", buf[point]);
+    fprintf(stdout, "%s\n", quote);
 
     /* release memory */
-    release(fp, path, lines, buf);
+    release(fp, path, pt);
 
     return 0;
 }
 
-void release(FILE* fp, char* path, int lines, char** buf)
+void release(FILE* fp, char* path, polyaness_t* pt)
 {
     if (fp != NULL) {
         fclose(fp);
@@ -145,8 +144,8 @@ void release(FILE* fp, char* path, int lines, char** buf)
         free(path);
         path = NULL;
     }
-    if (buf != NULL) {
-        free2d(buf, lines);
+    if (pt != NULL) {
+        release_polyaness(pt);
     }
 
     return;

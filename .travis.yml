@@ -21,6 +21,6 @@ script:
     - ${TEST_PREFIX}/bin/yasuna --help
     - ${TEST_PREFIX}/bin/yasuna
     - random_test "$TEST_PREFIX"
-    - sequential_test "$TEST_PREFIX"
+#    - sequential_test "$TEST_PREFIX"
     - rm -rf ${TEST_PREFIX}
     - unset TEST_PREFIX
