@@ -28,12 +28,12 @@ int main(int argc, char* argv[])
                     res     = 0,    /* use getopt_long() */
                     index   = 0;
 
-    FILE*           fp      = NULL; /* quotes file */
+    FILE*           fp      = NULL; /* dict file */
 
-    char*           path    = NULL, /* dictionary file path */
+    char*           path    = NULL, /* dict file path */
         *           quote   = NULL;
 
-    polyaness_t*    pt  = NULL;
+    polyaness_t*    pt      = NULL;
 
     /* flag and args */
     yasuna_t yasuna = { 

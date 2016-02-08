@@ -190,7 +190,6 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     /* mapping char* address to polyaness_t */
     memcpy(quote, "quote\0", strlen("quote") + 1);
     while (i < (*pt)->recs) {
-        strlftonull(buf[i]);
         (*pt)->record[i]->key[0] = quote;
         (*pt)->record[i]->value[0] = buf[i];
         i++;
