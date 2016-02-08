@@ -213,18 +213,27 @@ char* get_polyaness(const char* key, int record, polyaness_t** polyaness)
             (*polyaness)->recs < record)
         return NULL;
 
-    int     i       = 0;
+    int     i       = 0,
+            j       = 0;
     
     char*   match   = NULL;
 
-    while (i < (*polyaness)->record[record]->keys) {
+    j = (*polyaness)->record[record]->keys - 1;
+    while (i < (*polyaness)->record[record]->keys && i <= j) {
         if ((*polyaness)->record[record]->key[i] != NULL) {
             if (strcmp((*polyaness)->record[record]->key[i], key) == 0) {
                 match = (*polyaness)->record[record]->value[i];
                 break;
             }
         }
+        if ((*polyaness)->record[record]->key[j] != NULL) {
+            if (strcmp((*polyaness)->record[record]->key[j], key) == 0) {
+                match = (*polyaness)->record[record]->value[j];
+                break;
+            }
+        }
         i++;
+        j--;
     }
 
     return match;
