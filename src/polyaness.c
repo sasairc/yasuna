@@ -37,7 +37,7 @@
 int count_keys(const char* str);
 int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** polyaness);
 
-int init_polyaness(FILE* fp, polyaness_t** polyaness)
+int init_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
 {
     if (fp == NULL)
         return -1;
@@ -49,9 +49,15 @@ int init_polyaness(FILE* fp, polyaness_t** polyaness)
     polyaness_t*    pt      = NULL;
 
     rewind(fp);
-    while ((code = fgetc(fp)) != EOF)
-        if (code == LF)
+    while ((code = fgetc(fp)) != EOF) {
+        if (code == LF) {
+            if (offset > 0) {
+                offset--;
+                continue;
+            }
             recs++;
+        }
+    }
 
     if ((pt = (polyaness_t*)
             malloc(sizeof(polyaness_t))) == NULL)
@@ -97,7 +103,7 @@ ERR:
     return -1;
 }
 
-int parse_polyaness(FILE* fp, polyaness_t** polyaness)
+int parse_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
 {
     if (fp == NULL || *polyaness == NULL)
         return -1;
@@ -117,12 +123,18 @@ int parse_polyaness(FILE* fp, polyaness_t** polyaness)
     rewind(fp);
     while ((code = fgetc(fp)) != EOF) {
         if (code == LF) {
+            if (offset > 0) {
+                offset--;
+                continue;
+            }
             if (add_data_polyaness(recs, count_keys(buf), buf, &polyaness) < 0)
                 goto ERR;
             memset(buf, '\0', x_bufl);
             recs++;
             len = 0;
         } else {
+            if (offset > 0)
+                continue;
             if (len == (x_bufl - 1)) {
                 x_bufl += BUFLEN;
                 if ((buf = (char*)
