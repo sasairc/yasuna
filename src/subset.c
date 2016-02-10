@@ -84,7 +84,7 @@ int open_dict_file(char* path, FILE** fp)
 int read_dict_file(FILE* fp, polyaness_t** pt)
 {
     /* initialize libpolyaness */
-    if (init_polyaness(fp, pt) < 0) {
+    if (init_polyaness(fp, 0, pt) < 0) {
         fprintf(stderr, "%s: init_polyaness() failure\n",
                 PROGNAME);
         
@@ -106,7 +106,7 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
 
     char*   type    = NULL;
 
-    if (parse_polyaness(fp, pt) < 0) {
+    if (parse_polyaness(fp, 0, pt) < 0) {
         fprintf(stderr, "%s: parse_polyaness() failure\n",
                 PROGNAME);
 
@@ -160,7 +160,8 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
 
 int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 {
-    int     i       = 0;
+    int     i       = 0,
+            j       = 0;
 
     char*   quote   = NULL,
         **  buf     = NULL;
@@ -189,10 +190,14 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 
     /* mapping char* address to polyaness_t */
     memcpy(quote, "quote\0", strlen("quote") + 1);
-    while (i < (*pt)->recs) {
+    j = (*pt)->recs - 1;
+    while (i < (*pt)->recs && i <= j) {
         (*pt)->record[i]->key[0] = quote;
         (*pt)->record[i]->value[0] = buf[i];
+        (*pt)->record[j]->key[0] = quote;
+        (*pt)->record[j]->value[0] = buf[j];
         i++;
+        j--;
     }
     free(buf);
 

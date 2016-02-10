@@ -115,6 +115,9 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    /*
+     * generate output quote
+     */
     if (yasuna.nflag == 0) {
         quote = get_polyaness("quote",
                 create_rand(pt->recs - 1), &pt);
