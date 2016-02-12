@@ -14,6 +14,8 @@ script:
     - cleanup "$TEST_PREFIX"
     - install_man "$CC" "$TEST_PREFIX"
     - cleanup "$TEST_PREFIX"
+    - install_doc "$CC" "$TEST_PREFIX"
+    - cleanup "$TEST_PREFIX"
     - install_zsh_compdef "$CC" "$TEST_PREFIX"
     - cleanup "$TEST_PREFIX"
     - install_all "$CC" "$TEST_PREFIX"

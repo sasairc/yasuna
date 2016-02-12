@@ -6,4 +6,8 @@ install-man: yasuna.6
 	install -pd $(MANDIR)
 	install -pm 644 $< $(MANDIR)/
 
-.PHONY: install-man
+install-doc:
+	@$(MAKE) -C ./polyaness	$@
+
+.PHONY: install-man	\
+	install-doc

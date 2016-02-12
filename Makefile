@@ -9,6 +9,7 @@ PREFIX	:= /usr/local
 BINDIR	:= $(PREFIX)/bin
 DICDIR	:= $(PREFIX)/share/$(TARGET)
 MANDIR	:= $(PREFIX)/share/man/ja/man6
+DOCDIR	:= $(PREFIX)/share/doc/yasuna
 MAKE	:= make
 CC	:= cc
 RM	:= rm
@@ -25,6 +26,9 @@ install-quotes:
 	
 install-man:
 	@$(MAKE) -C ./doc	$@
+
+install-doc:
+	@$(MAKE) -C ./doc	$@
 	
 install-zsh-compdef: 
 	@$(MAKE) -C ./compdef	$@
@@ -32,6 +36,7 @@ install-zsh-compdef:
 install: install-bin		\
 	 install-quotes		\
 	 install-man		\
+	 install-doc		\
 	 install-zsh-compdef
 
 .PHONY:	all			\
@@ -39,5 +44,6 @@ install: install-bin		\
 	install-bin		\
 	install-quotes		\
 	install-man		\
+	install-doc		\
 	install-zsh-compdef	\
 	clean
