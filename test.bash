@@ -45,7 +45,7 @@ function install_man() {
     return $?
 }
 
-function install_man() {
+function install_doc() {
     echo "*** target install-doc ***"
     make CC="$1" PREFIX="$2" install-doc && \
         tree "$2"
