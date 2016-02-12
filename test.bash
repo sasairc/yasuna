@@ -45,6 +45,14 @@ function install_man() {
     return $?
 }
 
+function install_man() {
+    echo "*** target install-doc ***"
+    make CC="$1" PREFIX="$2" install-doc && \
+        tree "$2"
+
+    return $?
+}
+
 function install_zsh_compdef() {
     echo "*** target install-zsh-compdef ***"
     make CC="$1" PREFIX="$2" install-zsh-compdef && \
