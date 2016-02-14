@@ -44,7 +44,11 @@ make に関する追加情報
 
   * MANDIR
   日本語manページのインストール先を指定するオプション。
-  未指定の場合は、 MANDIR=$(PREFIX)/man/ja/man6 となる。
+  未指定の場合は、 MANDIR=$(PREFIX)/share/man/ja/man6 となる。
+
+  * DOCDIR
+  Polyaness 標準仕様等、ドキュメントのインストール先を指定するオプション。
+  未指定の場合は、 DOCDIR=$(PREFIX)/share/doc/yasunaとなる。
 
   * DICDIR
   辞書ファイルのインストール先を指定するオプション。
@@ -84,7 +88,10 @@ make に関する追加情報
   実行ファイルのみをインストールする。
 
   * install-man
-  manページのみをインストールする。
+  man ページのみをインストールする。
+
+  * install-doc
+  ドキュメントのみをインストールする。
 
   * install-quotes
   辞書ファイルのみをインストールする、
@@ -98,4 +105,4 @@ make に関する追加情報
   上記の install-* を実行する。
 
 
--- sasairc <sasairc@ssiserver.moe.hm>  Tue, 22 Sep 2015 02:07:48 +0900
+-- sasairc <sasairc@ssiserver.moe.hm>  Sun, 14 Feb 2016 18:14:38 +0900
