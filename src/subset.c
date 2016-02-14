@@ -102,7 +102,7 @@ int read_dict_file(FILE* fp, polyaness_t** pt)
 
 int parse_dict_file(FILE* fp, polyaness_t** pt)
 {
-    int     i       = 0;
+    int i   = 0;
 
     if (parse_polyaness(fp, 0, pt) < 0) {
         fprintf(stderr, "%s: parse_polyaness() failure\n",
@@ -137,7 +137,7 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
             fprintf(stderr, "%s: plain_dict_to_polyaness() failure\n",
                     PROGNAME);
 
-            return -3;
+            return -2;
         }
     }
 
