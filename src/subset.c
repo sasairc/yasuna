@@ -104,8 +104,6 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
 {
     int     i       = 0;
 
-    char*   type    = NULL;
-
     if (parse_polyaness(fp, 0, pt) < 0) {
         fprintf(stderr, "%s: parse_polyaness() failure\n",
                 PROGNAME);
@@ -113,20 +111,8 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
         return -1;
     }
 
-    /* get filetype record */
-    if ((type = get_polyaness("filetype", 0, pt)) == NULL) {
-        if (plain_dict_to_polyaness(fp, pt) < 0) {
-            fprintf(stderr, "%s: plain_dict_to_polyaness() failure\n",
-                    PROGNAME);
-
-            return -2;
-        }
-
-        return 0;
-    }
-
-    /* check record filetype:polyaness_dict */
-    if (strcmp("polyaness_dict", type) == 0) {
+    if (strcmp_lite("polyaness_dict",
+                get_polyaness("filetype", 0, pt)) == 0) {
         /* release header */
         while (i < (*pt)->record[0]->keys) {
             if ((*pt)->record[0]->key[i] != NULL)
