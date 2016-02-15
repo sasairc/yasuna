@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 
@@ -186,6 +187,23 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
         j--;
     }
     free(buf);
+
+    return 0;
+}
+
+int strisdigit(char* str)
+{
+    int i   = 0;
+
+    while (i < strlen(str)) {
+        if (!isdigit(*(str + i))) {
+            fprintf(stderr, "%s: %s: invalid number of quote\n",
+                    PROGNAME, str);
+
+            return -1;
+        }
+        i++;
+    }
 
     return 0;
 }
