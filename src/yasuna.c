@@ -14,6 +14,7 @@
 #include "./yasuna.h"
 #include "./info.h"
 #include "./subset.h"
+#include "./polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
@@ -137,9 +138,8 @@ void release(FILE* fp, char* path, polyaness_t* pt)
         free(path);
         path = NULL;
     }
-    if (pt != NULL) {
+    if (pt != NULL)
         release_polyaness(pt);
-    }
 
     return;
 }
