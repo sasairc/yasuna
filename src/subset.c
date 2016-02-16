@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <ctype.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 
@@ -84,7 +85,7 @@ int open_dict_file(char* path, FILE** fp)
 int read_dict_file(FILE* fp, polyaness_t** pt)
 {
     /* initialize libpolyaness */
-    if (init_polyaness(fp, pt) < 0) {
+    if (init_polyaness(fp, 0, pt) < 0) {
         fprintf(stderr, "%s: init_polyaness() failure\n",
                 PROGNAME);
         
@@ -102,31 +103,17 @@ int read_dict_file(FILE* fp, polyaness_t** pt)
 
 int parse_dict_file(FILE* fp, polyaness_t** pt)
 {
-    int     i       = 0;
+    int i   = 0;
 
-    char*   type    = NULL;
-
-    if (parse_polyaness(fp, pt) < 0) {
+    if (parse_polyaness(fp, 0, pt) < 0) {
         fprintf(stderr, "%s: parse_polyaness() failure\n",
                 PROGNAME);
 
         return -1;
     }
 
-    /* get filetype record */
-    if ((type = get_polyaness("filetype", 0, pt)) == NULL) {
-        if (plain_dict_to_polyaness(fp, pt) < 0) {
-            fprintf(stderr, "%s: plain_dict_to_polyaness() failure\n",
-                    PROGNAME);
-
-            return -2;
-        }
-
-        return 0;
-    }
-
-    /* check record filetype:polyaness_dict */
-    if (strcmp("polyaness_dict", type) == 0) {
+    if (strcmp_lite("polyaness_dict",
+                get_polyaness("filetype", 0, pt)) == 0) {
         /* release header */
         while (i < (*pt)->record[0]->keys) {
             if ((*pt)->record[0]->key[i] != NULL)
@@ -151,7 +138,7 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
             fprintf(stderr, "%s: plain_dict_to_polyaness() failure\n",
                     PROGNAME);
 
-            return -3;
+            return -2;
         }
     }
 
@@ -160,7 +147,8 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
 
 int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 {
-    int     i       = 0;
+    int     i       = 0,
+            j       = 0;
 
     char*   quote   = NULL,
         **  buf     = NULL;
@@ -189,12 +177,33 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 
     /* mapping char* address to polyaness_t */
     memcpy(quote, "quote\0", strlen("quote") + 1);
-    while (i < (*pt)->recs) {
+    j = (*pt)->recs - 1;
+    while (i < (*pt)->recs && i <= j) {
         (*pt)->record[i]->key[0] = quote;
         (*pt)->record[i]->value[0] = buf[i];
+        (*pt)->record[j]->key[0] = quote;
+        (*pt)->record[j]->value[0] = buf[j];
         i++;
+        j--;
     }
     free(buf);
+
+    return 0;
+}
+
+int strisdigit(char* str)
+{
+    int i   = 0;
+
+    while (i < strlen(str)) {
+        if (!isdigit(*(str + i))) {
+            fprintf(stderr, "%s: %s: invalid number of quote\n",
+                    PROGNAME, str);
+
+            return -1;
+        }
+        i++;
+    }
 
     return 0;
 }

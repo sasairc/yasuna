@@ -14,18 +14,14 @@
 #include "./yasuna.h"
 #include "./info.h"
 #include "./subset.h"
-#include "./string.h"
-#include "./memory.h"
+#include "./polyaness.h"
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include <getopt.h>
 
 int main(int argc, char* argv[])
 {
-    int             i       = 0,
-                    res     = 0,    /* use getopt_long() */
+    int             res     = 0,
                     index   = 0;
 
     FILE*           fp      = NULL; /* dict file */
@@ -57,14 +53,9 @@ int main(int argc, char* argv[])
                 yasuna.fflag = 1;
                 break;
             case    'n':
-                for (i = 0; i < strlen(optarg); i++) {
-                    if (!isdigit(*(optarg + i))) {
-                        fprintf(stderr, "%s: %s: invalid number of quote\n",
-                                PROGNAME, optarg);
+                if (strisdigit(optarg) < 0)
+                    return -1;
 
-                        return -1;
-                    }
-                }
                 yasuna.narg = atoi(optarg);
                 yasuna.nflag = 1;
                 break;
@@ -115,6 +106,9 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    /*
+     * generate output quote
+     */
     if (yasuna.nflag == 0) {
         quote = get_polyaness("quote",
                 create_rand(pt->recs - 1), &pt);
@@ -144,9 +138,8 @@ void release(FILE* fp, char* path, polyaness_t* pt)
         free(path);
         path = NULL;
     }
-    if (pt != NULL) {
+    if (pt != NULL)
         release_polyaness(pt);
-    }
 
     return;
 }
