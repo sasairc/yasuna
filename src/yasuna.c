@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
     /* flag and args */
     yasuna_t yasuna = { 
-        0, 0, 0, 0 ,NULL,
+        YASUNA_ALLNO_FLAG,
     };
 
     struct option opts[] = {
@@ -120,7 +120,8 @@ int main(int argc, char* argv[])
     }
 
     /* print of string */
-    fprintf(stdout, "%s\n", quote);
+    fprintf(stdout, "%s\n",
+            quote);
 
     /* release memory */
     release(fp, path, pt);

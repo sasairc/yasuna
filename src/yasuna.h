@@ -24,6 +24,9 @@ typedef struct YASUNA_T {
     char* farg;     /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
 } yasuna_t;
 
+#define YASUNA_ALLNO_FLAG   \
+        0, 0, 0, 0 ,NULL
+
 extern void release(FILE* fp, char* path, polyaness_t* polyaness);
 
 #endif
