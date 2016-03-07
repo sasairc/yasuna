@@ -16,7 +16,7 @@
 #define PROGNAME        "yasuna"
 #define VERSION         7
 #define PATCHLEVEL      4
-#define SUBLEVEL        1
+#define SUBLEVEL        2
 #define EXTRAVERSION    ""
 
 #define AUTHOR          "sasairc"
@@ -27,7 +27,7 @@
  * TH_LINES  : threshold of lines
  * TH_LENGTH : threshold of string (sizeof(char) * TH_LENGTH)
  */
-#define TH_LINES        640
+#define TH_LINES        1024
 #define TH_LENGTH       640
 
 #undef MONO             /* パスを組み込みたくないときに使うといいかもネ */

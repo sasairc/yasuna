@@ -154,7 +154,7 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
         **  buf     = NULL;
 
     rewind(fp);
-    if ((buf = p_read_file_char(TH_LINES, TH_LENGTH, fp)) == NULL) {
+    if (p_read_file_char(&buf, TH_LINES, TH_LENGTH, fp, 1) < 0) {
         fprintf(stderr, "%s: p_read_file_char() failure\n",
                 PROGNAME);
 

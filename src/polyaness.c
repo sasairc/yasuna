@@ -46,6 +46,7 @@ int init_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
         return -1;
 
     int             i       = 0,
+                    j       = 0,
                     code    = 0,
                     recs    = 0;
 
@@ -71,15 +72,22 @@ int init_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
         goto    ERR;
 
     pt->recs = recs;
-    while (i <= recs) {
+    j = recs;
+    while (i <= j) {
         if ((pt->record[i] = (polyaness_cell*)
                 malloc(sizeof(polyaness_cell))) == NULL)
             goto    ERR;
+        pt->record[i]->key = NULL;
+        pt->record[i]->key = NULL;
 
-        pt->record[i]->key = NULL;
-        pt->record[i]->key = NULL;
+        if ((pt->record[j] = (polyaness_cell*)
+                malloc(sizeof(polyaness_cell))) == NULL)
+            goto    ERR;
+        pt->record[j]->key = NULL;
+        pt->record[j]->key = NULL;
 
         i++;
+        j--;
     }
     *polyaness = pt;
 
