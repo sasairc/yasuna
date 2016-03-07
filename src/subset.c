@@ -65,7 +65,7 @@ int open_dict_file(char* path, FILE** fp)
         return -2;
     }
 
-    if (access(path, R_OK) != 0) {
+    if ((st.st_mode & S_IREAD) == 0) {
         fprintf(stderr, "%s: %s: permission denied\n",
                 PROGNAME, path);
 
