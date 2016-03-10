@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
     }
 
     /* concat file path */
-    if ((path = concat_file_path(&yasuna)) == NULL)
+    if (concat_file_path(&path, &yasuna) < 0)
         return 1;
 
     /* open yasuna-quotes */
