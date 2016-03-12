@@ -17,7 +17,6 @@
 #include "./polyaness.h"
 #include <stdio.h>
 
-/* This functions is required subset.c */
 extern int concat_file_path(char** path, yasuna_t* yasuna);
 extern int open_dict_file(char* path, FILE** fp);
 extern int read_dict_file(FILE* fp, polyaness_t** pt);
@@ -27,4 +26,5 @@ extern int strisdigit(char* str);
 extern int create_rand(int lines);
 extern void print_all_quotes(polyaness_t* pt);
 
+/* SUBSET_H */
 #endif

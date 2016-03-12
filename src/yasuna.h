@@ -29,4 +29,5 @@ typedef struct YASUNA_T {
 
 extern void release(FILE* fp, char* path, polyaness_t* polyaness);
 
+/* _YASUNA_H */
 #endif
