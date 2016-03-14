@@ -7,7 +7,7 @@ yasuna
 [![build](https://img.shields.io/travis/sasairc/yasuna.svg?style=flat)](https://travis-ci.org/sasairc/yasuna)
 [![yasuna](https://img.shields.io/badge/yasuna-kawaii-orange.svg?style=flat)](http://houbunsha.co.jp/comics/detail.php?p=%A5%AD%A5%EB%A5%DF%A1%BC%A5%D9%A5%A4%A5%D9%A1%BC)
 
-![default](http://41.media.tumblr.com/78dd1ad58e3c540b7a769d0d107a12e7/tumblr_ntaaaw5uqk1u2jamko1_1280.png)
+![default](http://40.media.tumblr.com/947fc305e9d6018f657266d11f3d2b75/tumblr_o40mkusRaL1u2jamko1_1280.png)
 
 折部やすなちゃんの名言をランダムで表示します。  
 誤字脱字等あれば、issueやtwitterで報告して頂けると嬉しいです。		
@@ -61,15 +61,15 @@ yasuna
    1 100円払うから喋らせて
    2 DVD！？
    3 GO!
-   4 UFO・・・とか・・・
+   4 UFO…とか…
  :
  :
  :
-4225 （模様の読み方覚えてない・・・）
+4225 （模様の読み方覚えてない…）
 4226 （重くて打てない球に泣くが良い）
 4227 ？
-4228 ﾋｯｸ　ﾋｯｸ　ﾋｯｸ　ﾌﾟﾊ
-4229 ﾋﾋﾋﾋ・・・　ﾌﾋｬﾋ・・・・　ｹﾞﾍﾍﾍﾍ
+4228 ﾋｯｸ ﾋｯｸ ﾋｯｸ ﾌﾟﾊ
+4229 ﾋﾋﾋﾋ… ﾌﾋｬﾋ… ｹﾞﾍﾍﾍﾍ
 % yasuna -n 4226				# specify quote number
 （重くて打てない球に泣くが良い）
 ```
