@@ -1,4 +1,4 @@
-.TH YASUNA "6" "2015年2月" "ユーザコマンド"
+.TH YASUNA "6" "2016年3月" "ユーザコマンド"
 .SH 名前
 yasuna \- 折部やすなの名言を表示する
 .SH 書式
@@ -51,11 +51,17 @@ yasuna \- 折部やすなの名言を表示する
 引数の解析に失敗（例：無効な引数を渡した）
 .SH "追加情報"
 .PP
-標準で使用する単語ファイルは、Makefileの\fIDICDIR変数\fR及び、\fIDICNME変数\fRにて指定されます。
-.PP
-単語ファイルより読み込んだデータを格納するバッファの容量初期値及び、再確保する際に加算される値は、
+\fIMakefile\fRの\fIDICNME変数\fR及び、\fB\-f\fR, \fB\-\-file\fR引数へ指定可能な単語ファイル形式は、
 .br
-src/config.hの\fITH_LINES\fR定数と\fITH_LENGTH\fR定数にて変更できます。
+下記に示すPolyaness標準仕様と、従来のプレーンテキスト形式です。
+.PP
+本プログラムへ同梱されている単語ファイルはPolyaness標準仕様に準拠しています。
+.br
+同仕様に関するドキュメントは、\fI$(PREFIX)/share/doc/yasuna/polyaness\fR下を参照して下さい。
+.PP
+従来のプレーンテキスト形式ファイルを読み込む際のバッファ確保へ用いられる閾値は、
+.br
+それぞれ、\fIsrc/config.h\fRの\fITH_LINES\fR定数と\fITH_LENGTH\fR定数にて変更できます。
 .SH 謝辞
 元々このプログラムの発端は、@844196さんのRengeです。
 .br
