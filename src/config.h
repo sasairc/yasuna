@@ -16,7 +16,7 @@
 #define PROGNAME        "yasuna"
 #define VERSION         7
 #define PATCHLEVEL      4
-#define SUBLEVEL        2
+#define SUBLEVEL        3
 #define EXTRAVERSION    ""
 
 #define AUTHOR          "sasairc"
@@ -32,4 +32,5 @@
 
 #undef MONO             /* パスを組み込みたくないときに使うといいかもネ */
 
+/* CONFIG_H */
 #endif

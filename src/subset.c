@@ -24,27 +24,26 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 
-char* concat_file_path(yasuna_t* yasuna)
+int concat_file_path(char** path, yasuna_t* yasuna)
 {
-    char*   path = NULL;
-
     if (yasuna->fflag == 1) {
-        path = strlion(1, yasuna->farg);    
+        *path = strlion(1, yasuna->farg);   
     } else {
 #ifdef  MONO
-        path = strlion(1, DICNAME);             /* with MONO build */
+        /* with mono build */
+        *path = strlion(1, DICNAME);
 #else
-        path = strlion(2, DICPATH, DICNAME);
+        *path = strlion(2, DICPATH, DICNAME);
 #endif
     }
-    if (path == NULL) {
+    if (*path == NULL) {
         fprintf(stderr, "%s: strlion() failure\n",
                 PROGNAME);
 
-        return NULL;
+        return -1;
     }
 
-    return path;
+    return 0;
 }
 
 int open_dict_file(char* path, FILE** fp)
@@ -65,7 +64,7 @@ int open_dict_file(char* path, FILE** fp)
         return -2;
     }
 
-    if (access(path, R_OK) != 0) {
+    if ((st.st_mode & S_IREAD) == 0) {
         fprintf(stderr, "%s: %s: permission denied\n",
                 PROGNAME, path);
 
@@ -233,7 +232,7 @@ int create_rand(int lines)
 
 void print_all_quotes(polyaness_t* pt)
 {
-    int     i       = 0;
+    int i   = 0;
 
     while (i < pt->recs) {
         fprintf(stdout, "%4d %s\n",
