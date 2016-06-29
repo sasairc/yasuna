@@ -14,7 +14,7 @@
 #define CONFIG_H
 
 #define PROGNAME        "yasuna"
-#define VERSION         7
+#define VERSION         8
 #define PATCHLEVEL      4
 #define SUBLEVEL        3
 #define EXTRAVERSION    ""
