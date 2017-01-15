@@ -103,6 +103,8 @@ Twitter: [@sasairc_yasuna](https://twitter.com/sasairc_yasuna)にて本プログ
 * [Masaya Tk](https://github.com/844196)	
 	Homebrew用のリポジトリを提供して頂き、ありがとうございます！
  
+* [kadopoly](https://github.com/kadopoly)	
+	`yasuna-quotes`の誤字修正をして頂きました。ありがとうございます。
 
 ## License
 
