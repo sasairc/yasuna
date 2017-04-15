@@ -178,6 +178,8 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     memcpy(quote, "quote\0", strlen("quote") + 1);
     j = (*pt)->recs - 1;
     while (i < (*pt)->recs && i <= j) {
+        (*pt)->record[i]->keys = 1;
+        (*pt)->record[j]->keys = 1;
         (*pt)->record[i]->key[0] = quote;
         (*pt)->record[i]->value[0] = buf[i];
         (*pt)->record[j]->key[0] = quote;
@@ -186,6 +188,81 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
         j--;
     }
     free(buf);
+
+    return 0;
+}
+
+int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
+{
+    int             i       = 0,
+                    j       = 0,
+                    recs    = 0;
+
+    polyaness_t*    pt      = NULL;
+
+    /* no modify */
+    if (speaker == NULL) {
+        *dest = *src;
+
+        return 0;
+    }
+    if ((pt = (polyaness_t*)
+                malloc(sizeof(polyaness_t))) == NULL) {
+        fprintf(stderr, "%s: select_by_speaker(): malloc() failure\n",
+                PROGNAME);
+
+        return -1;
+    }
+
+    pt->record = (*src)->record;
+    while (i < (*src)->recs) {
+        j = 0;
+        while (j < (*src)->record[i]->keys) {
+            if (memcmp((*src)->record[i]->key[j], "speaker\0", 8) == 0  &&
+                    memcmp((*src)->record[i]->value[j], speaker, strlen(speaker)) == 0) {
+                pt->record[recs] = (*src)->record[i];
+                recs++;
+                break;
+            }
+            j++;
+        }
+        if (j == (*src)->record[i]->keys) {
+            j = (*src)->record[i]->keys--;
+            while (j >= 0) {
+                if ((*src)->record[i]->key[j] != NULL) {
+                    free((*src)->record[i]->key[j]);
+                    (*src)->record[i]->key[j] = NULL;
+                }
+                if ((*src)->record[i]->value[j] != NULL) {
+                    free((*src)->record[i]->value[j]);
+                    (*src)->record[i]->value[j] = NULL;
+                }
+                j--;
+            }
+            if ((*src)->record[i]->key != NULL) {
+                free((*src)->record[i]->key);
+                (*src)->record[i]->key = NULL;
+            }
+            if ((*src)->record[i]->value != NULL) {
+                free((*src)->record[i]->value);
+                (*src)->record[i]->value = NULL;
+            }
+            if ((*src)->record[i] != NULL) {
+                free((*src)->record[i]);
+                (*src)->record[i] = NULL;
+            }
+        }
+        i++;
+    }
+    free(*src);
+    *src = NULL;
+
+    pt->recs = recs;
+    *dest = pt;
+
+    /* no quotes */
+    if (recs <= 0)
+        return -2;
 
     return 0;
 }

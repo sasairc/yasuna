@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
 
     struct option opts[] = {
         {"file",    required_argument, NULL, 'f'},
+        {"speaker", required_argument, NULL, 's'},
         {"number",  required_argument, NULL, 'n'},
         {"list",    no_argument,       NULL, 'l'},
         {"help",    no_argument,       NULL, 'h'},
@@ -46,11 +47,15 @@ int main(int argc, char* argv[])
     };
 
     /* processing of arguments */
-    while ((res = getopt_long(argc, argv, "f:n:lvh", opts, &index)) != -1) {
+    while ((res = getopt_long(argc, argv, "f:s:n:lvh", opts, &index)) != -1) {
         switch (res) {
             case    'f':
                 yasuna.farg = optarg;
                 yasuna.fflag = 1;
+                break;
+            case    's':
+                yasuna.sarg = optarg;
+                yasuna.sflag = 1;
                 break;
             case    'n':
                 if (strisdigit(optarg) < 0)
@@ -94,6 +99,13 @@ int main(int argc, char* argv[])
         release(fp, path, pt);
 
         return 4;
+    }
+
+    /* select speaker */
+    if (select_by_speaker(yasuna.sarg, &pt, &pt) < 0) {
+        release(fp, path, pt);
+
+        return 5;
     }
 
     /* 

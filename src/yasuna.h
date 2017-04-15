@@ -17,17 +17,19 @@
 #include "./polyaness.h"
 
 typedef struct YASUNA_T {
-    int lflag;      /* List flag(--list). */
-    int fflag;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
-    int nflag;      /* Number flag(--number=INT). this flag use getopt_long() */
-    int narg;       /* Number arguments(--number=INT). this val use getopt_long() */
-    char* farg;     /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
+    int     lflag;      /* List flag(--list). */
+    int     sflag;      /* List flag(--list). */
+    int     fflag;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
+    int     nflag;      /* Number flag(--number=INT). this flag use getopt_long() */
+    int     narg;       /* Number arguments(--number=INT). this val use getopt_long() */
+    char*   sarg;       /* Speaker flag(--speaker=STR). this flag use getopt_long() */
+    char*   farg;       /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
 } yasuna_t;
 
 #define YASUNA_ALLNO_FLAG   \
-        0, 0, 0, 0 ,NULL
+        0, 0, 0, 0, 0 ,NULL, NULL
 
-extern void release(FILE* fp, char* path, polyaness_t* polyaness);
+void release(FILE* fp, char* path, polyaness_t* pt);
 
 /* _YASUNA_H */
 #endif
