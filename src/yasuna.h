@@ -22,14 +22,14 @@ typedef struct YASUNA_T {
     int     fflag;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
     int     nflag;      /* Number flag(--number=INT). this flag use getopt_long() */
     int     narg;       /* Number arguments(--number=INT). this val use getopt_long() */
-    char*   sarg;       /* Speaker flag(--speaker=STR). this flag use getopt_long() */
+    char*   sarg;       /* Speaker arguments(--speaker=STR). this flag use getopt_long() */
     char*   farg;       /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
 } yasuna_t;
 
 #define YASUNA_ALLNO_FLAG   \
         0, 0, 0, 0, 0 ,NULL, NULL
 
-void release(FILE* fp, char* path, polyaness_t* pt);
+extern void release(FILE* fp, char* path, polyaness_t* pt);
 
 /* _YASUNA_H */
 #endif
