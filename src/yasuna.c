@@ -112,7 +112,7 @@ int main(int argc, char* argv[])
      * print all quotes list and exit
      */
     if (yasuna.lflag == 1) {
-        print_all_quotes(pt);
+        print_all_quotes(pt, &yasuna);
         release(fp, path, pt);
 
         return 0;
