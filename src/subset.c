@@ -206,6 +206,7 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
 
         return 0;
     }
+
     if ((pt = (polyaness_t*)
                 malloc(sizeof(polyaness_t))) == NULL) {
         fprintf(stderr, "%s: select_by_speaker(): malloc() failure\n",
@@ -214,6 +215,7 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
         return -1;
     }
 
+    /* extraction speaker */
     pt->record = (*src)->record;
     while (i < (*src)->recs) {
         j = 0;
@@ -226,32 +228,9 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
             }
             j++;
         }
-        if (j == (*src)->record[i]->keys) {
-            j = (*src)->record[i]->keys--;
-            while (j >= 0) {
-                if ((*src)->record[i]->key[j] != NULL) {
-                    free((*src)->record[i]->key[j]);
-                    (*src)->record[i]->key[j] = NULL;
-                }
-                if ((*src)->record[i]->value[j] != NULL) {
-                    free((*src)->record[i]->value[j]);
-                    (*src)->record[i]->value[j] = NULL;
-                }
-                j--;
-            }
-            if ((*src)->record[i]->key != NULL) {
-                free((*src)->record[i]->key);
-                (*src)->record[i]->key = NULL;
-            }
-            if ((*src)->record[i]->value != NULL) {
-                free((*src)->record[i]->value);
-                (*src)->record[i]->value = NULL;
-            }
-            if ((*src)->record[i] != NULL) {
-                free((*src)->record[i]);
-                (*src)->record[i] = NULL;
-            }
-        }
+        /* speaker no match */
+        if (j == (*src)->record[i]->keys)
+            release_polyaness_cell(&pt->record[i]);
         i++;
     }
     free(*src);
@@ -265,6 +244,48 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
         return -2;
 
     return 0;
+}
+
+void release_polyaness_cell(polyaness_cell** record)
+{
+    int i   = 0,
+        j   = 0;
+    
+    j = (*record)->keys - 1;
+    while (i < (*record)->keys && j >= i) {
+        if ((*record)->key[i] != NULL) {
+            free((*record)->key[i]);
+            (*record)->key[i] = NULL;
+        }
+        if ((*record)->value[i] != NULL) {
+            free((*record)->value[i]);
+            (*record)->value[i] = NULL;
+        }
+        if ((*record)->key[j] != NULL) {
+            free((*record)->key[j]);
+            (*record)->key[j] = NULL;
+        }
+        if ((*record)->value[j] != NULL) {
+            free((*record)->value[j]);
+            (*record)->value[j] = NULL;
+        }
+        i++;
+        j--;
+    }
+    if ((*record)->key != NULL) {
+        free((*record)->key);
+        (*record)->key = NULL;
+    }
+    if ((*record)->value != NULL) {
+        free((*record)->value);
+        (*record)->value = NULL;
+    }
+    if (*record != NULL) {
+        free(*record);
+        *record = NULL;
+    }
+
+    return;
 }
 
 int strisdigit(char* str)

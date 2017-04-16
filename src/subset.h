@@ -23,6 +23,7 @@ extern int read_dict_file(FILE* fp, polyaness_t** pt);
 extern int parse_dict_file(FILE* fp, polyaness_t** pt);
 extern int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
 extern int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest);
+extern void release_polyaness_cell(polyaness_cell** record);
 extern int strisdigit(char* str);
 extern int create_rand(int lines);
 extern void print_all_quotes(polyaness_t* pt);
