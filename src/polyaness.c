@@ -311,27 +311,50 @@ void release_polyaness(polyaness_t* polyaness)
         return;
 
     int     i   = 0,
-            j   = 0;
+            j   = 0,
+            k   = 0;
 
-    i = polyaness->recs - 1;
-    while (i >= 0) {
-        if (polyaness->record[i]->key != NULL) {
-            j = polyaness->record[i]->keys - 1;
-            while (j >= 0) {
-                if (polyaness->record[i]->key[j] != NULL)
-                    free(polyaness->record[i]->key[j]);
-                if (polyaness->record[i]->value[j] != NULL)
-                    free(polyaness->record[i]->value[j]);
-                j--;
+    i = 0;
+    j = polyaness->recs - 1;
+    while (i <= j) {
+        if (polyaness->record[i] != NULL) {
+            if (polyaness->record[i]->key != NULL) {
+                k = polyaness->record[i]->keys - 1;
+                while (k >= 0) {
+                    if (polyaness->record[i]->key[k] != NULL)
+                        free(polyaness->record[i]->key[k]);
+                    if (polyaness->record[i]->value[j] != NULL)
+                        free(polyaness->record[i]->value[k]);
+                    k--;
+                }
+                if (polyaness->record[i]->key != NULL)
+                    free(polyaness->record[i]->key);
+                if (polyaness->record[i]->value != NULL)
+                    free(polyaness->record[i]->value);
             }
-            if (polyaness->record[i]->key != NULL)
-                free(polyaness->record[i]->key);
-            if (polyaness->record[i]->value != NULL)
-                free(polyaness->record[i]->value);
-        }
-        if (polyaness->record[i] != NULL)
             free(polyaness->record[i]);
-        i--;
+            polyaness->record[i] = NULL;
+        }
+        if (polyaness->record[j] != NULL) {
+            if (polyaness->record[j]->key != NULL) {
+                k = polyaness->record[j]->keys - 1;
+                while (k >= 0) {
+                    if (polyaness->record[j]->key[k] != NULL)
+                        free(polyaness->record[j]->key[k]);
+                    if (polyaness->record[j]->value[j] != NULL)
+                        free(polyaness->record[j]->value[k]);
+                    k--;
+                }
+            if (polyaness->record[j]->key != NULL)
+                free(polyaness->record[j]->key);
+            if (polyaness->record[j]->value != NULL)
+                free(polyaness->record[j]->value);
+            }
+            free(polyaness->record[j]);
+            polyaness->record[j] = NULL;
+        }
+        i++;
+        j--;
     }
     if (polyaness->record != NULL)
         free(polyaness->record);
