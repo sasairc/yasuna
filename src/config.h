@@ -15,8 +15,8 @@
 
 #define PROGNAME        "yasuna"
 #define VERSION         8
-#define PATCHLEVEL      4
-#define SUBLEVEL        4
+#define PATCHLEVEL      5
+#define SUBLEVEL        0
 #define EXTRAVERSION    ""
 
 #define AUTHOR          "sasairc"

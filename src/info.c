@@ -32,6 +32,7 @@ Usage: %s [OPTION]...\n\
 Mandatory arguments to long options are mandatory for short options too.\n\
 \n\
   -l,  --list                print all quotes list and exit\n\
+  -s,  --speaker=STR         specify speaker\n\
   -n,  --number INT          specify quote number\n\
   -f,  --file=PATH           specfiles the dictionary file\n\
 \n\

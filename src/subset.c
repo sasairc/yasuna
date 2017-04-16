@@ -114,12 +114,13 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
     if (strcmp_lite("polyaness_dict",
                 get_polyaness("filetype", 0, pt)) == 0) {
         /* release header */
-        while (i < (*pt)->record[0]->keys) {
+        i = (*pt)->record[0]->keys - 1;
+        while (i >= 0) {
             if ((*pt)->record[0]->key[i] != NULL)
                 free((*pt)->record[0]->key[i]);
             if ((*pt)->record[0]->value[i] != NULL)
                 free((*pt)->record[0]->value[i]);
-            i++;
+            i--;
         }
         free((*pt)->record[0]->key);
         free((*pt)->record[0]->value);
@@ -127,10 +128,9 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
 
         /* shift record */
         i = 0;
-        while (i < (*pt)->recs) {
-            (*pt)->record[i] = (*pt)->record[i + 1];
+        while (i < (*pt)->recs &&
+                ((*pt)->record[i] = (*pt)->record[i + 1]))
             i++;
-        }
         (*pt)->recs--;
     } else {
         if (plain_dict_to_polyaness(fp, pt) < 0) {
@@ -178,6 +178,8 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     memcpy(quote, "quote\0", strlen("quote") + 1);
     j = (*pt)->recs - 1;
     while (i < (*pt)->recs && i <= j) {
+        (*pt)->record[i]->keys = 1;
+        (*pt)->record[j]->keys = 1;
         (*pt)->record[i]->key[0] = quote;
         (*pt)->record[i]->value[0] = buf[i];
         (*pt)->record[j]->key[0] = quote;
@@ -188,6 +190,101 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     free(buf);
 
     return 0;
+}
+
+int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
+{
+    int             i       = 0,
+                    j       = 0,
+                    recs    = 0;
+
+    polyaness_t*    pt      = NULL;
+
+    /* no modify */
+    if (speaker == NULL) {
+        *dest = *src;
+
+        return 0;
+    }
+
+    if ((pt = (polyaness_t*)
+                malloc(sizeof(polyaness_t))) == NULL) {
+        fprintf(stderr, "%s: select_by_speaker(): malloc() failure\n",
+                PROGNAME);
+
+        return -1;
+    }
+
+    /* extraction speaker */
+    pt->record = (*src)->record;
+    while (i < (*src)->recs) {
+        j = (*src)->record[i]->keys - 1;
+        while (j >= 0) {
+            if (memcmp((*src)->record[i]->key[j], "speaker\0", 8) == 0  &&
+                    memcmp((*src)->record[i]->value[j], speaker, strlen(speaker) + 1) == 0) {
+                pt->record[recs] = (*src)->record[i];
+                recs++;
+                break;
+            }
+            j--;
+        }
+        if (j < 0)
+            release_polyaness_cell(&pt->record[i]);
+        i++;
+    }
+    free(*src);
+    *src = NULL;
+
+    pt->recs = recs;
+    *dest = pt;
+
+    /* no quotes */
+    if (recs <= 0)
+        return -2;
+
+    return 0;
+}
+
+void release_polyaness_cell(polyaness_cell** record)
+{
+    int i   = 0,
+        j   = 0;
+    
+    j = (*record)->keys - 1;
+    while (j >= i) {
+        if ((*record)->key[i] != NULL) {
+            free((*record)->key[i]);
+            (*record)->key[i] = NULL;
+        }
+        if ((*record)->value[i] != NULL) {
+            free((*record)->value[i]);
+            (*record)->value[i] = NULL;
+        }
+        if ((*record)->key[j] != NULL) {
+            free((*record)->key[j]);
+            (*record)->key[j] = NULL;
+        }
+        if ((*record)->value[j] != NULL) {
+            free((*record)->value[j]);
+            (*record)->value[j] = NULL;
+        }
+        i++;
+        j--;
+    }
+    if ((*record)->key != NULL) {
+        free((*record)->key);
+        (*record)->key = NULL;
+    }
+    if ((*record)->value != NULL) {
+        free((*record)->value);
+        (*record)->value = NULL;
+    }
+    if (*record != NULL) {
+        free(*record);
+        *record = NULL;
+    }
+
+    return;
 }
 
 int strisdigit(char* str)
@@ -209,8 +306,6 @@ int strisdigit(char* str)
 
 int create_rand(int lines)
 {
-    int     ret = 0;
-
     struct  timeval lo_timeval;
 
     /* get localtime */
@@ -225,14 +320,16 @@ int create_rand(int lines)
     ));
 
     /* create pseudo-random number */
-    ret = (int)(rand()%(lines+1));
-
-    return ret;
+    return (int)(rand()%(lines+1));
 }
 
-void print_all_quotes(polyaness_t* pt)
+void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)
 {
     int i   = 0;
+
+    if (yasuna->sflag == 1)
+        fprintf(stdout, "*** speaker = %s, %d quotes ***\n",
+                yasuna->sarg, pt->recs);
 
     while (i < pt->recs) {
         fprintf(stdout, "%4d %s\n",
