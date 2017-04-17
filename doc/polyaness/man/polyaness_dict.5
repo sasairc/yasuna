@@ -1,0 +1,196 @@
+.TH POLYANESS_DICT "5" "2017年4月"  "File Formats Manual"
+
+.SH 名前
+Polyaness 辞書ファイル標準仕様(ドラフト)
+.br
+本仕様は、辞書ファイルの利便性および相互利用性の確保、ならびに、普及拡大に寄与することを目的とする。
+.SH 文字コード
+.SS
+MUST
+文字コードはBOMなしUTF-8とする。
+.SH 改行コード
+.SS
+MUST
+改行コードはLFとする。
+.SH ファイル書式
+.SS MUST
+辞書ファイル全体の書式はLTSV(http://ltsv.org/)とする。各列の並びは問わない。
+.SS MUST
+.TP
+辞書ファイルの先頭行には、ファイル識別子\fIfiletype:polyaness_dict\fRがなければならない。
+
+filetype:polyaness_dict
+.br
+speaker:れんげ<TAB>quote:にゃんぱす〜
+.br
+:
+.br
+:
+.br
+:
+.SS SHOULD
+.TP
+先頭行には\fIfiletype\fR以外の任意のメタ情報を付与してもよいが、特段の事情がない限り\fIauthor\fRと\fIdescription\fRは必須とする。
+
+filetype:polyaness_dict<TAB>author:844196<TAB>description:Great Dictionary
+.SS MUST
+.TP
+辞書ファイル内の各レコードは、以下の列を必ず備えるものとする:
+
+\fIspeaker\fR:発言者
+\fIquote\fR:発言内容
+.SS OPTIONAL
+開発者は必要に応じて、必要列以外の列を辞書ファイルの任意のレコードに付与することができる。
+.SH speaker列
+台詞の発言者を格納する。
+.SS MUST
+.TP
+名前の表記は、辞書ファイル内において統一されていること。
+
+#Good
+.br
+speaker:れんげ<TAB>quote:にゃんぱす〜
+.br
+speaker:れんげ<TAB>quote:もしかしてウチ 田舎に住んでるのん…？
+
+# Good
+.br
+speaker:れんちょん<TAB>quote:にゃんぱす〜
+.br
+speaker:れんちょん<TAB>quote:もしかしてウチ 田舎に住んでるのん…？
+
+# Bad
+.br
+speaker:れんげ<TAB>quote:にゃんぱす〜
+.br
+speaker:れんちょん<TAB>quote:もしかしてウチ 田舎に住んでるのん…？
+.SS MUST
+.TP
+複数の人物が同じ台詞を発した場合は、人物ごとに発言を別けること。なお、別けた際の記述の順序は問わない。
+
+# Good
+.br
+speaker:唯<TAB>quote:全然反省してない…
+.br
+speaker:縁<TAB>quote:全然反省してない…
+
+# Good
+.br
+speaker:縁<TAB>quote:全然反省してない…
+.br
+speaker:唯<TAB>quote:全然反省してない…
+
+# Bad
+.br
+speaker:唯・縁<TAB>quote:全然反省してない…
+.SH quote列
+発言内容を格納する。
+.SS MUST
+.TP
+吹き出し内の改行は半角スペースに置き換えること。結合・句読点を加える等の操作を行ってはいけない。
+
+# Good
+.br
+speaker:ゆずこ<TAB>quote:マジカルって つけると なんでも グレードアップ するよね
+
+# Bad
+.br
+speaker:ゆずこ<TAB>quote:マジカルってつけると、なんでもグレードアップするよね。
+.TP
+ただし、吹き出しの大きさの都合上、単語の途中で強制的に折り返されている場合は、これを改行として扱わなくてもよい。
+
+# Good
+.br
+speaker:唯<TAB>quote:電波だとのせられねーぞ？
+
+# Good
+.br
+speaker:唯<TAB>quote:電波だとのせ られねーぞ？
+.SS MUST
+.TP
+感嘆符および疑問符、ならびに、その他記号全般は全角とする。ただし、読点の代わりに用いられたと推定されるスペースは、これを半角スペースとする。
+
+# Good
+.br
+speaker:唯<TAB>quote:オイ！ 開けろアホッ！！ なにやってんだ！
+
+# Bad
+.br
+speaker:唯<TAB>quote:オイ! 開けろアホッ!! なにやってんだ!
+.SS MUST
+.TP
+三点リーダは\fI…\fRで統一する。\fI・・・\fRや\fI...\fRに置換する操作を行ってはいけない。
+
+# Good
+.br
+speaker:縁<TAB>quote:なんだっけ… 死刑？
+
+# Bad
+.br
+speaker:縁<TAB>quote:なんだっけ... 死刑？
+.SS MUST
+.TP
+吹き出し内の長音符は、見た目の長さに関わらず一つのみとする。波形長音符も同様とする。
+
+# Good
+.br
+speaker:ゆずこ<TAB>quote:ガシーン！！
+
+# Bad
+.br
+speaker:ゆずこ<TAB>quote:ガシーーーン！！
+.SS OPTIONAL
+.TP
+一人の発言者に付与された二つの吹き出しが、一つの文として成立すると推定される際は、これを一つとして扱ってもよい。
+
+# Good
+.br
+speaker:ゆずこ<TAB>quote:つまり 超能力者とかが パワーアップする！
+.br
+speaker:ゆずこ<TAB>quote:それどころか 私達も超能力者に なれるかもしれない！
+
+# Good
+.br
+speaker:ゆずこ<TAB>quote:つまり 超能力者とかが パワーアップする！ それどころか 私達も超能力者に なれるかもしれない！
+.SH 作者
+原文作成:    Masaya Tk (@844196)
+.br
+Groff版作成: sasairc(@sasairc)
+.SH 著作権
+The MIT License (MIT)
+
+Copyright (c) 2016 Masaya Tk
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+.br
+of this software and associated documentation files (the "Software"), to deal
+.br
+in the Software without restriction, including without limitation the rights
+.br
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+.br
+copies of the Software, and to permit persons to whom the Software is
+.br
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+.br
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+.br
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+.br
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+.br
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+.br
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+.br
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+.br
+SOFTWARE.
+.SH 関連項目
+.B renge
+.B yasuna
+.B bag
