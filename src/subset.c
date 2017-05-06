@@ -21,6 +21,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <errno.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 
@@ -51,29 +52,29 @@ int open_dict_file(char* path, FILE** fp)
     struct  stat st;
 
     if (stat(path, &st) != 0) {
-        fprintf(stderr, "%s: %s: no such file or directory\n",
-                PROGNAME, path);
+        fprintf(stderr, "%s: %s: %s\n",
+                PROGNAME, path, strerror(ENOENT));
 
         return -1;
     }
 
     if ((st.st_mode & S_IFMT) == S_IFDIR) {
-        fprintf(stderr, "%s: %s: is a directory\n",
-                PROGNAME, path);
+        fprintf(stderr, "%s: %s: %s\n",
+                PROGNAME, path, strerror(EISDIR));
 
         return -2;
     }
 
     if ((st.st_mode & S_IREAD) == 0) {
-        fprintf(stderr, "%s: %s: permission denied\n",
-                PROGNAME, path);
+        fprintf(stderr, "%s: %s: %s\n",
+                PROGNAME, path, strerror(EACCES));
 
         return -3;
     }
 
     if ((*fp = fopen(path, "r")) == NULL) {
-        fprintf(stderr, "%s: fp is NULL\n",
-                PROGNAME);
+        fprintf(stderr, "%s: %s\n",
+                PROGNAME, strerror(errno));
 
         return -4;
     }
@@ -162,8 +163,8 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 
     if ((quote = (char*)
                 malloc(sizeof(char) * (strlen("quote") + 1))) == NULL) {
-        fprintf(stderr, "%s: malloc() failure\n",
-                PROGNAME);
+        fprintf(stderr, "%s: malloc(): %s\n",
+                PROGNAME, strerror(errno));
 
         if (quote != NULL)
             free(quote);
@@ -209,8 +210,8 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
 
     if ((pt = (polyaness_t*)
                 malloc(sizeof(polyaness_t))) == NULL) {
-        fprintf(stderr, "%s: select_by_speaker(): malloc() failure\n",
-                PROGNAME);
+        fprintf(stderr, "%s: select_by_speaker(): malloc(): %s\n",
+                PROGNAME, strerror(errno));
 
         return -1;
     }

@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 #include <sys/time.h>
 #include <sys/select.h>
 
@@ -221,6 +222,9 @@ int p_read_file_char(char*** dest, int t_lines, size_t t_length, FILE* fp, int c
     return y;
 
 ERR:
+    fprintf(stderr, "p_read_file_char(): %s\n",
+            strerror(errno));
+
     lines   -= t_lines;
     length  -= t_length;
 

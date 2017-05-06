@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <locale.h>
+#include <errno.h>
 
 #ifdef  WITH_GLIB
 #include <glib.h>
@@ -36,8 +37,12 @@ int strrep(char* src, char* haystack, char* needle)
     if (strlen(haystack) < strlen(needle)) {
         /* reallocate memory */
         if ((src = (char*)
-                    realloc(src, strlen(src) + strlen(needle) + 1 - strlen(haystack))) == NULL)
+                    realloc(src, strlen(src) + strlen(needle) + 1 - strlen(haystack))) == NULL) {
+            fprintf(stderr, "strrep(): realloc(): %s\n",
+                    strerror(errno));
+
             return -3;
+        }
 
         /* move match word to specified location in memory */
         memmove(
@@ -75,8 +80,12 @@ char* strlion(int argnum, ...)
     va_list list;       /* list of variable arguments */
 
     if ((argmnt = (char**)
-                malloc(sizeof(char*) * argnum)) == NULL)
+                malloc(sizeof(char*) * argnum)) == NULL) {
+        fprintf(stderr, "strlion(): malloc(): %s\n",
+                strerror(errno));
+
         return NULL;
+    }
 
     /* processing of variable arguments */
     va_start(list, argnum);
@@ -89,8 +98,12 @@ char* strlion(int argnum, ...)
 
     /* memory allocation */
     if ((dest = (char*)
-                malloc(sizeof(char) * (arglen + 1))) == NULL)
+                malloc(sizeof(char) * (arglen + 1))) == NULL) {
+        fprintf(stderr, "strlion(): malloc(): %s\n",
+                strerror(errno));
+
         return NULL;
+    }
 
     /* concat strings */
     i = destlen = blklen = 0;
@@ -305,9 +318,12 @@ char** str_to_args(char* str)
                 continue;
             }
             if ((args[ay] = (char*)
-                        malloc(sizeof(char) * (sx - xt + 1))) == NULL)
-                goto ERR;
+                        malloc(sizeof(char) * (sx - xt + 1))) == NULL) {
+                fprintf(stderr, "str_to_args(): malloc(): %s\n",
+                        strerror(errno));
 
+                goto ERR;
+            }
             for (ax = 0; xt < sx; xt++, ax++)
                     args[ay][ax] = str[xt];
 
