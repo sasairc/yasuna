@@ -27,7 +27,7 @@
 
 int concat_file_path(char** path, yasuna_t* yasuna)
 {
-    if (yasuna->fflag == 1) {
+    if (yasuna->flag & YASUNA_FILE) {
         *path = strlion(1, yasuna->farg);   
     } else {
 #ifdef  MONO
@@ -162,10 +162,7 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     }
 
     if ((quote = (char*)
-                malloc(sizeof(char) * (strlen("quote") + 1))) == NULL) {
-        fprintf(stderr, "%s: malloc(): %s\n",
-                PROGNAME, strerror(errno));
-
+                smalloc(sizeof(char) * (strlen("quote") + 1), NULL)) == NULL) {
         if (quote != NULL)
             free(quote);
     
@@ -182,9 +179,9 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
         (*pt)->record[i]->keys = 1;
         (*pt)->record[j]->keys = 1;
         (*pt)->record[i]->key[0] = quote;
-        (*pt)->record[i]->value[0] = buf[i];
+        (*pt)->record[i]->value[0] = *(buf + i);
         (*pt)->record[j]->key[0] = quote;
-        (*pt)->record[j]->value[0] = buf[j];
+        (*pt)->record[j]->value[0] = *(buf + j);
         i++;
         j--;
     }
@@ -209,12 +206,8 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
     }
 
     if ((pt = (polyaness_t*)
-                malloc(sizeof(polyaness_t))) == NULL) {
-        fprintf(stderr, "%s: select_by_speaker(): malloc(): %s\n",
-                PROGNAME, strerror(errno));
-
+                smalloc(sizeof(polyaness_t), NULL)) == NULL)
         return -1;
-    }
 
     /* extraction speaker */
     pt->record = (*src)->record;
@@ -223,7 +216,7 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
         while (j >= 0) {
             if (memcmp((*src)->record[i]->key[j], "speaker\0", 8) == 0  &&
                     memcmp((*src)->record[i]->value[j], speaker, strlen(speaker) + 1) == 0) {
-                pt->record[recs] = (*src)->record[i];
+                *(pt->record + recs) = (*src)->record[i];
                 recs++;
                 break;
             }
@@ -328,7 +321,7 @@ void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)
 {
     int i   = 0;
 
-    if (yasuna->sflag == 1)
+    if (yasuna->flag & YASUNA_SPEAKER)
         fprintf(stdout, "*** speaker = %s, %d quotes ***\n",
                 yasuna->sarg, pt->recs);
 

@@ -174,7 +174,7 @@ int parse_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
                     goto ERR;
                 }
             }
-            buf[len] = code;
+            *(buf + len) = code;
             len++;
         }
     }
@@ -227,29 +227,29 @@ int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** pol
     }
     
     while (i < keys) {
-        if (str[head] == COL) {
-            if ((key[i] = (char*)
+        if (*(str + head) == COL) {
+            if ((*(key + i) = (char*)
                     malloc(sizeof(char) * (head - tail + 1))) == NULL) {
                 fprintf(stderr, "polyaness: add_data_polyaness(): malloc(): %s\n",
                         strerror(errno));
 
                 goto ERR;
             }
-            memcpy(key[i], str + tail, head - tail);
-            key[i][head - tail] = '\0';
+            memcpy(*(key + i), str + tail, head - tail);
+            *(*(key + i) + head - tail) = '\0';
 
             head++;
             tail = head;
-        } else if (str[head] == TAB || str[head] == '\0') {
-            if ((value[i] = (char*)
+        } else if (*(str + head) == TAB || *(str + head) == '\0') {
+            if ((*(value + i) = (char*)
                     malloc(sizeof(char) * (head - tail + 1))) == NULL) {
                 fprintf(stderr, "polyaness: add_data_polyaness(): malloc(): %s\n",
                         strerror(errno));
 
                 goto ERR;
             }
-            memcpy(value[i], str + tail, head - tail);
-            value[i][head - tail] = '\0';
+            memcpy(*(value + i), str + tail, head - tail);
+            *(*(value + i) + head - tail) = '\0';
 
             head++;
             tail = head;
@@ -269,8 +269,8 @@ ERR:
     if (key != NULL) {
         i = keys;
         while (i >= 0) {
-            if (key[i] != NULL)
-                free(key[i]);
+            if (*(key + i) != NULL)
+                free(*(key + i));
             i--;
         }
         free(key);
@@ -278,8 +278,8 @@ ERR:
     if (value != NULL) {
         i = keys;
         while (i >= 0) {
-            if (value[i] != NULL)
-                free(value[i]);
+            if (*(value + i) != NULL)
+                free(*(value + i));
             i--;
         }
         free(value);
@@ -303,9 +303,9 @@ char* get_polyaness(const char* key, int record, polyaness_t** polyaness)
 
     j = (*polyaness)->record[record]->keys - 1;
     while (i < (*polyaness)->record[record]->keys && i <= j) {
-        if (strcmp_lite(keys[i], key) == 0)
+        if (strcmp_lite(*(keys + i), key) == 0)
             return match = (*polyaness)->record[record]->value[i];
-        if (strcmp_lite(keys[j], key) == 0)
+        if (strcmp_lite(*(keys + j), key) == 0)
             return match = (*polyaness)->record[record]->value[j];
         i++;
         j--;
