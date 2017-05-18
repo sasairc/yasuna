@@ -283,16 +283,16 @@ void release_polyaness_cell(polyaness_cell** record)
 
 int strisdigit(char* str)
 {
-    int i   = 0;
+    char*   p   = str;
 
-    while (i < strlen(str)) {
-        if (!isdigit(*(str + i))) {
+    while (*p != '\0') {
+        if (!isdigit(*p)) {
             fprintf(stderr, "%s: %s: invalid number of quote\n",
                     PROGNAME, str);
 
             return -1;
         }
-        i++;
+        p++;
     }
 
     return 0;
