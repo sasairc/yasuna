@@ -22,11 +22,26 @@
 
 #ifdef  WITH_GLIB
 #include <glib.h>
+/* WITH_GLIB */
 #endif
 
 #ifndef WITH_REGEX
 #include <regex.h>
+/* WITH_REGEX */
 #endif
+
+int strisdigit(char* str)
+{
+    char*   p   = str;
+
+    while (*p != '\0') {
+        if (!isdigit(*p))
+            return -1;
+        p++;
+    }
+
+    return 0;
+}
 
 int strrep(char* src, char* haystack, char* needle)
 {

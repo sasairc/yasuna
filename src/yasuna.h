@@ -13,9 +13,6 @@
 #ifndef YASUNA_H
 #define YASUNA_H
 
-#include <stdio.h>
-#include "./polyaness.h"
-
 #define YASUNA_ALLNO_FLAG   \
     0,  0,  NULL,   NULL
 
@@ -30,8 +27,6 @@ typedef struct YASUNA_T {
     char*   sarg;       /* speaker arguments */
     char*   farg;       /* dictionary arguments */
 } yasuna_t;
-
-extern void release(FILE* fp, char* path, polyaness_t* pt);
 
 /* YASUNA_H */
 #endif

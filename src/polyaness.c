@@ -29,14 +29,17 @@
 #include <string.h>
 #include <errno.h>
 
+#ifndef BUFLEN
 #define BUFLEN  4096    /* realloc(): size += BUFLEN */
+/* BUFLEN */
+#endif
 
 #define LF      0x0a    /* \n */
 #define TAB     0x09    /* \t */
 #define COL     0x3a    /* :  */
 
-int count_keys(const char* str);
-int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** polyaness);
+static int count_keys(const char* str);
+static int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** polyaness);
 
 /* misc functions */
 static int strcmp_lite(const char* str1, const char* str2);
@@ -191,6 +194,7 @@ ERR:
     return -1;
 }
 
+static
 int count_keys(const char* str)
 {
     int     keys    = 1;
@@ -204,6 +208,7 @@ int count_keys(const char* str)
     return keys;
 }
 
+static
 int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** polyaness)
 {
     int             i       = 0;
@@ -374,10 +379,53 @@ void release_polyaness(polyaness_t* polyaness)
     return;
 }
 
+void release_polyaness_cell(polyaness_cell** record)
+{
+    int i   = 0,
+        j   = 0;
+    
+    j = (*record)->keys - 1;
+    while (j >= i) {
+        if ((*record)->key[i] != NULL) {
+            free((*record)->key[i]);
+            (*record)->key[i] = NULL;
+        }
+        if ((*record)->value[i] != NULL) {
+            free((*record)->value[i]);
+            (*record)->value[i] = NULL;
+        }
+        if ((*record)->key[j] != NULL) {
+            free((*record)->key[j]);
+            (*record)->key[j] = NULL;
+        }
+        if ((*record)->value[j] != NULL) {
+            free((*record)->value[j]);
+            (*record)->value[j] = NULL;
+        }
+        i++;
+        j--;
+    }
+    if ((*record)->key != NULL) {
+        free((*record)->key);
+        (*record)->key = NULL;
+    }
+    if ((*record)->value != NULL) {
+        free((*record)->value);
+        (*record)->value = NULL;
+    }
+    if (*record != NULL) {
+        free(*record);
+        *record = NULL;
+    }
+
+    return;
+}
+
 /*
  * misc functions
  */
-static int strcmp_lite(const char* str1, const char* str2)
+static
+int strcmp_lite(const char* str1, const char* str2)
 {
     if (str1 == NULL || str2 == NULL)
         return -1;

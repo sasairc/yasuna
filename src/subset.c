@@ -20,13 +20,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <ctype.h>
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 
 static int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
-static void release_polyaness_cell(polyaness_cell** record);
 
 int concat_file_path(char** path, yasuna_t* yasuna)
 {
@@ -233,66 +231,6 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
     /* no quotes */
     if (recs <= 0)
         return -2;
-
-    return 0;
-}
-
-static
-void release_polyaness_cell(polyaness_cell** record)
-{
-    int i   = 0,
-        j   = 0;
-    
-    j = (*record)->keys - 1;
-    while (j >= i) {
-        if ((*record)->key[i] != NULL) {
-            free((*record)->key[i]);
-            (*record)->key[i] = NULL;
-        }
-        if ((*record)->value[i] != NULL) {
-            free((*record)->value[i]);
-            (*record)->value[i] = NULL;
-        }
-        if ((*record)->key[j] != NULL) {
-            free((*record)->key[j]);
-            (*record)->key[j] = NULL;
-        }
-        if ((*record)->value[j] != NULL) {
-            free((*record)->value[j]);
-            (*record)->value[j] = NULL;
-        }
-        i++;
-        j--;
-    }
-    if ((*record)->key != NULL) {
-        free((*record)->key);
-        (*record)->key = NULL;
-    }
-    if ((*record)->value != NULL) {
-        free((*record)->value);
-        (*record)->value = NULL;
-    }
-    if (*record != NULL) {
-        free(*record);
-        *record = NULL;
-    }
-
-    return;
-}
-
-int strisdigit(char* str)
-{
-    char*   p   = str;
-
-    while (*p != '\0') {
-        if (!isdigit(*p)) {
-            fprintf(stderr, "%s: %s: invalid number of quote\n",
-                    PROGNAME, str);
-
-            return -1;
-        }
-        p++;
-    }
 
     return 0;
 }

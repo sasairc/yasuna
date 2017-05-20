@@ -9,6 +9,10 @@ ARCH	= $(shell gcc -print-multiarch)
 DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"       \
 		-DDICNAME=\"$(DICNME)\"  \
 		-DDICPATH=\"$(DICDIR)/\" \
+		-DLOCALE=\"\"            \
+		-DBUFLEN=$(BUFLEN)       \
+		-DTH_LINES=$(TH_LINES)   \
+		-DTH_LENGTH=$(TH_LENGTH) \
 		-DARCH=\"$(ARCH)\"
 
 all: $(TARGET) $(OBJS)

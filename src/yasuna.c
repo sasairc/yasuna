@@ -14,10 +14,13 @@
 #include "./yasuna.h"
 #include "./info.h"
 #include "./subset.h"
+#include "./string.h"
 #include "./polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+
+static void release(FILE* fp, char* path, polyaness_t* pt);
 
 int main(int argc, char* argv[])
 {
@@ -57,9 +60,11 @@ int main(int argc, char* argv[])
                 yasuna.flag |= YASUNA_SPEAKER;
                 break;
             case    'n':
-                if (strisdigit(optarg) < 0)
+                if (strisdigit(optarg) < 0) {
+                    fprintf(stderr, "%s: %s: invalid number of quote\n",
+                            PROGNAME, optarg);
                     return -1;
-
+                }
                 yasuna.narg = atoi(optarg);
                 yasuna.flag |= YASUNA_NUMBER;
                 break;
@@ -140,6 +145,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+static
 void release(FILE* fp, char* path, polyaness_t* pt)
 {
     if (fp != NULL) {
