@@ -79,15 +79,29 @@ yasuna
 ### Additional usage
 
 ```shellsession
-% yasuna -n 4186 | clangsay
- ___________________________________________________
-< 高級松坂牛肉五キロ！やっとポイントたまったんだよ！ >
- ---------------------------------------------------
-        \   ^__^
-         \  (oo)\_______
-            (__)\       )\/\
-                ||----w |
-                ||     ||
+% yasuna -n 1337 | clangsay -f debian
+ __________________________________
+< さあ、出てゆくが良い お前は自由だ >
+ ----------------------------------
+  \
+   \
+          _,met$$$$$gg.
+       ,g$$$$$$$$$$$$$$$P.
+     ,g$$P""       """Y$$.".
+    ,$$P'              `$$$. 
+  ',$$P       ,ggs.     `$$b:
+  `d$$'     ,$P"'   .    $$$
+   $$P      d$'     ,    $$P
+   $$:      $$.   -    ,d$$'
+   $$;      Y$b._   _,d$P'
+   Y$$.    `.`"Y$$$$P"' 
+   `$$b      "-.__
+    `Y$$b
+     `Y$$.
+       `$$b.
+         `Y$$b.
+           `"Y$b._
+               `""""
 % yasuna --file=/proc/cpuinfo
 cpu MHz         : 2933.470
 ```
@@ -103,7 +117,7 @@ Twitter: [@sasairc_yasuna](https://twitter.com/sasairc_yasuna)にて本プログ
 ## Thanks
 
 * [Masaya Tk](https://github.com/844196)	
-	Homebrew用のリポジトリを提供して頂き、ありがとうございます！
+	Homebrew用のリポジトリを提供して頂きました。ありがとうございます。
  
 * [kadopoly](https://github.com/kadopoly)	
 	`yasuna-quotes`の誤字修正をして頂きました。ありがとうございます。
