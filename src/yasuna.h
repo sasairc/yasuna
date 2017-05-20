@@ -10,8 +10,8 @@
  * for more details.
  */
 
-#ifndef _YASUNA_H
-#define _YASUNA_H
+#ifndef YASUNA_H
+#define YASUNA_H
 
 #include <stdio.h>
 #include "./polyaness.h"
@@ -26,12 +26,12 @@
 
 typedef struct YASUNA_T {
     int     flag;
-    int     narg;       /* Number arguments */
-    char*   sarg;       /* Speaker arguments */
-    char*   farg;       /* Dictionary arguments */
+    int     narg;       /* number arguments */
+    char*   sarg;       /* speaker arguments */
+    char*   farg;       /* dictionary arguments */
 } yasuna_t;
 
 extern void release(FILE* fp, char* path, polyaness_t* pt);
 
-/* _YASUNA_H */
+/* YASUNA_H */
 #endif

@@ -25,6 +25,9 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 
+static int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
+static void release_polyaness_cell(polyaness_cell** record);
+
 int concat_file_path(char** path, yasuna_t* yasuna)
 {
     if (yasuna->flag & YASUNA_FILE) {
@@ -112,20 +115,14 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
         return -1;
     }
 
+    /*
+     * 1. polyaness dict
+     * 2. plain dict
+     */
     if (strcmp_lite("polyaness_dict",
                 get_polyaness("filetype", 0, pt)) == 0) {
         /* release header */
-        i = (*pt)->record[0]->keys - 1;
-        while (i >= 0) {
-            if ((*pt)->record[0]->key[i] != NULL)
-                free((*pt)->record[0]->key[i]);
-            if ((*pt)->record[0]->value[i] != NULL)
-                free((*pt)->record[0]->value[i]);
-            i--;
-        }
-        free((*pt)->record[0]->key);
-        free((*pt)->record[0]->value);
-        free((*pt)->record[0]);
+        release_polyaness_cell(&(*pt)->record[0]);
 
         /* shift record */
         i = 0;
@@ -145,6 +142,7 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
     return 0;
 }
 
+static
 int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 {
     int     i       = 0,
@@ -239,6 +237,7 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
     return 0;
 }
 
+static
 void release_polyaness_cell(polyaness_cell** record)
 {
     int i   = 0,
