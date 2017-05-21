@@ -24,6 +24,10 @@
 
 #ifndef POLYANESS_H
 #define POLYANESS_H
+#ifdef  __cplusplus
+extern "C" {
+/* __cplusplus */
+#endif
 
 #include <stdio.h>
 
@@ -41,7 +45,12 @@ typedef struct POLYANESS_T {
 extern int init_polyaness(FILE* fp, int offset, polyaness_t** polyaness);
 extern int parse_polyaness(FILE* fp, int offset, polyaness_t** polyaness);
 extern char* get_polyaness(const char* key, int record, polyaness_t** polyaness);
+extern void release_polyaness_cell(polyaness_cell** record);
 extern void release_polyaness(polyaness_t* polyaness);
 
+#ifdef  __cplusplus
+}
+/* __cplusplus */
+#endif
 /* POLYANESS_H */
 #endif

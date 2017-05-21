@@ -10,26 +10,23 @@
  * for more details.
  */
 
-#ifndef _YASUNA_H
-#define _YASUNA_H
-
-#include <stdio.h>
-#include "./polyaness.h"
-
-typedef struct YASUNA_T {
-    int     lflag;      /* List flag(--list). */
-    int     sflag;      /* List flag(--list). */
-    int     fflag;      /* Dictionary flag(--dict=PATH). this flag use getopt_long() */
-    int     nflag;      /* Number flag(--number=INT). this flag use getopt_long() */
-    int     narg;       /* Number arguments(--number=INT). this val use getopt_long() */
-    char*   sarg;       /* Speaker arguments(--speaker=STR). this flag use getopt_long() */
-    char*   farg;       /* Dictionary arguments(--dict=PATH). this val use getopt_long()  */
-} yasuna_t;
+#ifndef YASUNA_H
+#define YASUNA_H
 
 #define YASUNA_ALLNO_FLAG   \
-        0, 0, 0, 0, 0 ,NULL, NULL
+    0,  0,  NULL,   NULL
 
-extern void release(FILE* fp, char* path, polyaness_t* pt);
+#define YASUNA_FILE     (1 << 1)
+#define YASUNA_SPEAKER  (1 << 2)
+#define YASUNA_NUMBER   (1 << 3)
+#define YASUNA_LIST     (1 << 4)
 
-/* _YASUNA_H */
+typedef struct YASUNA_T {
+    int     flag;
+    int     narg;       /* number arguments */
+    char*   sarg;       /* speaker arguments */
+    char*   farg;       /* dictionary arguments */
+} yasuna_t;
+
+/* YASUNA_H */
 #endif

@@ -14,24 +14,26 @@
 #include "./yasuna.h"
 #include "./info.h"
 #include "./subset.h"
+#include "./string.h"
 #include "./polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+
+static void release(FILE* fp, char* path, polyaness_t* pt);
 
 int main(int argc, char* argv[])
 {
     int             res     = 0,
                     index   = 0;
 
-    FILE*           fp      = NULL; /* dict file */
+    FILE*           fp      = NULL;
 
-    char*           path    = NULL, /* dict file path */
+    char*           path    = NULL,
         *           quote   = NULL;
 
     polyaness_t*    pt      = NULL;
 
-    /* flag and args */
     yasuna_t yasuna = { 
         YASUNA_ALLNO_FLAG,
     };
@@ -51,21 +53,23 @@ int main(int argc, char* argv[])
         switch (res) {
             case    'f':
                 yasuna.farg = optarg;
-                yasuna.fflag = 1;
+                yasuna.flag |= YASUNA_FILE;
                 break;
             case    's':
                 yasuna.sarg = optarg;
-                yasuna.sflag = 1;
+                yasuna.flag |= YASUNA_SPEAKER;
                 break;
             case    'n':
-                if (strisdigit(optarg) < 0)
+                if (strisdigit(optarg) < 0) {
+                    fprintf(stderr, "%s: %s: invalid number of quote\n",
+                            PROGNAME, optarg);
                     return -1;
-
+                }
                 yasuna.narg = atoi(optarg);
-                yasuna.nflag = 1;
+                yasuna.flag |= YASUNA_NUMBER;
                 break;
             case    'l':
-                yasuna.lflag = 1;
+                yasuna.flag |= YASUNA_LIST;
                 break;
             case    'v':
                 print_version();
@@ -111,7 +115,7 @@ int main(int argc, char* argv[])
     /* 
      * print all quotes list and exit
      */
-    if (yasuna.lflag == 1) {
+    if (yasuna.flag & YASUNA_LIST) {
         print_all_quotes(pt, &yasuna);
         release(fp, path, pt);
 
@@ -121,7 +125,7 @@ int main(int argc, char* argv[])
     /*
      * generate output quote
      */
-    if (yasuna.nflag == 0) {
+    if (!(yasuna.flag & YASUNA_NUMBER)) {
         quote = get_polyaness("quote",
                 create_rand(pt->recs - 1), &pt);
     } else {
@@ -141,6 +145,7 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+static
 void release(FILE* fp, char* path, polyaness_t* pt)
 {
     if (fp != NULL) {

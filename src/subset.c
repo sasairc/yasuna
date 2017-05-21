@@ -20,13 +20,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <ctype.h>
+#include <errno.h>
 #include <sys/time.h>
 #include <sys/stat.h>
 
+static int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
+
 int concat_file_path(char** path, yasuna_t* yasuna)
 {
-    if (yasuna->fflag == 1) {
+    if (yasuna->flag & YASUNA_FILE) {
         *path = strlion(1, yasuna->farg);   
     } else {
 #ifdef  MONO
@@ -51,29 +53,29 @@ int open_dict_file(char* path, FILE** fp)
     struct  stat st;
 
     if (stat(path, &st) != 0) {
-        fprintf(stderr, "%s: %s: no such file or directory\n",
-                PROGNAME, path);
+        fprintf(stderr, "%s: %s: %s\n",
+                PROGNAME, path, strerror(ENOENT));
 
         return -1;
     }
 
     if ((st.st_mode & S_IFMT) == S_IFDIR) {
-        fprintf(stderr, "%s: %s: is a directory\n",
-                PROGNAME, path);
+        fprintf(stderr, "%s: %s: %s\n",
+                PROGNAME, path, strerror(EISDIR));
 
         return -2;
     }
 
     if ((st.st_mode & S_IREAD) == 0) {
-        fprintf(stderr, "%s: %s: permission denied\n",
-                PROGNAME, path);
+        fprintf(stderr, "%s: %s: %s\n",
+                PROGNAME, path, strerror(EACCES));
 
         return -3;
     }
 
     if ((*fp = fopen(path, "r")) == NULL) {
-        fprintf(stderr, "%s: fp is NULL\n",
-                PROGNAME);
+        fprintf(stderr, "%s: %s\n",
+                PROGNAME, strerror(errno));
 
         return -4;
     }
@@ -111,20 +113,14 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
         return -1;
     }
 
+    /*
+     * 1. polyaness dict
+     * 2. plain dict
+     */
     if (strcmp_lite("polyaness_dict",
                 get_polyaness("filetype", 0, pt)) == 0) {
         /* release header */
-        i = (*pt)->record[0]->keys - 1;
-        while (i >= 0) {
-            if ((*pt)->record[0]->key[i] != NULL)
-                free((*pt)->record[0]->key[i]);
-            if ((*pt)->record[0]->value[i] != NULL)
-                free((*pt)->record[0]->value[i]);
-            i--;
-        }
-        free((*pt)->record[0]->key);
-        free((*pt)->record[0]->value);
-        free((*pt)->record[0]);
+        release_polyaness_cell(&(*pt)->record[0]);
 
         /* shift record */
         i = 0;
@@ -144,6 +140,7 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
     return 0;
 }
 
+static
 int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 {
     int     i       = 0,
@@ -161,10 +158,7 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     }
 
     if ((quote = (char*)
-                malloc(sizeof(char) * (strlen("quote") + 1))) == NULL) {
-        fprintf(stderr, "%s: malloc() failure\n",
-                PROGNAME);
-
+                smalloc(sizeof(char) * (strlen("quote") + 1), NULL)) == NULL) {
         if (quote != NULL)
             free(quote);
     
@@ -181,9 +175,9 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
         (*pt)->record[i]->keys = 1;
         (*pt)->record[j]->keys = 1;
         (*pt)->record[i]->key[0] = quote;
-        (*pt)->record[i]->value[0] = buf[i];
+        (*pt)->record[i]->value[0] = *(buf + i);
         (*pt)->record[j]->key[0] = quote;
-        (*pt)->record[j]->value[0] = buf[j];
+        (*pt)->record[j]->value[0] = *(buf + j);
         i++;
         j--;
     }
@@ -208,12 +202,8 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
     }
 
     if ((pt = (polyaness_t*)
-                malloc(sizeof(polyaness_t))) == NULL) {
-        fprintf(stderr, "%s: select_by_speaker(): malloc() failure\n",
-                PROGNAME);
-
+                smalloc(sizeof(polyaness_t), NULL)) == NULL)
         return -1;
-    }
 
     /* extraction speaker */
     pt->record = (*src)->record;
@@ -222,7 +212,7 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
         while (j >= 0) {
             if (memcmp((*src)->record[i]->key[j], "speaker\0", 8) == 0  &&
                     memcmp((*src)->record[i]->value[j], speaker, strlen(speaker) + 1) == 0) {
-                pt->record[recs] = (*src)->record[i];
+                *(pt->record + recs) = (*src)->record[i];
                 recs++;
                 break;
             }
@@ -241,65 +231,6 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
     /* no quotes */
     if (recs <= 0)
         return -2;
-
-    return 0;
-}
-
-void release_polyaness_cell(polyaness_cell** record)
-{
-    int i   = 0,
-        j   = 0;
-    
-    j = (*record)->keys - 1;
-    while (j >= i) {
-        if ((*record)->key[i] != NULL) {
-            free((*record)->key[i]);
-            (*record)->key[i] = NULL;
-        }
-        if ((*record)->value[i] != NULL) {
-            free((*record)->value[i]);
-            (*record)->value[i] = NULL;
-        }
-        if ((*record)->key[j] != NULL) {
-            free((*record)->key[j]);
-            (*record)->key[j] = NULL;
-        }
-        if ((*record)->value[j] != NULL) {
-            free((*record)->value[j]);
-            (*record)->value[j] = NULL;
-        }
-        i++;
-        j--;
-    }
-    if ((*record)->key != NULL) {
-        free((*record)->key);
-        (*record)->key = NULL;
-    }
-    if ((*record)->value != NULL) {
-        free((*record)->value);
-        (*record)->value = NULL;
-    }
-    if (*record != NULL) {
-        free(*record);
-        *record = NULL;
-    }
-
-    return;
-}
-
-int strisdigit(char* str)
-{
-    int i   = 0;
-
-    while (i < strlen(str)) {
-        if (!isdigit(*(str + i))) {
-            fprintf(stderr, "%s: %s: invalid number of quote\n",
-                    PROGNAME, str);
-
-            return -1;
-        }
-        i++;
-    }
 
     return 0;
 }
@@ -327,7 +258,7 @@ void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)
 {
     int i   = 0;
 
-    if (yasuna->sflag == 1)
+    if (yasuna->flag & YASUNA_SPEAKER)
         fprintf(stdout, "*** speaker = %s, %d quotes ***\n",
                 yasuna->sarg, pt->recs);
 
