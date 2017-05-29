@@ -45,20 +45,27 @@ int strisdigit(char* str)
 
 int strrep(char* src, char* haystack, char* needle)
 {
-    char*   find    = NULL;
+    short   status  = 0;
 
-    if (src == NULL || haystack == NULL || needle == NULL)
-        return -1;
+    char*   bak     = NULL,
+        *   find    = NULL;
+
+    if (src == NULL || haystack == NULL || needle == NULL) {
+        status = -1; goto ERR;
+    }
 
     /* seach strings */
-    if ((find = strstr(src, haystack)) == NULL)
-        return -2;
+    if ((find = strstr(src, haystack)) == NULL) {
+        status = -2; goto ERR;
+    }
 
     if (strlen(haystack) < strlen(needle)) {
         /* reallocate memory */
+        bak = src;
         if ((src = (char*)
-                    srealloc(src, strlen(src) + strlen(needle) + 1 - strlen(haystack), NULL)) == NULL)
-            return -3;
+                    srealloc(src, strlen(src) + strlen(needle) + 1 - strlen(haystack), NULL)) == NULL) {
+            status = -3; goto ERR;
+        }
 
         /* move match word to specified location in memory */
         memmove(
@@ -80,6 +87,20 @@ int strrep(char* src, char* haystack, char* needle)
     }
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    -3:
+            if (bak != NULL) {
+                free(bak);
+                free(bak);
+            }
+        case    -1:
+        case    -2:
+            break;
+    }
+
+    return status;
 }
 
 char* strlion(int argnum, ...)
@@ -97,7 +118,7 @@ char* strlion(int argnum, ...)
 
     if ((argmnt = (char**)
                 smalloc(sizeof(char*) * argnum, NULL)) == NULL)
-        return NULL;
+        goto ERR;
 
     /* processing of variable arguments */
     va_start(list, argnum);

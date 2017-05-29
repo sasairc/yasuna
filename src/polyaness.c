@@ -54,6 +54,8 @@ int init_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
                     code    = 0,
                     recs    = 0;
 
+    short           status  = 0;
+
     polyaness_t*    pt      = NULL;
 
     rewind(fp);
@@ -69,17 +71,11 @@ int init_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
 
     if ((pt = (polyaness_t*)
             malloc(sizeof(polyaness_t))) == NULL) {
-        fprintf(stderr, "polyaness: init_polyaness(): malloc(): %s\n",
-                strerror(errno));
-
-        goto ERR;
+        status = -1; goto ERR;
     }
     if ((pt->record = (polyaness_cell**)
             malloc(sizeof(polyaness_cell*) * (recs + 1))) == NULL) {
-        fprintf(stderr, "polyaness: init_polyaness(): malloc(): %s\n",
-                strerror(errno));
-
-        goto ERR;
+        status = -2; goto ERR;
     }
 
     pt->recs = recs;
@@ -87,20 +83,14 @@ int init_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
     while (i <= j) {
         if ((pt->record[i] = (polyaness_cell*)
                 malloc(sizeof(polyaness_cell))) == NULL) {
-            fprintf(stderr, "polyaness: init_polyaness(): malloc(): %s\n",
-                    strerror(errno));
-
-            goto ERR;
+            status = -3; goto ERR;
         }
         pt->record[i]->key = NULL;
         pt->record[i]->key = NULL;
 
         if ((pt->record[j] = (polyaness_cell*)
                 malloc(sizeof(polyaness_cell))) == NULL) {
-            fprintf(stderr, "polyaness: init_polyaness(): malloc(): %s\n",
-                    strerror(errno));
-
-            goto ERR;
+            status = -4; goto ERR;
         }
         pt->record[j]->key = NULL;
         pt->record[j]->key = NULL;
@@ -113,6 +103,16 @@ int init_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
     return 0;
 
 ERR:
+    switch (status) {
+        case    -1:
+        case    -2:
+        case    -3:
+        case    -4:
+            fprintf(stderr, "polyaness: init_polyaness(): malloc(): %s\n",
+                    strerror(errno));
+            break;
+    }
+
     if (pt->record != NULL) {
         while (i >= 0) {
             if (pt->record[i] != NULL) {
@@ -129,7 +129,7 @@ ERR:
         pt = NULL;
     }
 
-    return -1;
+    return status;
 }
 
 int parse_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
@@ -140,14 +140,17 @@ int parse_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
     int     code    = 0,
             recs    = 0;
 
+    short   status  = 0;
+
     char*   buf     = NULL;
 
     size_t  len     = 0,
             x_bufl  = BUFLEN;
 
     if ((buf = (char*)
-            malloc(sizeof(char) * x_bufl)) == NULL)
-        goto ERR;
+            malloc(sizeof(char) * x_bufl)) == NULL) {
+        status = -1; goto ERR;
+    }
 
     rewind(fp);
     while ((code = fgetc(fp)) != EOF) {
@@ -157,9 +160,7 @@ int parse_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
                 continue;
             }
             if (add_data_polyaness(recs, count_keys(buf), buf, &polyaness) < 0) {
-                fprintf(stderr, "polyaness: parse_polyaness(): add_data_polyaness() failure\n");
-
-                goto ERR;
+                status = -2; goto ERR;
             }
             memset(buf, '\0', x_bufl);
             recs++;
@@ -171,10 +172,7 @@ int parse_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
                 x_bufl += BUFLEN;
                 if ((buf = (char*)
                         realloc(buf, sizeof(char) * x_bufl)) == NULL) {
-                    fprintf(stderr, "polyaness: parse_polyaness(): realloc(): %s\n",
-                            strerror(errno));
-
-                    goto ERR;
+                    status = -3; goto ERR;
                 }
             }
             *(buf + len) = code;
@@ -186,12 +184,26 @@ int parse_polyaness(FILE* fp, int offset, polyaness_t** polyaness)
     return 0;
 
 ERR:
+    switch (status) {
+        case    -1:
+            fprintf(stderr, "polyaness: parse_polyaness(): malloc(): %s\n",
+                    strerror(errno));
+            break;
+        case    -2:
+            fprintf(stderr, "polyaness: parse_polyaness(): add_data_polyaness() failure\n");
+            break;
+        case    -3:
+            fprintf(stderr, "polyaness: parse_polyaness(): realloc(): %s\n",
+                    strerror(errno));
+            break;
+    }
+
     if (buf != NULL) {
         free(buf);
         buf = NULL;
     }
 
-    return -1;
+    return status;
 }
 
 static
@@ -213,6 +225,8 @@ int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** pol
 {
     int             i       = 0;
 
+    short           status  = 0;
+
     char**          key     = NULL,
         **          value   = NULL;
 
@@ -225,20 +239,14 @@ int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** pol
         malloc(sizeof(char*) * keys);
 
     if (key == NULL || value == NULL) {
-        fprintf(stderr, "polyaness: add_data_polyaness(): malloc(): %s\n",
-                strerror(errno));
-
-        goto ERR;
+        status = -1; goto ERR;
     }
     
     while (i < keys) {
         if (*(str + head) == COL) {
             if ((*(key + i) = (char*)
                     malloc(sizeof(char) * (head - tail + 1))) == NULL) {
-                fprintf(stderr, "polyaness: add_data_polyaness(): malloc(): %s\n",
-                        strerror(errno));
-
-                goto ERR;
+                status = -2; goto ERR;
             }
             memcpy(*(key + i), str + tail, head - tail);
             *(*(key + i) + head - tail) = '\0';
@@ -248,10 +256,7 @@ int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** pol
         } else if (*(str + head) == TAB || *(str + head) == '\0') {
             if ((*(value + i) = (char*)
                     malloc(sizeof(char) * (head - tail + 1))) == NULL) {
-                fprintf(stderr, "polyaness: add_data_polyaness(): malloc(): %s\n",
-                        strerror(errno));
-
-                goto ERR;
+                status = -3; goto ERR;
             }
             memcpy(*(value + i), str + tail, head - tail);
             *(*(value + i) + head - tail) = '\0';
@@ -270,6 +275,15 @@ int add_data_polyaness(int record, int keys, const char* str, polyaness_t*** pol
     return 0;
 
 ERR:
+    switch (status) {
+        case    -1:
+        case    -2:
+        case    -3:
+            fprintf(stderr, "polyaness: add_data_polyaness(): malloc(): %s\n",
+                    strerror(errno));
+            break;
+    }
+
     keys = i;
     if (key != NULL) {
         i = keys;
@@ -290,7 +304,7 @@ ERR:
         free(value);
     }
 
-    return -1;
+    return status;
 }
 
 char* get_polyaness(const char* key, int record, polyaness_t** polyaness)
