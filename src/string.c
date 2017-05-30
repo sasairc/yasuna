@@ -63,7 +63,9 @@ int strrep(char* src, char* haystack, char* needle)
         /* reallocate memory */
         bak = src;
         if ((src = (char*)
-                    srealloc(src, strlen(src) + strlen(needle) + 1 - strlen(haystack), NULL)) == NULL) {
+                    srealloc(src,
+                        strlen(src) + strlen(needle) + 1 - strlen(haystack),
+                        NULL)) == NULL) {
             status = -3; goto ERR;
         }
 
@@ -90,13 +92,14 @@ int strrep(char* src, char* haystack, char* needle)
 
 ERR:
     switch (status) {
+        case    -1:
+        case    -2:
+            break;
         case    -3:
             if (bak != NULL) {
                 free(bak);
                 free(bak);
             }
-        case    -1:
-        case    -2:
             break;
     }
 
