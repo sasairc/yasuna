@@ -4,7 +4,7 @@ compiler:
     - clang
 before_install:
     - sudo apt-get update
-    - sudo apt-get -y install tree
+    - sudo apt-get -y install pkg-config libglib2.0-0 libglib2.0-dev tree
 script:
     - export CC="$CC" TEST_PREFIX="`pwd`/test_prefix"
     - source ./test.bash
