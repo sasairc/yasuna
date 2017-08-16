@@ -2,12 +2,13 @@
 #    Makefile for yasuna
 #
 
-SRCS	= $(wildcard *.c)
-OBJS	= $(SRCS:.c=.o)
-DEPOBJS	= ./libbenly/src/*.o ./libpolyaness/src/*.o
-ARCH	= $(shell gcc -print-multiarch)
+SRCS       = $(wildcard *.c)
+OBJS       = $(SRCS:.c=.o)
+DEPOBJS    = ./libbenly/src/*.o ./libpolyaness/src/*.o
+ARCH       = $(shell gcc -print-multiarch)
+DEFLDFLAGS = `pkg-config --cflags --libs glib-2.0`
 
-DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"       \
+DEFCFLAGS  = -DPREFIX=\"$(PREFIX)\"      \
 		-DDICNAME=\"$(DICNME)\"  \
 		-DDICPATH=\"$(DICDIR)/\" \
 		-DLOCALE=\"\"            \
@@ -21,9 +22,9 @@ all: $(TARGET) $(OBJS)
 $(TARGET): build-dep $(OBJS)
 ifeq ($(CMDLINE), 0)
 	@echo "  BUILD   $@"
-	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@
+	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@ $(DEFLDFLAGS)
 else
-	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@
+	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@ $(DEFLDFLAGS)
 endif
 
 %.o: %.c %.h
