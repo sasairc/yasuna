@@ -12,10 +12,10 @@
 
 #include "./config.h"
 #include "./subset.h"
-#include "./file.h"
-#include "./string.h"
-#include "./memory.h"
-#include "./polyaness.h"
+#include "./libbenly/src/file.h"
+#include "./libbenly/src/string.h"
+#include "./libbenly/src/memory.h"
+#include "./libpolyaness/src/polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

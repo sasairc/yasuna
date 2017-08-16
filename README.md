@@ -14,6 +14,12 @@ yasuna
 
 ※ 参考もといパクリ元　[844196/Renge](https://github.com/844196/Renge)
 
+## Requirements
+
+* GNU Make
+* gcc or clang
+* pkg-config
+* glib-2.0	
 
 ## Install
 

@@ -16,6 +16,8 @@
 
 * make に必要なツール及びライブラリ
 
+  * pkg-config
+  * glib-2.0
   * make
   * gcc または llvm+clang
 
