@@ -11,6 +11,7 @@
     Debian GNU/Linux 6.x (squeeze)
     Debian GNU/Linux 7.x (wheezy)
     Debian GNU/Linux 8.x (jessie)
+    Debian GNU/Linux 9.x (stretch)
 
   * MacOS X/Homebrew
 
@@ -98,6 +99,12 @@ make に関する追加情報
   * clean
   生成された実行ファイル及び、オブジェクトファイルを削除する。
 
+  * build-dep
+  libbenly 及び libpolyaness のみビルドを実行する。
+
+  * clean-dep
+  libbenly 及び libpolyaness のオブジェクトファイルを削除する。
+
   * install-bin
   実行ファイルのみをインストールする。
 
@@ -135,4 +142,4 @@ make に関する追加情報
 
   0. You just DO WHAT THE FUCK YOU WANT TO.
 
--- sasairc <sasairc@ssiserver.moe.hm>  Sat, 20 May 2016 18:11:06 +0900
+-- sasairc <sasairc@ssiserver.moe.hm>  Wed, 16 Aug 2017 17:59:43 +0900

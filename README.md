@@ -130,7 +130,9 @@ Twitter: [@sasairc_yasuna](https://twitter.com/sasairc_yasuna)にて本プログ
 
 ## License
 
-[WTFPL version 2](http://www.wtfpl.net/txt/copying/)
+[WTFPL version 2](https://raw.githubusercontent.com/sasairc/yasuna/master/LICENSE)
+
+[MIT License](https://raw.githubusercontent.com/sasairc/libpolyaness/master/LICENSE)
 
 
 ## Author
