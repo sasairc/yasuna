@@ -4,7 +4,8 @@
 
 SRCS       = $(wildcard *.c)
 OBJS       = $(SRCS:.c=.o)
-DEPOBJS    = ./libbenly/src/*.o ./libpolyaness/src/*.o
+DEPSRCS    = $(wildcard ./libbenly/src/*.c ./libpolyaness/src/*.c)
+DEPOBJS    = $(DEPSRCS:.c=.o)
 ARCH       = $(shell gcc -print-multiarch)
 DEFCFLAGS  = -DPREFIX=\"$(PREFIX)\"      \
 		-DDICNAME=\"$(DICNME)\"  \
@@ -16,14 +17,14 @@ DEFCFLAGS  = -DPREFIX=\"$(PREFIX)\"      \
 		-DARCH=\"$(ARCH)\"
 export
 
-all: $(TARGET) $(OBJS)
+all: $(TARGET)
 
-$(TARGET): build-dep $(OBJS)
+$(TARGET): $(DEPOBJS) $(OBJS)
 ifeq ($(CMDLINE), 0)
 	@echo "  BUILD   $@"
-	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@
+	@$(CC) $(LDFLAGS) $^ -o $@
 else
-	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@
+	$(CC) $(LDFLAGS) $^ -o $@
 endif
 
 %.o: %.c %.h
@@ -34,7 +35,7 @@ else
 	$(CC) $(CFLAGS) -c $< -o $@ $(DEFCFLAGS)
 endif
 
-build-dep:
+build-dep $(DEPOBJS):
 	@$(MAKE) -C ./libbenly		all
 	@$(MAKE) -C ./libpolyaness	all
 
