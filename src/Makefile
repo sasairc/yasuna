@@ -2,11 +2,11 @@
 #    Makefile for yasuna
 #
 
-SRCS	= $(wildcard *.c)
-OBJS	= $(SRCS:.c=.o)
-ARCH	= $(shell gcc -print-multiarch)
-
-DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"       \
+SRCS       = $(wildcard *.c)
+OBJS       = $(SRCS:.c=.o)
+DEPOBJS    = ./libbenly/src/*.o ./libpolyaness/src/*.o
+ARCH       = $(shell gcc -print-multiarch)
+DEFCFLAGS  = -DPREFIX=\"$(PREFIX)\"      \
 		-DDICNAME=\"$(DICNME)\"  \
 		-DDICPATH=\"$(DICDIR)/\" \
 		-DLOCALE=\"\"            \
@@ -14,15 +14,16 @@ DEFCFLAGS = -DPREFIX=\"$(PREFIX)\"       \
 		-DTH_LINES=$(TH_LINES)   \
 		-DTH_LENGTH=$(TH_LENGTH) \
 		-DARCH=\"$(ARCH)\"
+export
 
 all: $(TARGET) $(OBJS)
 
-$(TARGET): $(OBJS)
+$(TARGET): build-dep $(OBJS)
 ifeq ($(CMDLINE), 0)
 	@echo "  BUILD   $@"
-	@$(CC) $(LDFLAGS) $^ -o $@
+	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@
 else
-	$(CC) $(LDFLAGS) $^ -o $@
+	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@
 endif
 
 %.o: %.c %.h
@@ -33,14 +34,24 @@ else
 	$(CC) $(CFLAGS) -c $< -o $@ $(DEFCFLAGS)
 endif
 
+build-dep:
+	@$(MAKE) -C ./libbenly		all
+	@$(MAKE) -C ./libpolyaness	all
+
+clean-dep:
+	@$(MAKE) -C ./libpolyaness	clean
+	@$(MAKE) -C ./libbenly		clean
+
 install-bin: $(TARGET)
 	install -pd $(BINDIR)
 	install -pm 755 $< $(BINDIR)/
 
-clean:
+clean: clean-dep
 	-$(RM) -f $(OBJS)
 	-$(RM) -f $(TARGET)
 
 .PHONY: all		\
+        build-dep       \
+	clean-dep       \
 	install-bin	\
 	clean

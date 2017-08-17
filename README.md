@@ -14,6 +14,10 @@ yasuna
 
 ※ 参考もといパクリ元　[844196/Renge](https://github.com/844196/Renge)
 
+## Requirements
+
+* GNU Make
+* gcc or clang
 
 ## Install
 
@@ -124,7 +128,7 @@ Twitter: [@sasairc_yasuna](https://twitter.com/sasairc_yasuna)にて本プログ
 
 ## License
 
-[WTFPL version 2](http://www.wtfpl.net/txt/copying/)
+[WTFPL version 2](https://raw.githubusercontent.com/sasairc/yasuna/master/LICENSE)
 
 
 ## Author

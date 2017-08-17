@@ -21,7 +21,7 @@ TH_LINES  := 1024
 TH_LENGTH := 640
 export
 
-all clean install-bin:
+all clean build-dep clean-dep install-bin:
 	@$(MAKE) -C ./src	$@
 
 install-quotes:
@@ -43,6 +43,8 @@ install: install-bin		\
 	 install-zsh-compdef
 
 .PHONY:	all			\
+        build-dep		\
+	clean-dep		\
 	install			\
 	install-bin		\
 	install-quotes		\

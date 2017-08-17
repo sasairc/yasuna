@@ -14,7 +14,7 @@
 #define SUBSET_H
 
 #include "./yasuna.h"
-#include "./polyaness.h"
+#include "./libpolyaness/src/polyaness.h"
 #include <stdio.h>
 
 extern int concat_file_path(char** path, yasuna_t* yasuna);

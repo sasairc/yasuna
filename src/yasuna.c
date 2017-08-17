@@ -14,8 +14,8 @@
 #include "./yasuna.h"
 #include "./info.h"
 #include "./subset.h"
-#include "./string.h"
-#include "./polyaness.h"
+#include "./libbenly/src/string.h"
+#include "./libpolyaness/src/polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
