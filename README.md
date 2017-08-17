@@ -18,8 +18,6 @@ yasuna
 
 * GNU Make
 * gcc or clang
-* pkg-config
-* glib-2.0	
 
 ## Install
 

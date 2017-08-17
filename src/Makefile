@@ -6,8 +6,6 @@ SRCS       = $(wildcard *.c)
 OBJS       = $(SRCS:.c=.o)
 DEPOBJS    = ./libbenly/src/*.o ./libpolyaness/src/*.o
 ARCH       = $(shell gcc -print-multiarch)
-DEFLDFLAGS = `pkg-config --cflags --libs glib-2.0`
-
 DEFCFLAGS  = -DPREFIX=\"$(PREFIX)\"      \
 		-DDICNAME=\"$(DICNME)\"  \
 		-DDICPATH=\"$(DICDIR)/\" \
@@ -16,15 +14,16 @@ DEFCFLAGS  = -DPREFIX=\"$(PREFIX)\"      \
 		-DTH_LINES=$(TH_LINES)   \
 		-DTH_LENGTH=$(TH_LENGTH) \
 		-DARCH=\"$(ARCH)\"
+export
 
 all: $(TARGET) $(OBJS)
 
 $(TARGET): build-dep $(OBJS)
 ifeq ($(CMDLINE), 0)
 	@echo "  BUILD   $@"
-	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@ $(DEFLDFLAGS)
+	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@
 else
-	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@ $(DEFLDFLAGS)
+	@$(CC) $(LDFLAGS) $(OBJS) $(DEPOBJS) -o $@
 endif
 
 %.o: %.c %.h
