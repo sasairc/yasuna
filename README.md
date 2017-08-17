@@ -39,6 +39,7 @@ yasuna
 ### Other systems.
 
 ```shellsession
+% git clone --recursive https://github.com/sasairc/yasuna.git && cd yasuna
 % make PREFIX=/foo/bar	# デフォルトでは、PREFIX=/usr/localです
 # make install PREFIX=/foo/bar
 ```
