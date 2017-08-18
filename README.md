@@ -81,7 +81,7 @@ yasuna
 
 ### Polyaness dictionary
 
-```
+```shellsession
 % head ~/trio_the_techno.ltsv
 filetype:polyaness_dict	author:sasairc	description:トリオ・ザ・テクノ
 speaker:高橋幸宏	quote:元、YMOでドラムをしておりました、高橋でございます
