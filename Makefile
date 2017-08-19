@@ -21,7 +21,7 @@ TH_LINES  := 1024
 TH_LENGTH := 640
 export
 
-all clean build-dep clean-dep install-bin:
+all clean build-dep clean-dep install-dep install-bin:
 	@$(MAKE) -C ./src	$@
 
 install-quotes:
@@ -46,6 +46,7 @@ install: install-bin		\
         build-dep		\
 	clean-dep		\
 	install			\
+	install-dep		\
 	install-bin		\
 	install-quotes		\
 	install-man		\

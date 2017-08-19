@@ -16,8 +16,12 @@ yasuna
 
 ## Requirements
 
-* GNU Make
-* gcc or clang
+* libbenly >= 1.0.0 (同梱)
+* libpolyaness >= 1.0.0 (同梱)
+
+* GNU make
+* gcc or llvm+clang
+
 
 ## Install
 
@@ -38,11 +42,17 @@ yasuna
 
 ### Other systems.
 
-```shellsession
-% git clone --recursive https://github.com/sasairc/yasuna.git && cd yasuna
-% make PREFIX=/foo/bar	# デフォルトでは、PREFIX=/usr/localです
-# make install PREFIX=/foo/bar
-```
+* 静的バイナリとしてビルドしインストールする場合
+	```shellsession
+	% make PREFIX=/foo/bar	# デフォルトでは、PREFIX=/usr/localです
+	# make install PREFIX=/foo/bar
+	```
+
+* *libbenly*及び*libpolyaness*を共有ライブラリとしてインストールし、それを利用する場合	
+	```shellsession
+	# make install-dep
+	# make WITH_SHARED=1 install
+	```
 
 その他のオプションに関しては、`INSTALL.ja`をご覧下さい。
 

@@ -17,7 +17,9 @@
 
 * make に必要なツール及びライブラリ
 
-  * make
+  * libbenly >= 1.0.0 (同梱)
+  * libpolyaness >= 1.0.0 (同梱)
+  * GNU make
   * gcc または llvm+clang
 
 
@@ -73,6 +75,11 @@ make に関する追加情報
   指定できるオプションに関しては、 gcc の最適化オプションに関してのドキュメントを参照。
   未指定の場合は、 CFLAGS="-O2 -g -Wall" となる。
 
+  * WITH_SHARED
+  共有ライブラリとして libbenly 及び libpolyaness がインストールしてある場合、それを使用する為のオプション。
+  既に sasairc/{libbenly,libpolyaness} 単体または make install-dep でインストールしてある場合用いる事ができる。
+  未指定の場合の値は 0 であり、その他の値がセットされた場合は、有効化される。
+
   * CMDLINE
   make 時のメッセージを抑制する為のオプション。
   未指定の場合の値は 0 であり、その他の値がセットされた場合は、抑制せずに出力される。
@@ -105,6 +112,9 @@ make に関する追加情報
 
   * install-bin
   実行ファイルのみをインストールする。
+
+  * install-dep
+  libbenly 及び libpolyaness を Shared Library としてインストールする。
 
   * install-man
   man ページのみをインストールする。
@@ -140,4 +150,4 @@ make に関する追加情報
 
   0. You just DO WHAT THE FUCK YOU WANT TO.
 
--- sasairc <sasairc@ssiserver.moe.hm>  Wed, 16 Aug 2017 17:59:43 +0900
+-- sasairc <sasairc@ssiserver.moe.hm>  Sat, 19 Aug 2017 20:02:24 +0900
