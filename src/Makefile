@@ -2,6 +2,8 @@
 #    Makefile for yasuna
 #
 
+include ../config.mk
+
 SRCS        = $(wildcard *.c)
 OBJS        = $(SRCS:.c=.o)
 DEPSRCS     = $(wildcard ./libbenly/src/*.c ./libpolyaness/src/*.c)
@@ -16,7 +18,7 @@ DEFCFLAGS   = -DPREFIX=\"$(PREFIX)\"      \
 		-DTH_LENGTH=$(TH_LENGTH) \
 		-DARCH=\"$(ARCH)\"
 # use shared libraries (default: disable)
-WITH_SHARED = 0
+WITH_SHARED ?= 0
 export
 
 all: $(TARGET)

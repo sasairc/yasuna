@@ -2,23 +2,18 @@
 #    Makefile for yasuna
 #
 
-TARGET    = yasuna
-DICNME    = yasuna-quotes
-# DICNME = yasuna-quotes-lite
-PREFIX    := /usr/local
-BINDIR    := $(PREFIX)/bin
-DICDIR    := $(PREFIX)/share/$(TARGET)
-MANDIR    := $(PREFIX)/share/man/ja
-DOCDIR    := $(PREFIX)/share/doc/$(TARGET)
-MAKE      := make
-CC        := cc
-RM        := rm
-CFLAGS    := -O2 -g -Wall
-LDFLAGS   :=
-CMDLINE   := 0
-BUFLEN    := 4096
-TH_LINES  := 1024
-TH_LENGTH := 640
+TARGET	= yasuna
+PREFIX	:= /usr/local
+BINDIR	:= $(PREFIX)/bin
+DICDIR	:= $(PREFIX)/share/$(TARGET)
+MANDIR	:= $(PREFIX)/share/man/ja
+DOCDIR	:= $(PREFIX)/share/doc/$(TARGET)
+MAKE	:= make
+CC	:= cc
+RM	:= rm
+CFLAGS	:= -O2 -g -Wall
+LDFLAGS	:=
+CMDLINE	:= 0
 export
 
 all clean build-dep clean-dep install-dep install-bin:
