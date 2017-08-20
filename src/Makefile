@@ -9,16 +9,30 @@ OBJS        = $(SRCS:.c=.o)
 DEPSRCS     = $(wildcard ./libbenly/src/*.c ./libpolyaness/src/*.c)
 DEPOBJS     = $(DEPSRCS:.c=.o)
 ARCH        = $(shell gcc -print-multiarch)
-DEFCFLAGS   = -DPREFIX=\"$(PREFIX)\"      \
-		-DDICNAME=\"$(DICNME)\"  \
+DEFCFLAGS   = -DPREFIX=\"$(PREFIX)\"     \
 		-DDICPATH=\"$(DICDIR)/\" \
 		-DLOCALE=\"\"            \
-		-DBUFLEN=$(BUFLEN)       \
-		-DTH_LINES=$(TH_LINES)   \
-		-DTH_LENGTH=$(TH_LENGTH) \
 		-DARCH=\"$(ARCH)\"
+
 # use shared libraries (default: disable)
 WITH_SHARED ?= 0
+# manually specifies default cowfile
+ifdef DICNME
+DEFCFLAGS   += -DDICNAME=\"$(DICNME)\"
+else
+DEFCFLAGS   += -DDICNAME=\"yasuna-quotes\"
+# DICNME
+endif
+# threshold of lines (sizeof(char*) * TH_LINES)
+ifdef TH_LINES
+DEFCFLAGS   += -DTH_LINES=$(TH_LINES)
+# TH_LINES
+endif
+# threshold of string (sizeof(char) * TH_LENGTH)
+ifdef TH_LENGTH
+DEFCFLAGS   += -DTH_LENGTH=$(TH_LENGTH)
+# TH_LENGTH
+endif
 export
 
 all: $(TARGET)
