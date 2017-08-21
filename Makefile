@@ -11,7 +11,7 @@ DOCDIR	:= $(PREFIX)/share/doc/$(TARGET)
 MAKE	:= make
 CC	:= cc
 RM	:= rm
-CFLAGS	:= -O2 -g -Wall
+CFLAGS	:= -Wall -O2 -g
 LDFLAGS	:=
 CMDLINE	:= 0
 export
