@@ -14,10 +14,10 @@
 #define CONFIG_H
 
 #define PROGNAME        "yasuna"
-#define VERSION         8
+#define VERSION         9
 #define PATCHLEVEL      5
 #define SUBLEVEL        2
-#define EXTRAVERSION    "-nightly_20170821"
+#define EXTRAVERSION    "-devel"
 
 #define AUTHOR          "sasairc"
 #define MAIL_TO         "sasairc@ssiserver.moe.hm"
