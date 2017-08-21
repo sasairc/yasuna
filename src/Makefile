@@ -15,7 +15,10 @@ DEFCFLAGS   = -DPREFIX=\"$(PREFIX)\"     \
 		-DARCH=\"$(ARCH)\"
 
 # use shared libraries (default: disable)
-WITH_SHARED ?= 0
+ifeq ($(WITH_SHARED), 1)
+DEFCFLAGS   += -DWITH_SHARED
+# WITH_SHARED
+endif
 # manually specifies default cowfile
 ifdef DICNME
 DEFCFLAGS   += -DDICNAME=\"$(DICNME)\"
@@ -72,8 +75,8 @@ build-dep $(DEPOBJS):
 	@$(MAKE) -C ./libpolyaness CFLAGS="$(CFLAGS)"	all
 
 clean-dep:
-	@$(MAKE) -C ./libpolyaness	clean
-	@$(MAKE) -C ./libbenly		clean
+	-$(MAKE) -C ./libpolyaness	clean
+	-$(MAKE) -C ./libbenly		clean
 
 install-dep:
 	@$(MAKE) -C ./libpolyaness	install

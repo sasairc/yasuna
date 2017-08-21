@@ -14,11 +14,18 @@
 #include "./yasuna.h"
 #include "./info.h"
 #include "./subset.h"
-#include "./libbenly/src/string.h"
-#include "./libpolyaness/src/polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+
+#ifdef  WITH_SHARED
+#include <benly/string.h>
+#include <polyaness.h>
+#else
+#include "./libbenly/src/string.h"
+#include "./libpolyaness/src/polyaness.h"
+/* WITH_SHARED */
+#endif
 
 static void release(FILE* fp, char* path, polyaness_t* pt);
 

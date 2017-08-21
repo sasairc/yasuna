@@ -14,8 +14,14 @@
 #define SUBSET_H
 
 #include "./yasuna.h"
-#include "./libpolyaness/src/polyaness.h"
 #include <stdio.h>
+
+#ifdef  WITH_SHARED
+#include <polyaness.h>
+#else
+#include "./libpolyaness/src/polyaness.h"
+/* WITH_SHARED */
+#endif
 
 extern int concat_file_path(char** path, yasuna_t* yasuna);
 extern int open_dict_file(char* path, FILE** fp);

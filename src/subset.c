@@ -12,10 +12,6 @@
 
 #include "./config.h"
 #include "./subset.h"
-#include "./libbenly/src/file.h"
-#include "./libbenly/src/string.h"
-#include "./libbenly/src/memory.h"
-#include "./libpolyaness/src/polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,6 +19,19 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+
+#ifdef  WITH_SHARED
+#include <benly/file.h>
+#include <benly/string.h>
+#include <benly/memory.h>
+#include <polyaness.h>
+#else
+#include "./libbenly/src/file.h"
+#include "./libbenly/src/string.h"
+#include "./libbenly/src/memory.h"
+#include "./libpolyaness/src/polyaness.h"
+/* WITH_SHARED */
+#endif
 
 static int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
 
