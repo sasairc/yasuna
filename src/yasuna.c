@@ -22,8 +22,8 @@
 #include <benly/string.h>
 #include <polyaness.h>
 #else
-#include "./libbenly/src/string.h"
-#include "./libpolyaness/src/polyaness.h"
+#include <libbenly/src/string.h>
+#include <libpolyaness/src/polyaness.h>
 /* WITH_SHARED */
 #endif
 

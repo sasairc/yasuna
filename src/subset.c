@@ -26,10 +26,10 @@
 #include <benly/memory.h>
 #include <polyaness.h>
 #else
-#include "./libbenly/src/file.h"
-#include "./libbenly/src/string.h"
-#include "./libbenly/src/memory.h"
-#include "./libpolyaness/src/polyaness.h"
+#include <libbenly/src/file.h>
+#include <libbenly/src/string.h>
+#include <libbenly/src/memory.h>
+#include <libpolyaness/src/polyaness.h>
 /* WITH_SHARED */
 #endif
 

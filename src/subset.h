@@ -19,7 +19,7 @@
 #ifdef  WITH_SHARED
 #include <polyaness.h>
 #else
-#include "./libpolyaness/src/polyaness.h"
+#include <libpolyaness/src/polyaness.h>
 /* WITH_SHARED */
 #endif
 
