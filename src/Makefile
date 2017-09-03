@@ -39,6 +39,13 @@ ifdef TH_LENGTH
 DEFCFLAGS   += -DTH_LENGTH=$(TH_LENGTH)
 # TH_LENGTH
 endif
+GCOV_GCDAS  = $(SRCS:.c=.gcda)
+GCOV_GCOVS  = $(SRCS:.c=.c.gcov)
+ifeq ($(WITH_TEST), 1)
+CFLAGS      += -coverage
+LDFLAGS     += -coverage
+# WITH_TEST
+endif
 export
 
 all: $(TARGET)
@@ -89,7 +96,18 @@ install-bin: $(TARGET)
 	install -pd $(BINDIR)
 	install -pm 755 $< $(BINDIR)/
 
-clean: clean-dep
+test: all
+	@bash ../testsuite/gcov.bash
+	@gcov -lp $(GCOV_GCDAS) > ../testsuite/result.gcov
+	@tail -n +1 $(GCOV_GCOVS) >> ../testsuite/result.gcov
+	@cat ../testsuite/result.gcov
+
+clean-test:
+	-$(RM) -f *.gcno *.gcda *.gcov
+	-$(RM) -f libbenly/src/*.gcno libbenly/src/*.gcda libbenly/src/*.gcov
+	-$(RM) -f libpolyaness/src/*.gcno libpolyaness/src/*.gcda libpolyaness/src/*.gcov
+
+clean: clean-dep clean-test
 	-$(RM) -f $(OBJS)
 	-$(RM) -f $(TARGET)
 
@@ -98,4 +116,5 @@ clean: clean-dep
 	clean-dep       \
 	install-dep	\
 	install-bin	\
+	test		\
 	clean

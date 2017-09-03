@@ -11,12 +11,13 @@ DOCDIR	:= $(PREFIX)/share/doc/$(TARGET)
 MAKE	:= make
 CC	:= cc
 RM	:= rm
+GCOV	:= gcov
 CFLAGS	:= -Wall -O2 -g
 LDFLAGS	:=
 CMDLINE	:= 0
 export
 
-all clean build-dep clean-dep install-dep install-bin:
+all clean test build-dep clean-dep install-dep install-bin:
 	@$(MAKE) -C ./src	$@
 
 install-quotes:
@@ -47,4 +48,5 @@ install: install-bin		\
 	install-man		\
 	install-doc		\
 	install-zsh-compdef	\
+	test			\
 	clean
