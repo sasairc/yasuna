@@ -8,7 +8,7 @@ before_install:
 script:
     - export CC="$CC" TEST_PREFIX="`pwd`/test_prefix"
     - source ./testsuite/travis-ci.bash
-    - make WITH_TESTS=1 test
+    - make WITH_TEST=1 test
     - make clean
     - install_bin "$CC" "$TEST_PREFIX"
     - cleanup "$TEST_PREFIX"
