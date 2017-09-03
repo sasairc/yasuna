@@ -10,11 +10,11 @@ function test0() {
     ${YASUNA} --help                                    && \
     ${YASUNA} -n STR                                    || \
     ${YASUNA} -f                                        || \
-    touch empty; ${YASUNA} -f ./empty                   || \
     ${YASUNA} -f ENOENT                                 || \
+    ${YASUNA} -f ../testsuite/empty                     || \
     ${YASUNA} -f /var/log/syslog                        || \
     ${YASUNA} -f ../src                                 || \
-    true
+    ${YASUNA}
 
     return $?
 }

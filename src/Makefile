@@ -103,7 +103,7 @@ test: all
 	@cat ../testsuite/result.gcov
 
 clean-test:
-	-$(RM) -f *.gcno *.gcda *.gcov empty
+	-$(RM) -f *.gcno *.gcda *.gcov
 	-$(RM) -f libbenly/src/*.gcno libbenly/src/*.gcda libbenly/src/*.gcov
 	-$(RM) -f libpolyaness/src/*.gcno libpolyaness/src/*.gcda libpolyaness/src/*.gcov
 
