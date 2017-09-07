@@ -17,8 +17,12 @@ LDFLAGS	:=
 CMDLINE	:= 0
 export
 
-all clean test build-dep clean-dep install-dep install-bin:
+all clean build-dep clean-dep install-dep install-bin:
 	@$(MAKE) -C ./src	$@
+
+coverage-gcov:
+	@$(MAKE) -C ./src	\
+		WITH_GCOV=1	$@
 
 install-quotes:
 	@$(MAKE) -C ./quotes	$@
@@ -48,5 +52,5 @@ install: install-bin		\
 	install-man		\
 	install-doc		\
 	install-zsh-compdef	\
-	test			\
+	coverage-gcov		\
 	clean

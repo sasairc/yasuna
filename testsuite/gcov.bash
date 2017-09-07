@@ -62,4 +62,5 @@ function test3() {
     return $?
 }
 
-(test0 && test1 && test2 && test3) > /dev/null 2>&1
+#(test0 && test1 && test2 && test3) > /dev/null 2>&1
+test0 && test1 && test2 && test3
