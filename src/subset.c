@@ -12,10 +12,6 @@
 
 #include "./config.h"
 #include "./subset.h"
-#include "./file.h"
-#include "./string.h"
-#include "./memory.h"
-#include "./polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,11 +19,27 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <regex.h>
+
+#ifdef  WITH_SHARED
+#include <benly/file.h>
+#include <benly/string.h>
+#include <benly/memory.h>
+#include <polyaness.h>
+#else
+#include <libbenly/src/file.h>
+#include <libbenly/src/string.h>
+#include <libbenly/src/memory.h>
+#include <libpolyaness/src/polyaness.h>
+/* WITH_SHARED */
+#endif
 
 static int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
 
 int concat_file_path(char** path, yasuna_t* yasuna)
 {
+    short   status  = 0;
+
     if (yasuna->flag & YASUNA_FILE) {
         *path = strlion(1, yasuna->farg);   
     } else {
@@ -39,78 +51,107 @@ int concat_file_path(char** path, yasuna_t* yasuna)
 #endif
     }
     if (*path == NULL) {
-        fprintf(stderr, "%s: strlion() failure\n",
-                PROGNAME);
-
-        return -1;
+        status = -1; goto ERR;
     }
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    -1:
+            fprintf(stderr, "%s: strlion() failure\n",
+                    PROGNAME);
+            break;
+    }
+
+    return status;
 }
 
 int open_dict_file(char* path, FILE** fp)
 {
+    short   status  = 0;
+
     struct  stat st;
 
     if (stat(path, &st) != 0) {
-        fprintf(stderr, "%s: %s: %s\n",
-                PROGNAME, path, strerror(ENOENT));
-
-        return -1;
+        status = -1; goto ERR;
     }
 
     if ((st.st_mode & S_IFMT) == S_IFDIR) {
-        fprintf(stderr, "%s: %s: %s\n",
-                PROGNAME, path, strerror(EISDIR));
-
-        return -2;
+        status = -2; goto ERR;
     }
 
     if ((st.st_mode & S_IREAD) == 0) {
-        fprintf(stderr, "%s: %s: %s\n",
-                PROGNAME, path, strerror(EACCES));
-
-        return -3;
+        status = -3; goto ERR;
     }
 
     if ((*fp = fopen(path, "r")) == NULL) {
-        fprintf(stderr, "%s: %s\n",
-                PROGNAME, strerror(errno));
-
-        return -4;
+        status = -4; goto ERR;
     }
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    -1:
+            fprintf(stderr, "%s: %s: %s\n",
+                    PROGNAME, path, strerror(ENOENT));
+            break;
+        case    -2:
+            fprintf(stderr, "%s: %s: %s\n",
+                    PROGNAME, path, strerror(EISDIR));
+            break;
+        case    -3:
+            fprintf(stderr, "%s: %s: %s\n",
+                    PROGNAME, path, strerror(EACCES));
+            break;
+        case    -4:
+            fprintf(stderr, "%s: %s: %s\n",
+                    PROGNAME, path, strerror(errno));
+            break;
+    }
+
+    return status;
 }
 
 int read_dict_file(FILE* fp, polyaness_t** pt)
 {
+    short   status  = 0;
+
     /* initialize libpolyaness */
     if (init_polyaness(fp, 0, pt) < 0) {
-        fprintf(stderr, "%s: init_polyaness() failure\n",
-                PROGNAME);
-        
-        return -1;
+        status = -1; goto ERR;
     }
+
     /* no data */
     if ((*pt)->recs == 0) {
-        release_polyaness(*pt);
-
-        return -2;
+        status = -2; goto ERR;
     }
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    -1:
+            fprintf(stderr, "%s: init_polyaness() failure\n",
+                    PROGNAME);
+            break;
+        case    -2:
+            release_polyaness(*pt);
+            break;
+    }
+
+    return status;
 }
 
 int parse_dict_file(FILE* fp, polyaness_t** pt)
 {
-    int i   = 0;
+    int     i       = 0;
+
+    short   status  = 0;
 
     if (parse_polyaness(fp, 0, pt) < 0) {
-        fprintf(stderr, "%s: parse_polyaness() failure\n",
-                PROGNAME);
-
-        return -1;
+        status = -1; goto ERR;
     }
 
     /*
@@ -130,14 +171,25 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
         (*pt)->recs--;
     } else {
         if (plain_dict_to_polyaness(fp, pt) < 0) {
-            fprintf(stderr, "%s: plain_dict_to_polyaness() failure\n",
-                    PROGNAME);
-
-            return -2;
+            status = -2; goto ERR;
         }
     }
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    -1:
+            fprintf(stderr, "%s: parse_polyaness() failure\n",
+                    PROGNAME);
+            break;
+        case    -2:
+            fprintf(stderr, "%s: plain_dict_to_polyaness() failure\n",
+                    PROGNAME);
+            break;
+    }
+
+    return status;
 }
 
 static
@@ -146,26 +198,19 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     int     i       = 0,
             j       = 0;
 
+    short   status  = 0;
+
     char*   quote   = NULL,
         **  buf     = NULL;
 
     rewind(fp);
     if (p_read_file_char(&buf, TH_LINES, TH_LENGTH, fp, 1) < 0) {
-        fprintf(stderr, "%s: p_read_file_char() failure\n",
-                PROGNAME);
-
-        return -1;
+        status = -1; goto ERR;
     }
 
     if ((quote = (char*)
                 smalloc(sizeof(char) * (strlen("quote") + 1), NULL)) == NULL) {
-        if (quote != NULL)
-            free(quote);
-    
-        if (buf != NULL)
-            free2d(buf, p_count_file_lines(buf));
-
-        return -2;
+        status = -2; goto ERR;
     }
 
     /* mapping char* address to polyaness_t */
@@ -184,6 +229,22 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     free(buf);
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    -1:
+            fprintf(stderr, "%s: p_read_file_char() failure\n",
+                    PROGNAME);
+            break;
+        case    -2:
+            if (quote != NULL)
+                free(quote);
+            if (buf != NULL)
+                free2d(buf, p_count_file_lines(buf));
+            break;
+    }
+
+    return status;
 }
 
 int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
@@ -252,6 +313,47 @@ int create_rand(int lines)
 
     /* create pseudo-random number */
     return (int)(rand()%(lines+1));
+}
+
+int search_all_quotes(char* pattern, polyaness_t* pt)
+{
+    int         i           = 0,
+                status      = 0;
+
+    short       match       = 0;
+
+    char        errbuf[128] = {'\0'},
+        *       quote       = NULL;
+
+    regex_t     reg;
+
+    regmatch_t  regmch[8];
+
+    if ((status = regcomp(&reg, pattern, REG_EXTENDED)) != 0)
+        goto ERR;
+
+    while (i < pt->recs) {
+        quote = get_polyaness("quote", i, &pt);
+        if (regexec(&reg, quote, 8, regmch, 0) == 0) {
+            match |= 1;
+            fprintf(stdout, "%4d %s\n",
+                    i, quote);
+        }
+        i++;
+    }
+    regfree(&reg);
+
+    if (match == 0)
+        return -1;
+
+    return 0;
+
+ERR:
+    regerror(status, &reg, errbuf, sizeof(errbuf));
+    fprintf(stderr, "%s: regexec(): %s: %s\n",
+            PROGNAME, pattern, errbuf);
+
+    return -2;
 }
 
 void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)

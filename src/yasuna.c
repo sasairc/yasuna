@@ -14,17 +14,25 @@
 #include "./yasuna.h"
 #include "./info.h"
 #include "./subset.h"
-#include "./string.h"
-#include "./polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+
+#ifdef  WITH_SHARED
+#include <benly/string.h>
+#include <polyaness.h>
+#else
+#include <libbenly/src/string.h>
+#include <libpolyaness/src/polyaness.h>
+/* WITH_SHARED */
+#endif
 
 static void release(FILE* fp, char* path, polyaness_t* pt);
 
 int main(int argc, char* argv[])
 {
-    int             res     = 0,
+    int             status  = 0,
+                    res     = 0,
                     index   = 0;
 
     FILE*           fp      = NULL;
@@ -42,6 +50,7 @@ int main(int argc, char* argv[])
         {"file",    required_argument, NULL, 'f'},
         {"speaker", required_argument, NULL, 's'},
         {"number",  required_argument, NULL, 'n'},
+        {"search",  required_argument, NULL, 'K'},
         {"list",    no_argument,       NULL, 'l'},
         {"help",    no_argument,       NULL, 'h'},
         {"version", no_argument,       NULL, 'v'},
@@ -49,7 +58,7 @@ int main(int argc, char* argv[])
     };
 
     /* processing of arguments */
-    while ((res = getopt_long(argc, argv, "f:s:n:lvh", opts, &index)) != -1) {
+    while ((res = getopt_long(argc, argv, "f:s:n:K:lvh", opts, &index)) != -1) {
         switch (res) {
             case    'f':
                 yasuna.farg = optarg;
@@ -68,6 +77,9 @@ int main(int argc, char* argv[])
                 yasuna.narg = atoi(optarg);
                 yasuna.flag |= YASUNA_NUMBER;
                 break;
+            case    'K':
+                yasuna.Karg = optarg;
+                yasuna.flag |= YASUNA_SEARCH;
             case    'l':
                 yasuna.flag |= YASUNA_LIST;
                 break;
@@ -81,35 +93,40 @@ int main(int argc, char* argv[])
     }
 
     /* concat file path */
-    if (concat_file_path(&path, &yasuna) < 0)
-        return 1;
+    if (concat_file_path(&path, &yasuna) < 0) {
+        status = 1; goto ERR;
+    }
 
     /* open yasuna-quotes */
     if (open_dict_file(path, &fp) < 0) {
-        release(NULL, path, NULL);
-
-        return 2;
+        status = 2; goto ERR;
     }
 
     /* read dict file */
     if (read_dict_file(fp, &pt) < 0) {
-        release(NULL, path, NULL);
-
-        return 3;
+        status = 3; goto ERR;
     }
 
     /* do parse polyaness */
     if (parse_dict_file(fp, &pt) < 0) {
-        release(fp, path, pt);
-
-        return 4;
+        status = 4; goto ERR;
     }
 
     /* select speaker */
     if (select_by_speaker(yasuna.sarg, &pt, &pt) < 0) {
+        status = 5; goto ERR;
+    }
+
+    /*
+     * show all quotes matching regex
+     */
+    if (yasuna.flag & YASUNA_SEARCH) {
+        if (search_all_quotes(yasuna.Karg, pt) < 0) {
+            status = 6; goto ERR;
+        }
         release(fp, path, pt);
 
-        return 5;
+        return 0;
     }
 
     /* 
@@ -143,6 +160,23 @@ int main(int argc, char* argv[])
     release(fp, path, pt);
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    1:
+            break;
+        case    2:
+        case    3:
+            release(NULL, path, NULL);
+            break;
+        case    4:
+        case    5:
+        case    6:
+            release(fp, path, pt);
+            break;
+    }
+    
+    return status;
 }
 
 static

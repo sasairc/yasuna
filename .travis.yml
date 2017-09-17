@@ -4,10 +4,12 @@ compiler:
     - clang
 before_install:
     - sudo apt-get update
-    - sudo apt-get -y install tree
+    - sudo apt-get -y install pkg-config libglib2.0-0 libglib2.0-dev tree
 script:
     - export CC="$CC" TEST_PREFIX="`pwd`/test_prefix"
-    - source ./test.bash
+    - source ./testsuite/travis-ci.bash
+    - make DICDIR=../quotes coverage-gcov
+    - make clean
     - install_bin "$CC" "$TEST_PREFIX"
     - cleanup "$TEST_PREFIX"
     - install_quotes "$CC" "$TEST_PREFIX"
@@ -23,6 +25,5 @@ script:
     - ${TEST_PREFIX}/bin/yasuna --help
     - ${TEST_PREFIX}/bin/yasuna
     - random_test "$TEST_PREFIX"
-#    - sequential_test "$TEST_PREFIX"
     - rm -rf ${TEST_PREFIX}
     - unset TEST_PREFIX

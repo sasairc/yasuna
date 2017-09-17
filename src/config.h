@@ -12,12 +12,16 @@
 
 #ifndef CONFIG_H
 #define CONFIG_H
+#ifdef  __cplusplus
+extern "C" {
+/* __cplusplus */
+#endif
 
 #define PROGNAME        "yasuna"
 #define VERSION         8
 #define PATCHLEVEL      5
-#define SUBLEVEL        1
-#define EXTRAVERSION    ""
+#define SUBLEVEL        2
+#define EXTRAVERSION    "-nightly_20170906"
 
 #define AUTHOR          "sasairc"
 #define MAIL_TO         "sasairc@ssiserver.moe.hm"
@@ -38,5 +42,9 @@
 
 #undef MONO             /* パスを組み込みたくないときに使うといいかもネ */
 
+#ifdef  __cplusplus
+}
+/* __cplusplus */
+#endif
 /* CONFIG_H */
 #endif
