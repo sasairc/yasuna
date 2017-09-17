@@ -35,6 +35,7 @@ Mandatory arguments to long options are mandatory for short options too.\n\
   -s,  --speaker=STR         specify speaker\n\
   -n,  --number INT          specify quote number\n\
   -f,  --file=PATH           specfiles the dictionary file\n\
+  -K,  --search=PATTERN      show all quotes matching regex\n\
 \n\
   -h,  --help                display this help and exit\n\
   -v,  --version             output version infomation and exit\n\

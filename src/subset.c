@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/stat.h>
+#include <regex.h>
 
 #ifdef  WITH_SHARED
 #include <benly/file.h>
@@ -312,6 +313,47 @@ int create_rand(int lines)
 
     /* create pseudo-random number */
     return (int)(rand()%(lines+1));
+}
+
+int search_all_quotes(char* pattern, polyaness_t* pt)
+{
+    int         i           = 0,
+                status      = 0;
+
+    short       match       = 0;
+
+    char        errbuf[128] = {'\0'},
+        *       quote       = NULL;
+
+    regex_t     reg;
+
+    regmatch_t  regmch[8];
+
+    if ((status = regcomp(&reg, pattern, REG_EXTENDED)) != 0)
+        goto ERR;
+
+    while (i < pt->recs) {
+        quote = get_polyaness("quote", i, &pt);
+        if (regexec(&reg, quote, 8, regmch, 0) == 0) {
+            match |= 1;
+            fprintf(stdout, "%4d %s\n",
+                    i, quote);
+        }
+        i++;
+    }
+    regfree(&reg);
+
+    if (match == 0)
+        return -1;
+
+    return 0;
+
+ERR:
+    regerror(status, &reg, errbuf, sizeof(errbuf));
+    fprintf(stderr, "%s: regexec(): %s: %s\n",
+            PROGNAME, pattern, errbuf);
+
+    return -2;
 }
 
 void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)
