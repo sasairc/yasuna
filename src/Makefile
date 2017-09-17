@@ -22,6 +22,19 @@ INCLUDE     += -I.
 DEFCFLAGS   += $(INCLUDE)
 # WITH_SHARED
 endif
+# enable use of GLib (libglib-2.0) with the libbenly
+ifeq ($(WITH_GLIB), 1)
+WITH_GLIB   ?= 1
+DEFCFLAGS   += -DWITH_GLIB
+DEFLDFLAGS  += `pkg-config --cflags --libs glib-2.0`
+# WITH_GLIB
+endif
+# enable use of POSIX Regular Expressions (regex.h) with the libbenly
+ifeq ($(WITH_REGEX), 1)
+WITH_REGEX  ?= 1
+DEFCFLAGS   += -DWITH_REGEX
+# WITH_REGEX
+endif
 # build code coverage information (default: disable)
 GCOV_GCDAS  = $(SRCS:.c=.gcda)
 GCOV_GCOVS  = $(SRCS:.c=.c.gcov)
@@ -55,13 +68,13 @@ ifeq ($(WITH_SHARED), 0)
 $(TARGET): $(DEPOBJS) $(OBJS)
 ifeq ($(CMDLINE), 0)
 	@echo "  BUILD   $@"
-	@$(CC) $(LDFLAGS) $^ -o $@
+	@$(CC) $(LDFLAGS) $^ -o $@ $(DEFLDFLAGS)
 else
-	$(CC) $(LDFLAGS) $^ -o $@
+	$(CC) $(LDFLAGS) $^ -o $@ $(DEFLDFLAGS)
 # CMDLINE
 endif
 else
-DEFLDFLAGS = -lbenly_file -lbenly_memory -lbenly_string -lpolyaness
+DEFLDFLAGS += -lbenly_file -lbenly_memory -lbenly_string -lpolyaness
 $(TARGET): $(OBJS)
 ifeq ($(CMDLINE), 0)
 	@echo "  BUILD   $@"

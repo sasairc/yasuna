@@ -343,6 +343,7 @@ int search_all_quotes(char* pattern, polyaness_t* pt)
     }
     regfree(&reg);
 
+    /* no match */
     if (match == 0)
         return -1;
 
