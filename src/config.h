@@ -12,6 +12,10 @@
 
 #ifndef CONFIG_H
 #define CONFIG_H
+#ifdef  __cplusplus
+extern "C" {
+/* __cplusplus */
+#endif
 
 #define PROGNAME        "yasuna"
 #define VERSION         8
@@ -38,5 +42,9 @@
 
 #undef MONO             /* パスを組み込みたくないときに使うといいかもネ */
 
+#ifdef  __cplusplus
+}
+/* __cplusplus */
+#endif
 /* CONFIG_H */
 #endif

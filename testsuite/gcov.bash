@@ -25,6 +25,8 @@ function test1() {
     ${YASUNA} -f ${QUOTES}                              && \
     ${YASUNA} -f ${QUOTES} -n 32                        && \
     ${YASUNA} -f ${QUOTES} -n 1000000                   && \
+    ${YASUNA} -f ${QUOTES} -K ソーニャちゃん            && \
+    ${YASUNA} -f ${QUOTES} -K 没キャラはあります        || \
     ${YASUNA} -f ${QUOTES} --speaker "やすな"           && \
     ${YASUNA} -f ${QUOTES} --speaker "やすな" -n 32     && \
     ${YASUNA} -f ${QUOTES} --speaker "やすな" --list    && \
