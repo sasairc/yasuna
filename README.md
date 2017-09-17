@@ -45,13 +45,18 @@ yasuna
 * 静的バイナリとしてビルドしインストールする場合
 	```shellsession
 	% make PREFIX=/foo/bar	# デフォルトでは、PREFIX=/usr/localです
-	# make install PREFIX=/foo/bar
+	# make PREFIX=/foo/bar install
 	```
 
 * *libbenly*及び*libpolyaness*を共有ライブラリとしてインストールし、それを利用する場合	
 	```shellsession
 	# make install-dep
 	# make WITH_SHARED=1 install
+	```
+	もし、共有ライブラリを他のソフトウェアと共有するのであれば、以下のように予め必要な機能を有効化しておくと幸せになれるかもしれません。
+	```shellsession
+  # make WITH_GLIB=1 WITH_REGEX=1 install-dep
+  # make WITH_SHARED=1 install
 	```
 
 その他のオプションに関しては、`INSTALL.ja`をご覧下さい。

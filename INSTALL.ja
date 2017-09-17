@@ -80,6 +80,16 @@ make に関する追加情報
   既に sasairc/{libbenly,libpolyaness} 単体または make install-dep でインストールしてある場合用いる事ができる。
   未指定の場合の値は 0 であり、その他の値がセットされた場合は、有効化される。
 
+  * WITH_GLIB
+  GLib (libglib2.0) を使用する為のオプション。
+  このオプションを有効化した場合、ライブラリが Glib (libglib2.0) をサポートする。
+  未指定の場合の値は 0 であり無効。 1 がセットされた場合は、有効化される。
+
+  * WITH_REGEX
+  POSIX C Library に含まれる Regular Expressions (regex.h) を使用する為のオプション。
+  このオプションを有効化した場合、ライブラリが Regular Expressions (regex.h) をサポートする。
+  未指定の場合の値は 0 であり無効。 1 がセットされた場合は、有効化される。
+
   * CMDLINE
   make 時のメッセージを抑制する為のオプション。
   未指定の場合の値は 0 であり、その他の値がセットされた場合は、抑制せずに出力される。
@@ -146,4 +156,4 @@ make に関する追加情報
 
   0. You just DO WHAT THE FUCK YOU WANT TO.
 
--- sasairc <sasairc@ssiserver.moe.hm>  Sat, 19 Aug 2017 20:02:24 +0900
+-- sasairc <sasairc@ssiserver.moe.hm>  Mon, 18 Sep 2017 08:04:50 +0900
