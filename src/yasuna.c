@@ -47,18 +47,21 @@ int main(int argc, char* argv[])
     };
 
     struct option opts[] = {
-        {"file",    required_argument, NULL, 'f'},
-        {"speaker", required_argument, NULL, 's'},
-        {"number",  required_argument, NULL, 'n'},
-        {"search",  required_argument, NULL, 'K'},
-        {"list",    no_argument,       NULL, 'l'},
-        {"help",    no_argument,       NULL, 'h'},
-        {"version", no_argument,       NULL, 'v'},
+        {"file",            required_argument, NULL, 'f'},
+        {"speaker",         required_argument, NULL, 's'},
+        {"number",          required_argument, NULL, 'n'},
+        {"search",          required_argument, NULL, 'K'},
+        {"extended-regexp", no_argument,       NULL, 'E'},
+        {"basic-regexp",    no_argument,       NULL, 'G'},
+        {"ignore-case",     no_argument,       NULL, 'i'},
+        {"list",            no_argument,       NULL, 'l'},
+        {"help",            no_argument,       NULL, 'h'},
+        {"version",         no_argument,       NULL, 'v'},
         {0, 0, 0, 0}
     };
 
     /* processing of arguments */
-    while ((res = getopt_long(argc, argv, "f:s:n:K:lvh", opts, &index)) != -1) {
+    while ((res = getopt_long(argc, argv, "f:s:n:K:EGilvh", opts, &index)) != -1) {
         switch (res) {
             case    'f':
                 yasuna.farg = optarg;
@@ -80,6 +83,16 @@ int main(int argc, char* argv[])
             case    'K':
                 yasuna.Karg = optarg;
                 yasuna.flag |= YASUNA_SEARCH;
+                break;
+            case    'E':
+                yasuna.flag |= YASUNA_SEARCH_REGEX_EXTENDED;
+                break;
+            case    'G':
+                yasuna.flag |= YASUNA_SEARCH_REGEX_BASIC;
+                break;
+            case    'i':
+                yasuna.flag |= YASUNA_SEARCH_REGEX_IGNORE;
+                break;
             case    'l':
                 yasuna.flag |= YASUNA_LIST;
                 break;
@@ -121,7 +134,7 @@ int main(int argc, char* argv[])
      * show all quotes matching regex
      */
     if (yasuna.flag & YASUNA_SEARCH) {
-        if (search_all_quotes(yasuna.Karg, pt) < 0) {
+        if (search_all_quotes(yasuna.Karg, pt, yasuna.flag) < 0) {
             status = 6; goto ERR;
         }
         release(fp, path, pt);
