@@ -35,6 +35,9 @@
 #endif
 
 static int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
+static int search_all_quotes_with_fixed_string(char* pattern, polyaness_t* pt);
+static int search_all_quotes_with_regexp_string(char* pattern, polyaness_t* pt, int cflags);
+static char* strstr2(char* str1, char* str2);
 
 int concat_file_path(char** path, yasuna_t* yasuna)
 {
@@ -315,26 +318,79 @@ int create_rand(int lines)
     return (int)(rand()%(lines+1));
 }
 
-int search_all_quotes(char* pattern, polyaness_t* pt)
+int search_all_quotes(char* pattern, polyaness_t* pt, int flag)
+{
+    int     cflags  = 0;
+
+    /*
+     * extended regular expression
+     */
+    if (flag & YASUNA_SEARCH_REGEX_IGNORE       ||
+            flag & YASUNA_SEARCH_REGEX_EXTENDED ||
+            flag & YASUNA_SEARCH_REGEX_BASIC) {
+        /* POSIX extended regular expression */
+        if (flag & YASUNA_SEARCH_REGEX_EXTENDED)
+            cflags |= REG_EXTENDED;
+        /* POSIX basic regular expression */
+        if (flag & YASUNA_SEARCH_REGEX_BASIC)
+            cflags &= ~REG_EXTENDED;
+        /* ignore case distinctions */
+        if (flag & YASUNA_SEARCH_REGEX_IGNORE)
+            cflags |= REG_ICASE;
+
+        return search_all_quotes_with_regexp_string(pattern, pt, cflags);
+    }
+    
+    /* 
+     * fixed string
+     */
+    return search_all_quotes_with_fixed_string(pattern, pt);
+}
+
+static
+int search_all_quotes_with_fixed_string(char* pattern, polyaness_t* pt)
+{
+    int     i       = 0;
+
+    short   match   = 0;
+
+    char*   quote   = 0;
+
+    while (i < pt->recs) {
+        quote = get_polyaness("quote", i, &pt);
+        if (strstr2(quote, pattern) != NULL) {
+            match |= 1;
+            fprintf(stdout, "%4d %s\n",
+                    i, quote);
+        }
+        i++;
+    }
+    /* no match */
+    if (match == 0)
+        return -1;
+
+    return 0;
+}
+
+static
+int search_all_quotes_with_regexp_string(char* pattern, polyaness_t* pt, int cflags)
 {
     int         i           = 0,
                 status      = 0;
 
     short       match       = 0;
 
-    char        errbuf[128] = {'\0'},
+    char        errbuf[64]  = {'\0'},
         *       quote       = NULL;
 
     regex_t     reg;
 
-    regmatch_t  regmch[8];
-
-    if ((status = regcomp(&reg, pattern, REG_EXTENDED)) != 0)
+    if ((status = regcomp(&reg, pattern, cflags | REG_NOSUB)) != 0)
         goto ERR;
 
     while (i < pt->recs) {
         quote = get_polyaness("quote", i, &pt);
-        if (regexec(&reg, quote, 8, regmch, 0) == 0) {
+        if (regexec(&reg, quote, 8, 0, 0) == 0) {
             match |= 1;
             fprintf(stdout, "%4d %s\n",
                     i, quote);
@@ -372,4 +428,26 @@ void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)
     }
 
     return;
+}
+
+static
+char* strstr2(char* str1, char* str2)
+{
+    size_t  off = 0;
+
+    char*   p1  = str1,
+        *   p2  = NULL;
+
+    while (*p1 != '\0') {
+        p2 = str2;
+        while (*p1 == *p2 && *p2 != '\0') {
+            p1++;
+            p2++;
+        }
+        if (*p2 == '\0')
+            return p1;
+        p1 = str1 + (off++);
+    }
+
+    return NULL;
 }

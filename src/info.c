@@ -35,7 +35,11 @@ Mandatory arguments to long options are mandatory for short options too.\n\
   -s,  --speaker=STR         specify speaker\n\
   -n,  --number INT          specify quote number\n\
   -f,  --file=PATH           specfiles the dictionary file\n\
-  -K,  --search=PATTERN      show all quotes matching regex\n\
+\n\
+  -K,  --search=PATTERN      show all quotes matching PATTERN\n\
+  -E,  --extended-regexp     PATTERN is a extended regular expression\n\
+  -G,  --basic-regexp        PATTERN is an basic regular expression\n\
+  -i,  --ignore-case         ignore case distinctions\n\
 \n\
   -h,  --help                display this help and exit\n\
   -v,  --version             output version infomation and exit\n\

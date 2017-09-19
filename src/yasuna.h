@@ -20,11 +20,15 @@ extern "C" {
 #define YASUNA_ALLNO_FLAG   \
     0, 0, NULL, NULL, NULL
 
-#define YASUNA_FILE     (1 << 1)
-#define YASUNA_SPEAKER  (1 << 2)
-#define YASUNA_NUMBER   (1 << 3)
-#define YASUNA_SEARCH   (1 << 4)
-#define YASUNA_LIST     (1 << 5)
+#define YASUNA_FILE                     (1 << 1)
+#define YASUNA_SPEAKER                  (1 << 2)
+#define YASUNA_NUMBER                   (1 << 3)
+#define YASUNA_LIST                     (1 << 4)
+#define YASUNA_SEARCH                   (1 << 5)
+#define YASUNA_SEARCH_FIXED             (1 << 6)
+#define YASUNA_SEARCH_REGEX_EXTENDED    (1 << 7)
+#define YASUNA_SEARCH_REGEX_BASIC       (1 << 8)
+#define YASUNA_SEARCH_REGEX_IGNORE      (1 << 9)
 
 typedef struct YASUNA_T {
     int     flag;
