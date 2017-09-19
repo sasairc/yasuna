@@ -40,8 +40,6 @@ extern "C" {
 /* TH_LENGTH */
 #endif
 
-#undef MONO             /* パスを組み込みたくないときに使うといいかもネ */
-
 #ifdef  __cplusplus
 }
 /* __cplusplus */

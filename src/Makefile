@@ -50,6 +50,11 @@ else
 DEFCFLAGS   += -DDICNAME=\"yasuna-quotes\"
 # DICNME
 endif
+# mono build
+ifeq ($(WITH_MONO), 1)
+DEFCFLAGS   += -DWITH_MONO
+# WITH_MONO
+endif
 # threshold of lines (sizeof(char*) * TH_LINES)
 ifdef TH_LINES
 DEFCFLAGS   += -DTH_LINES=$(TH_LINES)

@@ -27,7 +27,7 @@
 /* WITH_SHARED */
 #endif
 
-static void release(FILE* fp, char* path, polyaness_t* pt);
+static void release(FILE* fp, polyaness_t* pt);
 
 int main(int argc, char* argv[])
 {
@@ -37,8 +37,7 @@ int main(int argc, char* argv[])
 
     FILE*           fp      = NULL;
 
-    char*           path    = NULL,
-        *           quote   = NULL;
+    char*           quote   = NULL;
 
     polyaness_t*    pt      = NULL;
 
@@ -116,29 +115,24 @@ int main(int argc, char* argv[])
         }
     }
 
-    /* concat file path */
-    if (concat_file_path(&path, &yasuna) < 0) {
-        status = 1; goto ERR;
-    }
-
     /* open yasuna-quotes */
-    if (open_dict_file(path, &fp) < 0) {
-        status = 2; goto ERR;
+    if (open_dict_file(&fp, &yasuna) < 0) {
+        status = 1; goto ERR;
     }
 
     /* read dict file */
     if (read_dict_file(fp, &pt) < 0) {
-        status = 3; goto ERR;
+        status = 2; goto ERR;
     }
 
     /* do parse polyaness */
     if (parse_dict_file(fp, &pt) < 0) {
-        status = 4; goto ERR;
+        status = 3; goto ERR;
     }
 
     /* select speaker */
     if (select_by_speaker(yasuna.sarg, &pt, &pt) < 0) {
-        status = 5; goto ERR;
+        status = 4; goto ERR;
     }
 
     /*
@@ -146,9 +140,9 @@ int main(int argc, char* argv[])
      */
     if (yasuna.flag & YASUNA_SEARCH) {
         if (search_all_quotes(yasuna.Karg, pt, yasuna.flag) < 0) {
-            status = 6; goto ERR;
+            status = 5; goto ERR;
         }
-        release(fp, path, pt);
+        release(fp, pt);
 
         return 0;
     }
@@ -158,7 +152,7 @@ int main(int argc, char* argv[])
      */
     if (yasuna.flag & YASUNA_LIST) {
         print_all_quotes(pt, &yasuna);
-        release(fp, path, pt);
+        release(fp, pt);
 
         return 0;
     }
@@ -181,7 +175,7 @@ int main(int argc, char* argv[])
             quote);
 
     /* release memory */
-    release(fp, path, pt);
+    release(fp, pt);
 
     return 0;
 
@@ -190,13 +184,12 @@ ERR:
         case    1:
             break;
         case    2:
-        case    3:
-            release(NULL, path, NULL);
+            release(NULL, NULL);
             break;
+        case    3:
         case    4:
         case    5:
-        case    6:
-            release(fp, path, pt);
+            release(fp, pt);
             break;
     }
     
@@ -204,15 +197,11 @@ ERR:
 }
 
 static
-void release(FILE* fp, char* path, polyaness_t* pt)
+void release(FILE* fp, polyaness_t* pt)
 {
     if (fp != NULL) {
         fclose(fp);
         fp = NULL;
-    }
-    if (path != NULL) {
-        free(path);
-        path = NULL;
     }
     if (pt != NULL)
         release_polyaness(pt);
