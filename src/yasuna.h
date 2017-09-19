@@ -25,10 +25,13 @@ extern "C" {
 #define YASUNA_NUMBER                   (1 << 3)
 #define YASUNA_LIST                     (1 << 4)
 #define YASUNA_SEARCH                   (1 << 5)
-#define YASUNA_SEARCH_FIXED             (1 << 6)
-#define YASUNA_SEARCH_REGEX_EXTENDED    (1 << 7)
-#define YASUNA_SEARCH_REGEX_BASIC       (1 << 8)
-#define YASUNA_SEARCH_REGEX_IGNORE      (1 << 9)
+
+#ifdef  WITH_REGEX
+#define YASUNA_SEARCH_REGEX_EXTENDED    (1 << 6)
+#define YASUNA_SEARCH_REGEX_BASIC       (1 << 7)
+#define YASUNA_SEARCH_REGEX_IGNORE      (1 << 8)
+/* WITH_REGEX */
+#endif
 
 typedef struct YASUNA_T {
     int     flag;

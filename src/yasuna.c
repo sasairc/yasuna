@@ -51,9 +51,12 @@ int main(int argc, char* argv[])
         {"speaker",         required_argument, NULL, 's'},
         {"number",          required_argument, NULL, 'n'},
         {"search",          required_argument, NULL, 'K'},
+#ifdef  WITH_REGEX
         {"extended-regexp", no_argument,       NULL, 'E'},
         {"basic-regexp",    no_argument,       NULL, 'G'},
         {"ignore-case",     no_argument,       NULL, 'i'},
+/* WITH_REGEX */
+#endif
         {"list",            no_argument,       NULL, 'l'},
         {"help",            no_argument,       NULL, 'h'},
         {"version",         no_argument,       NULL, 'v'},
@@ -61,7 +64,12 @@ int main(int argc, char* argv[])
     };
 
     /* processing of arguments */
+#ifdef  WITH_REGEX
     while ((res = getopt_long(argc, argv, "f:s:n:K:EGilvh", opts, &index)) != -1) {
+#else
+    while ((res = getopt_long(argc, argv, "f:s:n:K:lvh", opts, &index)) != -1) {
+/* WITH_REGEX */
+#endif
         switch (res) {
             case    'f':
                 yasuna.farg = optarg;
@@ -84,6 +92,7 @@ int main(int argc, char* argv[])
                 yasuna.Karg = optarg;
                 yasuna.flag |= YASUNA_SEARCH;
                 break;
+#ifdef  WITH_REGEX
             case    'E':
                 yasuna.flag |= YASUNA_SEARCH_REGEX_EXTENDED;
                 break;
@@ -93,6 +102,8 @@ int main(int argc, char* argv[])
             case    'i':
                 yasuna.flag |= YASUNA_SEARCH_REGEX_IGNORE;
                 break;
+/* WITH_REGEX */
+#endif
             case    'l':
                 yasuna.flag |= YASUNA_LIST;
                 break;

@@ -19,7 +19,6 @@
 #include <errno.h>
 #include <sys/time.h>
 #include <sys/stat.h>
-#include <regex.h>
 
 #ifdef  WITH_SHARED
 #include <benly/file.h>
@@ -34,9 +33,15 @@
 /* WITH_SHARED */
 #endif
 
+#ifdef	WITH_REGEX
+#include <regex.h>
+
+static int search_all_quotes_with_regexp_string(char* pattern, polyaness_t* pt, int cflags);
+/* WITH_REGEX */
+#endif
+
 static int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
 static int search_all_quotes_with_fixed_string(char* pattern, polyaness_t* pt);
-static int search_all_quotes_with_regexp_string(char* pattern, polyaness_t* pt, int cflags);
 static char* strstr2(char* str1, char* str2);
 
 int concat_file_path(char** path, yasuna_t* yasuna)
@@ -320,6 +325,7 @@ int create_rand(int lines)
 
 int search_all_quotes(char* pattern, polyaness_t* pt, int flag)
 {
+#ifdef	WITH_REGEX
     int     cflags  = 0;
 
     /*
@@ -340,6 +346,8 @@ int search_all_quotes(char* pattern, polyaness_t* pt, int flag)
 
         return search_all_quotes_with_regexp_string(pattern, pt, cflags);
     }
+/* WITH_REGEX */
+#endif
     
     /* 
      * fixed string
@@ -372,6 +380,7 @@ int search_all_quotes_with_fixed_string(char* pattern, polyaness_t* pt)
     return 0;
 }
 
+#ifdef	WITH_REGEX
 static
 int search_all_quotes_with_regexp_string(char* pattern, polyaness_t* pt, int cflags)
 {
@@ -412,6 +421,8 @@ ERR:
 
     return -2;
 }
+/* WITH_REGEX */
+#endif
 
 void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)
 {
