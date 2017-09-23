@@ -12,7 +12,7 @@ MAKE	:= make
 CC	:= cc
 RM	:= rm
 GCOV	:= gcov
-CFLAGS	:= -Wall -O2 -g
+CFLAGS	:= -O2 -g -Wall -Wextra -Winit-self -Wno-missing-field-initializers
 LDFLAGS	:=
 CMDLINE	:= 0
 export
