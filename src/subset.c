@@ -143,7 +143,7 @@ ERR:
 
 int read_dict_file(FILE* fp, polyaness_t** pt)
 {
-	short	status	= 0;
+	int		status	= 0;
 
 	/* initialize libpolyaness */
 	if (init_polyaness(fp, 0, pt) < 0) {
@@ -173,9 +173,8 @@ ERR:
 
 int parse_dict_file(FILE* fp, polyaness_t** pt)
 {
-	int		i		= 0;
-
-	short	status	= 0;
+	int		i		= 0,
+			status	= 0;
 
 	if (parse_polyaness(fp, 0, pt) < 0) {
 		status = -1; goto ERR;
@@ -223,9 +222,8 @@ static
 int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 {
 	int		i		= 0,
-			j		= 0;
-
-	short	status	= 0;
+			j		= 0,
+			status	= 0;
 
 	char*	quote	= NULL,
 		**	buf		= NULL;
