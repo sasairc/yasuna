@@ -12,7 +12,7 @@ yasuna
 折部やすなちゃんの名言をランダムで表示します。  
 誤字脱字等あれば、issueやtwitterで報告して頂けると嬉しいです。		
 
-※ 参考もといパクリ元　[844196/Renge](https://github.com/844196/Renge)
+参考もといパクリ元　[844196/Renge](https://github.com/844196/Renge)
 
 ## Requirements
 
@@ -76,7 +76,7 @@ yasuna
 なーんてね！うそだよー！　釣られた？釣られた？
 % yasuna
 100円払うから喋らせて
-% yasuna -l | headtail --pretty	# print all quotes list
+% yasuna -l | headtail --pretty            # print all quotes list
    0 100円くらいはもらえると思ったのに！
    1 100円払うから喋らせて
    2 DVD！？
@@ -90,9 +90,26 @@ yasuna
 4799 ？
 4800 ﾋｯｸ ﾋｯｸ ﾋｯｸ ﾌﾟﾊ
 4801 ﾋﾋﾋﾋ… ﾌﾋｬﾋ… ｹﾞﾍﾍﾍﾍ
-% yasuna -n 4226    # specify quote number
+% yasuna -n 4226                           # specify quote number
 本当はこうやって…
+% yasuna -K オカシ                         # show all quotes matching PATTERN
+3148 オカシダ！オカシヲヨコセ！
+% yasuna -EK 'あぎりさん$'                 # use extended regular expression (ERE)
+ 143 あぎりさん
+ 194 あっ、あぎりさん
+1643 そうですよねあぎりさん
+% yasuna -f /etc/os-release -iEk debian    # ignore case distinctions
+   0 PRETTY_NAME="Debian GNU/Linux 9 (stretch)"
+   1 NAME="Debian GNU/Linux"
+   4 ID=debian
+   5 HOME_URL="https://www.debian.org/"
+  :
+  :
+  :
 ```
+
+検索はgrepでやれなんて言っちゃ駄目。自己満足なんだから。
+
 
 ### Polyaness dictionary
 

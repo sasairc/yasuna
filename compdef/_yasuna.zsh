@@ -3,7 +3,7 @@ function _yasuna() {
         {-l,--list}'[print all quotes list and exit]' \
         {-n,--number}'[specify quote number]':keyword \
         {-s,--speaker}'[specify speaker]':keyword \
-        {-K,--search}'[show all quotes matching regex]':keyword \
+        {-K,--search}'[show all quotes matching keyword]':keyword \
         {-E,--extended-regexp}'[use extended regular expression]' \
         {-G,--basic-regexp}'[use basic regular expression]' \
         {-i,--ignore-case}'[ignore case distinctions]' \
