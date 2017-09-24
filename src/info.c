@@ -23,6 +23,7 @@ int print_version(void)
     exit(0);
 }
 
+#ifdef  WITH_REGEX
 int print_usage(void)
 {
     fprintf(stdout, "\
@@ -36,6 +37,11 @@ Mandatory arguments to long options are mandatory for short options too.\n\
   -n,  --number INT          specify quote number\n\
   -f,  --file=PATH           specfiles the dictionary file\n\
 \n\
+  -K,  --search=PATTERN      show all quotes matching PATTERN\n\
+  -E,  --extended-regexp     PATTERN is a extended regular expression\n\
+  -G,  --basic-regexp        PATTERN is an basic regular expression\n\
+  -i,  --ignore-case         ignore case distinctions\n\
+\n\
   -h,  --help                display this help and exit\n\
   -v,  --version             output version infomation and exit\n\
 \n\
@@ -45,3 +51,29 @@ PROGNAME, PROGNAME, AUTHOR, MAIL_TO);
 
     exit(0);
 }
+#else
+int print_usage(void)
+{
+    fprintf(stdout, "\
+%s %d.%d.%d%s, Yasuna Oribe will talk.\n\
+Usage: %s [OPTION]...\n\
+\n\
+Mandatory arguments to long options are mandatory for short options too.\n\
+\n\
+  -l,  --list                print all quotes list and exit\n\
+  -s,  --speaker=STR         specify speaker\n\
+  -n,  --number INT          specify quote number\n\
+  -f,  --file=PATH           specfiles the dictionary file\n\
+  -K,  --search=PATTERN      show all quotes matching PATTERN\n\
+\n\
+  -h,  --help                display this help and exit\n\
+  -v,  --version             output version infomation and exit\n\
+\n\
+Report %s bugs to %s <%s>\n\
+", PROGNAME, VERSION, PATCHLEVEL, SUBLEVEL, EXTRAVERSION,
+PROGNAME, PROGNAME, AUTHOR, MAIL_TO);
+
+    exit(0);
+}
+/* WITH_REGEX */
+#endif

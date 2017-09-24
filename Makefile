@@ -2,27 +2,27 @@
 #    Makefile for yasuna
 #
 
-TARGET    = yasuna
-DICNME    = yasuna-quotes
-# DICNME = yasuna-quotes-lite
-PREFIX    := /usr/local
-BINDIR    := $(PREFIX)/bin
-DICDIR    := $(PREFIX)/share/$(TARGET)
-MANDIR    := $(PREFIX)/share/man/ja
-DOCDIR    := $(PREFIX)/share/doc/$(TARGET)
-MAKE      := make
-CC        := cc
-RM        := rm
-CFLAGS    := -O2 -g -Wall
-LDFLAGS   :=
-CMDLINE   := 0
-BUFLEN    := 4096
-TH_LINES  := 1024
-TH_LENGTH := 640
+TARGET	= yasuna
+PREFIX	:= /usr/local
+BINDIR	:= $(PREFIX)/bin
+DICDIR	:= $(PREFIX)/share/$(TARGET)
+MANDIR	:= $(PREFIX)/share/man/ja
+DOCDIR	:= $(PREFIX)/share/doc/$(TARGET)
+MAKE	:= make
+CC	:= cc
+RM	:= rm
+GCOV	:= gcov
+CFLAGS	:= -O2 -g -Wall -Wextra -Winit-self -Wno-missing-field-initializers
+LDFLAGS	:=
+CMDLINE	:= 0
 export
 
-all clean install-bin:
+all clean build-dep clean-dep install-dep install-bin:
 	@$(MAKE) -C ./src	$@
+
+coverage-gcov:
+	@$(MAKE) -C ./src	\
+		WITH_GCOV=1	$@
 
 install-quotes:
 	@$(MAKE) -C ./quotes	$@
@@ -43,10 +43,14 @@ install: install-bin		\
 	 install-zsh-compdef
 
 .PHONY:	all			\
+        build-dep		\
+	clean-dep		\
 	install			\
+	install-dep		\
 	install-bin		\
 	install-quotes		\
 	install-man		\
 	install-doc		\
 	install-zsh-compdef	\
+	coverage-gcov		\
 	clean

@@ -14,23 +14,30 @@
 #include "./yasuna.h"
 #include "./info.h"
 #include "./subset.h"
-#include "./string.h"
-#include "./polyaness.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
 
-static void release(FILE* fp, char* path, polyaness_t* pt);
+#ifdef  WITH_SHARED
+#include <benly/string.h>
+#include <polyaness.h>
+#else
+#include <libbenly/src/string.h>
+#include <libpolyaness/src/polyaness.h>
+/* WITH_SHARED */
+#endif
+
+static void release(FILE* fp, polyaness_t* pt);
 
 int main(int argc, char* argv[])
 {
-    int             res     = 0,
+    int             status  = 0,
+                    res     = 0,
                     index   = 0;
 
     FILE*           fp      = NULL;
 
-    char*           path    = NULL,
-        *           quote   = NULL;
+    char*           quote   = NULL;
 
     polyaness_t*    pt      = NULL;
 
@@ -39,17 +46,29 @@ int main(int argc, char* argv[])
     };
 
     struct option opts[] = {
-        {"file",    required_argument, NULL, 'f'},
-        {"speaker", required_argument, NULL, 's'},
-        {"number",  required_argument, NULL, 'n'},
-        {"list",    no_argument,       NULL, 'l'},
-        {"help",    no_argument,       NULL, 'h'},
-        {"version", no_argument,       NULL, 'v'},
+        {"file",            required_argument, NULL, 'f'},
+        {"speaker",         required_argument, NULL, 's'},
+        {"number",          required_argument, NULL, 'n'},
+        {"search",          required_argument, NULL, 'K'},
+#ifdef  WITH_REGEX
+        {"extended-regexp", no_argument,       NULL, 'E'},
+        {"basic-regexp",    no_argument,       NULL, 'G'},
+        {"ignore-case",     no_argument,       NULL, 'i'},
+/* WITH_REGEX */
+#endif
+        {"list",            no_argument,       NULL, 'l'},
+        {"help",            no_argument,       NULL, 'h'},
+        {"version",         no_argument,       NULL, 'v'},
         {0, 0, 0, 0}
     };
 
     /* processing of arguments */
-    while ((res = getopt_long(argc, argv, "f:s:n:lvh", opts, &index)) != -1) {
+#ifdef  WITH_REGEX
+    while ((res = getopt_long(argc, argv, "f:s:n:K:EGilvh", opts, &index)) != -1) {
+#else
+    while ((res = getopt_long(argc, argv, "f:s:n:K:lvh", opts, &index)) != -1) {
+/* WITH_REGEX */
+#endif
         switch (res) {
             case    'f':
                 yasuna.farg = optarg;
@@ -68,6 +87,22 @@ int main(int argc, char* argv[])
                 yasuna.narg = atoi(optarg);
                 yasuna.flag |= YASUNA_NUMBER;
                 break;
+            case    'K':
+                yasuna.Karg = optarg;
+                yasuna.flag |= YASUNA_SEARCH;
+                break;
+#ifdef  WITH_REGEX
+            case    'E':
+                yasuna.flag |= YASUNA_SEARCH_REGEX_EXTENDED;
+                break;
+            case    'G':
+                yasuna.flag |= YASUNA_SEARCH_REGEX_BASIC;
+                break;
+            case    'i':
+                yasuna.flag |= YASUNA_SEARCH_REGEX_IGNORE;
+                break;
+/* WITH_REGEX */
+#endif
             case    'l':
                 yasuna.flag |= YASUNA_LIST;
                 break;
@@ -80,36 +115,36 @@ int main(int argc, char* argv[])
         }
     }
 
-    /* concat file path */
-    if (concat_file_path(&path, &yasuna) < 0)
-        return 1;
-
     /* open yasuna-quotes */
-    if (open_dict_file(path, &fp) < 0) {
-        release(NULL, path, NULL);
-
-        return 2;
+    if (open_dict_file(&fp, &yasuna) < 0) {
+        status = 1; goto ERR;
     }
 
     /* read dict file */
     if (read_dict_file(fp, &pt) < 0) {
-        release(NULL, path, NULL);
-
-        return 3;
+        status = 2; goto ERR;
     }
 
     /* do parse polyaness */
     if (parse_dict_file(fp, &pt) < 0) {
-        release(fp, path, pt);
-
-        return 4;
+        status = 3; goto ERR;
     }
 
     /* select speaker */
     if (select_by_speaker(yasuna.sarg, &pt, &pt) < 0) {
-        release(fp, path, pt);
+        status = 4; goto ERR;
+    }
 
-        return 5;
+    /*
+     * show all quotes matching regex
+     */
+    if (yasuna.flag & YASUNA_SEARCH) {
+        if (search_all_quotes(yasuna.Karg, pt, yasuna.flag) < 0) {
+            status = 5; goto ERR;
+        }
+        release(fp, pt);
+
+        return 0;
     }
 
     /* 
@@ -117,7 +152,7 @@ int main(int argc, char* argv[])
      */
     if (yasuna.flag & YASUNA_LIST) {
         print_all_quotes(pt, &yasuna);
-        release(fp, path, pt);
+        release(fp, pt);
 
         return 0;
     }
@@ -140,21 +175,33 @@ int main(int argc, char* argv[])
             quote);
 
     /* release memory */
-    release(fp, path, pt);
+    release(fp, pt);
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    1:
+            break;
+        case    2:
+            release(NULL, NULL);
+            break;
+        case    3:
+        case    4:
+        case    5:
+            release(fp, pt);
+            break;
+    }
+    
+    return status;
 }
 
 static
-void release(FILE* fp, char* path, polyaness_t* pt)
+void release(FILE* fp, polyaness_t* pt)
 {
     if (fp != NULL) {
         fclose(fp);
         fp = NULL;
-    }
-    if (path != NULL) {
-        free(path);
-        path = NULL;
     }
     if (pt != NULL)
         release_polyaness(pt);

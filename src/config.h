@@ -12,11 +12,15 @@
 
 #ifndef CONFIG_H
 #define CONFIG_H
+#ifdef  __cplusplus
+extern "C" {
+/* __cplusplus */
+#endif
 
 #define PROGNAME        "yasuna"
 #define VERSION         8
-#define PATCHLEVEL      5
-#define SUBLEVEL        1
+#define PATCHLEVEL      6
+#define SUBLEVEL        0
 #define EXTRAVERSION    ""
 
 #define AUTHOR          "sasairc"
@@ -36,7 +40,9 @@
 /* TH_LENGTH */
 #endif
 
-#undef MONO             /* パスを組み込みたくないときに使うといいかもネ */
-
+#ifdef  __cplusplus
+}
+/* __cplusplus */
+#endif
 /* CONFIG_H */
 #endif

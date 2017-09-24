@@ -1,0 +1,6 @@
+[submodule "src/libbenly"]
+	path = src/libbenly
+	url = https://github.com/sasairc/libbenly
+[submodule "src/libpolyaness"]
+	path = src/libpolyaness
+	url = https://github.com/sasairc/libpolyaness

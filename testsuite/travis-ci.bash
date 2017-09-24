@@ -82,24 +82,3 @@ function random_test() {
 
     return 0
 }
-
-function sequential_test() {
-    local QUOTES="$1/share/yasuna/yasuna-quotes"
-    local ARGS=("$1/bin/yasuna" "--file" "$QUOTES")
-
-    echo -n "sequential_test(): "
-    for ((i = 0; i < `cat $QUOTES | wc -l`; i++)); do
-        ${ARGS[@]} -n $i >> out.txt
-    done
-
-    diff out.txt $QUOTES 
-    test $? -ne 0 && \
-        rm out.txt && \
-        echo "failed" && \
-        return;
-
-    rm out.txt
-    echo "done"
-
-    return 0
-}

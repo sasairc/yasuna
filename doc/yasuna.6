@@ -1,4 +1,4 @@
-.TH YASUNA "6" "2017年4月" "ユーザコマンド"
+.TH YASUNA "6" "2017年9月" "ユーザコマンド"
 .SH 名前
 yasuna \- 折部やすなの名言を表示する
 .SH 書式
@@ -19,13 +19,22 @@ yasuna \- 折部やすなの名言を表示する
 \&単語のリストを番号付きで表示し終了する
 .TP
 \fB\-s\fR, \fB\-\-speaker\fR\fI=STR\fR
-\&辞書内の話者(STR)を指定する
+\&辞書内の話者\fISTR\fRを指定する
 .TP
-\fB\-n\fR, \fB\-\-number\fR\fI=INT\fR
-\&\fB\-\-list\fR で得た番号(INT)を指定して表示する
+\fB\-K\fR, \fB\-\-search\fR\fI=PATTERN\fR
+\&辞書内から\fIPATTERN\fRを含む単語を検索し、単語番号と共に表示する
+.TP
+\fB\-E\fR, \fB\-\-extended-regexp\fR\f
+\&\fIPATTERN\fRをPOSIX拡張正規表現 (ERE) とする
+.TP
+\fB\-G\fR, \fB\-\-basic-regexp\fR\f
+\&\fIPATTERN\fRをPOSIX標準正規表現 (BRE) とする
+.TP
+\fB\-i\fR, \fB\-\-ignore-case\fR\f
+\&大文字と小文字を区別しない
 .TP
 \fB\-f\fR, \fB-\-file\fR\fI=FILE\fR
-\&使用する単語ファイル(PATH)を指定する
+\&使用する単語ファイル\fIPATH\fRを指定する
 .TP
 \fB\-h\fR, \fB-\-help\fR
 \&この使い方を表示して終了する
@@ -39,19 +48,19 @@ yasuna \- 折部やすなの名言を表示する
 正常終了、
 .TP
 1
-ファイルパスの連結に失敗、
+単語ファイルのオープンに失敗、
 .TP
 2
-ファイルのオープンに失敗、
-.TP
-3
 単語ファイルの読み込みに失敗、
 .TP
-4
+3
 単語ファイルのパースに失敗、
 .TP
-5
+4
 辞書ファイルにspeaker(話者)の発言が存在しない、または同関数内でメモリの確保、
+.TP
+5
+正規表現のコンパイルに失敗、またはマッチする単語が存在しない、
 .TP
 255
 引数の解析に失敗（例：無効な引数を渡した）
