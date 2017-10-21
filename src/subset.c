@@ -48,38 +48,47 @@ static char* strstr2(char* str1, char* str2);
 static 
 int concat_file_path(char** path, yasuna_t* yasuna)
 {
+    int     status  = 0;
+
     size_t  len     = 0;
 
     if (yasuna->flag & YASUNA_FILE) {
         len = strlen(yasuna->farg);
         if ((*path = (char*)
-                    malloc(sizeof(char) * (len + 1))) == NULL)
-            return -1;
-
-        memset(*path, '\0', len + 1);
-        memcpy(*path, yasuna->farg, len + 1);
+                    malloc(sizeof(char) * (len + 1))) == NULL) {
+            status = -1; goto ERR;
+        } else {
+            memcpy(*path, yasuna->farg, len);
+            *((*path) + len) = '\0';
+        }
     } else {
 #ifdef  WITH_MONO
         len = strlen(DICNAME);
         if ((*path = (char*)
-                    malloc(sizeof(char) * (len + 1))) == NULL)
-            return -2;
-        memset(*path, '\0', len + 1);
-        memcpy(*path, DICNAME, len);
+                    malloc(sizeof(char) * (len + 1))) == NULL) {
+            status = -2; goto ERR;
+        } else {
+            memcpy(*path, DICNAME, len);
+            *((*path) + len) = '\0';
+        }
 #else
         len = strlen(DICPATH) + strlen(DICNAME);
         if ((*path = (char*)
-                    malloc(sizeof(char) * (len + 1))) == NULL)
-            return -2;
-
-        memset(*path, '\0', len + 1);
-        memcpy(*path, DICPATH, strlen(DICPATH));
-        memcpy(*path + strlen(DICPATH), DICNAME, strlen(DICNAME) + 1);
+                    malloc(sizeof(char) * (len + 1))) == NULL) {
+            status = -3;
+        } else {
+            memcpy(*path, DICPATH, strlen(DICPATH));
+            memcpy(*path + strlen(DICPATH), DICNAME, strlen(DICNAME));
+            *((*path) + len) = '\0';
+        }
 /* WITH_MONO */
 #endif
     }
 
     return 0;
+
+ERR:
+    return status;
 }
 
 int open_dict_file(FILE** fp, yasuna_t* yasuna)
@@ -187,12 +196,12 @@ int parse_dict_file(FILE* fp, polyaness_t** pt)
     if (strcmp_lite("polyaness_dict",
                 get_polyaness("filetype", 0, pt)) == 0) {
         /* release header */
-        release_polyaness_cell(&(*pt)->record[0]);
+        release_polyaness_cell(&(*(*pt)->record));
 
         /* shift record */
         i = 0;
         while (i < (*pt)->recs &&
-                ((*pt)->record[i] = (*pt)->record[i + 1]))
+                (*((*pt)->record + i) = *((*pt)->record + (i + 1))))
             i++;
         (*pt)->recs--;
     } else {
@@ -229,12 +238,12 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
         **  buf     = NULL;
 
     rewind(fp);
-    if (p_read_file_char(&buf, TH_LINES, TH_LENGTH, fp, 1) < 0) {
+    if (load_file_to_array(&buf, TH_LINES, TH_LENGTH, fp) < 0) {
         status = -1; goto ERR;
     }
 
     if ((quote = (char*)
-                smalloc(sizeof(char) * (strlen("quote") + 1), NULL)) == NULL) {
+                malloc(sizeof(char) * (strlen("quote") + 1))) == NULL) {
         status = -2; goto ERR;
     }
 
@@ -242,12 +251,12 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
     memcpy(quote, "quote\0", strlen("quote") + 1);
     j = (*pt)->recs - 1;
     while (i < (*pt)->recs && i <= j) {
-        (*pt)->record[i]->keys = 1;
-        (*pt)->record[j]->keys = 1;
-        (*pt)->record[i]->key[0] = quote;
-        (*pt)->record[i]->value[0] = *(buf + i);
-        (*pt)->record[j]->key[0] = quote;
-        (*pt)->record[j]->value[0] = *(buf + j);
+        (*pt)->record[i]->keys      = 1;
+        (*pt)->record[j]->keys      = 1;
+        *((*pt)->record[i]->key)    = quote;
+        *((*pt)->record[i]->value)  = *(buf + i);
+        *((*pt)->record[j]->key)    = quote;
+        *((*pt)->record[j]->value)  = *(buf + j);
         i++;
         j--;
     }
@@ -258,14 +267,16 @@ int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt)
 ERR:
     switch (status) {
         case    -1:
-            fprintf(stderr, "%s: p_read_file_char() failure\n",
-                    PROGNAME);
+            fprintf(stderr, "%s: load_file_to_array(): %s\n",
+                    PROGNAME, strerror(errno));
             break;
         case    -2:
+            fprintf(stderr, "%s: malloc(): %s\n",
+                    PROGNAME, strerror(errno));
             if (quote != NULL)
                 free(quote);
             if (buf != NULL)
-                free2d(buf, p_count_file_lines(buf));
+                free2d(buf, (*pt)->recs);
             break;
     }
 
@@ -276,7 +287,7 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
 {
     int             i       = 0,
                     j       = 0,
-                    recs    = 0;
+                    status  = 0;
 
     polyaness_t*    pt      = NULL;
 
@@ -288,37 +299,50 @@ int select_by_speaker(char* speaker, polyaness_t** src, polyaness_t** dest)
     }
 
     if ((pt = (polyaness_t*)
-                smalloc(sizeof(polyaness_t), NULL)) == NULL)
-        return -1;
+                malloc(sizeof(polyaness_t))) == NULL) {
+        status = -1; goto ERR;
+    }
 
     /* extraction speaker */
     pt->record = (*src)->record;
+    pt->recs = 0;
     while (i < (*src)->recs) {
         j = (*src)->record[i]->keys - 1;
         while (j >= 0) {
-            if (memcmp((*src)->record[i]->key[j], "speaker\0", 8) == 0  &&
-                    memcmp((*src)->record[i]->value[j], speaker, strlen(speaker) + 1) == 0) {
-                *(pt->record + recs) = (*src)->record[i];
-                recs++;
+            if (memcmp(*((*src)->record[i]->key + j), "speaker\0", 8) == 0 &&
+                    memcmp(*((*src)->record[i]->value + j), speaker, strlen(speaker) + 1) == 0) {
+                *(pt->record + pt->recs) = *((*src)->record + i);
+                pt->recs++;
                 break;
             }
             j--;
         }
         if (j < 0)
-            release_polyaness_cell(&pt->record[i]);
+            release_polyaness_cell(&*(pt->record + i));
         i++;
     }
     free(*src);
     *src = NULL;
-
-    pt->recs = recs;
     *dest = pt;
 
     /* no quotes */
-    if (recs <= 0)
-        return -2;
+    if (pt->recs <= 0) {
+        status = -2; goto ERR;
+    }
 
     return 0;
+
+ERR:
+    switch (status) {
+        case    -1:
+            fprintf(stderr, "%s: malloc(): %s\n",
+                    PROGNAME, strerror(errno));
+            break;
+        case    -2:
+            break;
+    }
+
+    return status;
 }
 
 int create_rand(int lines)
@@ -443,7 +467,7 @@ ERR:
 
 void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)
 {
-    int i   = 0;
+    int     i   = 0;
 
     if (yasuna->flag & YASUNA_SPEAKER)
         fprintf(stdout, "*** speaker = %s, %d quotes ***\n",
@@ -461,10 +485,10 @@ void print_all_quotes(polyaness_t* pt, yasuna_t* yasuna)
 static
 char* strstr2(char* str1, char* str2)
 {
-    size_t  off = 0;
+    size_t  off     = 0;
 
-    char*   p1  = str1,
-        *   p2  = NULL;
+    char*   p1      = str1,
+        *   p2      = NULL;
 
     while (*p1 != '\0') {
         p2 = str2;

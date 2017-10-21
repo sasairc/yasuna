@@ -16,7 +16,7 @@ yasuna
 
 ## Requirements
 
-* libbenly >= 1.0.0 (同梱)
+* libbenly >= 1.0.0-17 (同梱)
 * libpolyaness >= 1.0.0 (同梱)
 
 * GNU make
