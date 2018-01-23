@@ -8,7 +8,7 @@ SRCS        = $(wildcard *.c)
 OBJS        = $(SRCS:.c=.o)
 DEPSRCS     = $(wildcard ./libbenly/src/*.c ./libpolyaness/src/*.c)
 DEPOBJS     = $(DEPSRCS:.c=.o)
-ARCH        = $(shell gcc -print-multiarch)
+ARCH        = $(shell $(CC) -dumpmachine)
 DEFCFLAGS   = -DPREFIX=\"$(PREFIX)\"     \
 		-DDICPATH=\"$(DICDIR)/\" \
 		-DLOCALE=\"\"            \
