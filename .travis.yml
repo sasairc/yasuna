@@ -1,29 +1,43 @@
 language: c
+os:
+    - linux
+    - osx
 compiler:
     - gcc
     - clang
+addons:
+    apt:
+        packages:
+            - tree
+            - pkg-config
+            - libglib2.0-0
+            - libglib2.0-dev
 before_install:
-    - sudo apt-get update
-    - sudo apt-get -y install pkg-config libglib2.0-0 libglib2.0-dev tree
-script:
-    - export CC="$CC" TEST_PREFIX="`pwd`/test_prefix"
+    - export CC="${CC}"
+    - export TEST_PREFIX="$(pwd)/testprefix"
     - source ./testsuite/travis-ci.bash
-    - make DICDIR=../quotes coverage-gcov
+    - test "${TRAVIS_OS_NAME}" = "osx" && brew update; true
+    - test "${TRAVIS_OS_NAME}" = "osx" && brew install tree pkg-config glib; true
+    - test "${TRAVIS_OS_NAME}" = "osx" && test "${CC}" = "gcc" && export CC="gcc-4.9"; true
+script:
+    - test "${TRAVIS_OS_NAME}" != "osx" && make coverage-gcov; true
     - make clean
-    - install_bin "$CC" "$TEST_PREFIX"
-    - cleanup "$TEST_PREFIX"
-    - install_quotes "$CC" "$TEST_PREFIX"
-    - cleanup "$TEST_PREFIX"
-    - install_man "$CC" "$TEST_PREFIX"
-    - cleanup "$TEST_PREFIX"
-    - install_doc "$CC" "$TEST_PREFIX"
-    - cleanup "$TEST_PREFIX"
-    - install_zsh_compdef "$CC" "$TEST_PREFIX"
-    - cleanup "$TEST_PREFIX"
-    - install_all "$CC" "$TEST_PREFIX"
+    - test "${TRAVIS_OS_NAME}" != "osx" && make DICDIR=../quotes coverage-gcov; true
+    - make clean
+    - install_bin "${CC}" "${TEST_PREFIX}"
+    - cleanup "${TEST_PREFIX}"
+    - install_quotes "${CC}" "${TEST_PREFIX}"
+    - cleanup "${TEST_PREFIX}"
+    - install_man "${CC}" "${TEST_PREFIX}"
+    - cleanup "${TEST_PREFIX}"
+    - install_doc "${CC}" "${TEST_PREFIX}"
+    - cleanup "${TEST_PREFIX}"
+    - install_zsh_compdef "${CC}" "${TEST_PREFIX}"
+    - cleanup "${TEST_PREFIX}"
+    - install_all "${CC}" "${TEST_PREFIX}"
     - ${TEST_PREFIX}/bin/yasuna --version
     - ${TEST_PREFIX}/bin/yasuna --help
     - ${TEST_PREFIX}/bin/yasuna
-    - random_test "$TEST_PREFIX"
+    - random_test "${TEST_PREFIX}"
     - rm -rf ${TEST_PREFIX}
     - unset TEST_PREFIX
