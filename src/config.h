@@ -19,9 +19,9 @@ extern "C" {
 
 #define PROGNAME        "yasuna"
 #define VERSION         9
-#define PATCHLEVEL      6
-#define SUBLEVEL        2
-#define EXTRAVERSION    ""
+#define PATCHLEVEL      7
+#define SUBLEVEL        0
+#define EXTRAVERSION    "-devel"
 
 #define AUTHOR          "sasairc"
 #define MAIL_TO         "sasairc@ssiserver.moe.hm"
