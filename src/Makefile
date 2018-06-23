@@ -79,7 +79,7 @@ else
 # CMDLINE
 endif
 else
-DEFLDFLAGS += -lbenly_file -lbenly_memory -lbenly_string -lpolyaness
+DEFLDFLAGS += -lbenly_file -lbenly_memory -lbenly_string -lbenly_typestring -lpolyaness
 $(TARGET): $(OBJS)
 ifeq ($(CMDLINE), 0)
 	@echo "  BUILD   $@"
