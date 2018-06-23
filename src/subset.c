@@ -97,13 +97,8 @@ int open_dict_file(FILE** fp, yasuna_t* yasuna)
     if ((st.st_mode & S_IFMT) == S_IFDIR) {
         status = -3; goto ERR;
     }
-
-    if ((st.st_mode & S_IREAD) == 0) {
-        status = -4; goto ERR;
-    }
-
     if ((*fp = fopen(path->c_str(path), "r")) == NULL) {
-        status = -5; goto ERR;
+        status = -4; goto ERR;
     }
     path->release(path);
 
@@ -122,10 +117,6 @@ ERR:
                     PROGNAME, path->c_str(path), strerror(EISDIR));
             break;
         case    -4:
-            fprintf(stderr, "%s: %s: %s\n",
-                    PROGNAME, path->c_str(path), strerror(EACCES));
-            break;
-        case    -5:
             fprintf(stderr, "%s: %s: %s\n",
                     PROGNAME, path->c_str(path), strerror(errno));
             break;
