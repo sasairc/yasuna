@@ -23,11 +23,13 @@
 #ifdef  WITH_SHARED
 #include <benly/file.h>
 #include <benly/string.h>
+#include <benly/typestring.h>
 #include <benly/memory.h>
 #include <polyaness.h>
 #else
 #include <libbenly/src/file.h>
 #include <libbenly/src/string.h>
+#include <libbenly/src/typestring.h>
 #include <libbenly/src/memory.h>
 #include <libpolyaness/src/polyaness.h>
 /* WITH_SHARED */
@@ -40,46 +42,31 @@ static int search_all_quotes_with_regexp_string(char* pattern, polyaness_t* pt, 
 /* WITH_REGEX */
 #endif
 
-static int concat_file_path(char** path, yasuna_t* yasuna);
+static int concat_file_path(STRING* path, yasuna_t* yasuna);
 static int plain_dict_to_polyaness(FILE* fp, polyaness_t** pt);
 static int search_all_quotes_with_fixed_string(char* pattern, polyaness_t* pt);
 static char* strstr2(char* str1, char* str2);
 
 static 
-int concat_file_path(char** path, yasuna_t* yasuna)
+int concat_file_path(STRING* path, yasuna_t* yasuna)
 {
     int     status  = 0;
 
-    size_t  len     = 0;
-
     if (yasuna->flag & YASUNA_FILE) {
-        len = strlen(yasuna->farg);
-        if ((*path = (char*)
-                    malloc(sizeof(char) * (len + 1))) == NULL) {
+        if (path->assign(&path, yasuna->farg) < 0) {
             status = -1; goto ERR;
-        } else {
-            memcpy(*path, yasuna->farg, len);
-            *((*path) + len) = '\0';
         }
     } else {
 #ifdef  WITH_MONO
-        len = strlen(DICNAME);
-        if ((*path = (char*)
-                    malloc(sizeof(char) * (len + 1))) == NULL) {
+        if (path->append(&path, DICNAME) < 0) {
             status = -2; goto ERR;
-        } else {
-            memcpy(*path, DICNAME, len);
-            *((*path) + len) = '\0';
         }
 #else
-        len = strlen(DICPATH) + strlen(DICNAME);
-        if ((*path = (char*)
-                    malloc(sizeof(char) * (len + 1))) == NULL) {
-            status = -3;
-        } else {
-            memcpy(*path, DICPATH, strlen(DICPATH));
-            memcpy(*path + strlen(DICPATH), DICNAME, strlen(DICNAME));
-            *((*path) + len) = '\0';
+        if (path->assign(&path, DICPATH) < 0) {
+            status = -3; goto ERR;
+        }
+        if (path->append(&path, DICNAME) < 0) {
+            status = -4; goto ERR;
         }
 /* WITH_MONO */
 #endif
@@ -95,57 +82,46 @@ int open_dict_file(FILE** fp, yasuna_t* yasuna)
 {
     int     status  = 0;
 
-    char*   path    = NULL;
+    STRING* path    = new_string(NULL);
 
     struct  stat st;
 
-    if (concat_file_path(&path, yasuna) < 0) {
+    if (concat_file_path(path, yasuna) < 0) {
         status = -1; goto ERR;
     }
 
-    if (stat(path, &st) != 0) {
+    if (stat(path->c_str(path), &st) != 0) {
         status = -2; goto ERR;
     }
 
     if ((st.st_mode & S_IFMT) == S_IFDIR) {
         status = -3; goto ERR;
     }
-
-    if ((st.st_mode & S_IREAD) == 0) {
+    if ((*fp = fopen(path->c_str(path), "r")) == NULL) {
         status = -4; goto ERR;
     }
-
-    if ((*fp = fopen(path, "r")) == NULL) {
-        status = -5; goto ERR;
-    }
-    free(path);
+    path->release(path);
 
     return 0;
 
 ERR:
     switch (status) {
         case    -1:
-            fprintf(stderr, "%s: malloc(): %s\n",
-                    PROGNAME, strerror(errno));
+            break;
         case    -2:
             fprintf(stderr, "%s: %s: %s\n",
-                    PROGNAME, path, strerror(ENOENT));
+                    PROGNAME, path->c_str(path), strerror(ENOENT));
             break;
         case    -3:
             fprintf(stderr, "%s: %s: %s\n",
-                    PROGNAME, path, strerror(EISDIR));
+                    PROGNAME, path->c_str(path), strerror(EISDIR));
             break;
         case    -4:
             fprintf(stderr, "%s: %s: %s\n",
-                    PROGNAME, path, strerror(EACCES));
-            break;
-        case    -5:
-            fprintf(stderr, "%s: %s: %s\n",
-                    PROGNAME, path, strerror(errno));
+                    PROGNAME, path->c_str(path), strerror(errno));
             break;
     }
-    if (path != NULL)
-        free(path);
+    path->release(path);
 
     return status;
 }

@@ -19,8 +19,8 @@ extern "C" {
 
 #define PROGNAME        "yasuna"
 #define VERSION         9
-#define PATCHLEVEL      6
-#define SUBLEVEL        2
+#define PATCHLEVEL      7
+#define SUBLEVEL        0
 #define EXTRAVERSION    ""
 
 #define AUTHOR          "sasairc"
