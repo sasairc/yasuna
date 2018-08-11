@@ -94,9 +94,9 @@ endif
 %.o: %.c %.h
 ifeq ($(CMDLINE), 0)
 	@echo "  CC      $@"
-	@$(CC) $(CFLAGS) -c $< -o $@ $(DEFCFLAGS)
+	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@ $(DEFCFLAGS)
 else
-	$(CC) $(CFLAGS) -c $< -o $@ $(DEFCFLAGS)
+	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@ $(DEFCFLAGS)
 endif
 
 build-dep $(DEPOBJS):

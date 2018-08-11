@@ -14,6 +14,7 @@ RM	:= rm
 GCOV	:= gcov
 CFLAGS	:= -O2 -g -Wall -Wextra -Winit-self -Wno-missing-field-initializers
 LDFLAGS	:=
+INCLUDE :=
 CMDLINE	:= 0
 export
 
