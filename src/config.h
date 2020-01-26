@@ -18,10 +18,10 @@ extern "C" {
 #endif
 
 #define PROGNAME        "yasuna"
-#define VERSION         10
+#define VERSION         11
 #define PATCHLEVEL      7
 #define SUBLEVEL        0
-#define EXTRAVERSION    ""
+#define EXTRAVERSION    "-devel"
 
 #define AUTHOR          "sasairc"
 #define MAIL_TO         "sasairc@ssiserver.moe.hm"
