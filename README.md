@@ -194,9 +194,9 @@ Twitter: [@sasairc_yasuna](https://twitter.com/sasairc_yasuna)にて本プログ
 
 ## License
 
-[WTFPL version 2](https://raw.githubusercontent.com/sasairc/yasuna/master/LICENSE)
+[WTFPL version 2](https://raw.githubusercontent.com/sasairc2/yasuna/master/LICENSE)
 
 
 ## Author
 
-sasairc (https://github.com/sasairc)
+sasairc (https://github.com/sasairc2)
