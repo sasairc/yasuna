@@ -18,13 +18,13 @@ extern "C" {
 #endif
 
 #define PROGNAME        "yasuna"
-#define VERSION         13
+#define VERSION         14
 #define PATCHLEVEL      7
 #define SUBLEVEL        0
 #define EXTRAVERSION    ""
 
 #define AUTHOR          "sasairc"
-#define MAIL_TO         "sasairc@ssiserver.moe.hm"
+#define MAIL_TO         "sasairc@ssiserver.jp"
 
 /*
  * # setting of realloc() timing
